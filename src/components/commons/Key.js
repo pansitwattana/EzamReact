@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Key = styled.div`
@@ -87,7 +88,7 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
     border = `1px solid ${color}`
   }
 
-  return (<Key number={number} operator={operator} action={action}>
+  return (<Key onClick={() => onPress(keyValue)} number={number} operator={operator} action={action}>
     <Operation
       operator={operator}
       padding={padding}
@@ -97,7 +98,7 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
       border={border}
       highlight={highlight}
     >
-      <span onClick={() => onPress(keyValue)}>{keySymbol}</span>
+      <span>{keySymbol}</span>
     </Operation>
   </Key>)
 }
@@ -114,7 +115,7 @@ KeyComponent.propTypes = {
   keySymbol: PropTypes.string,
   keyValue: PropTypes.string,
   highlight: PropTypes.bool,
-  onPress: PropTypes.func.isRequired
+  onPress: PropTypes.func.isRequired,
 }
 
 export default KeyComponent

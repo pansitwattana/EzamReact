@@ -1,8 +1,24 @@
-import React from 'react';
-import 'mathquill/build/mathquill.css';
+import React, { Component } from 'react';
 
-const LaTeX = ({ text }) => (
-  <span id="math-field">{text}</span>
-)
+
+class LaTeX extends Component {
+  componentDidMount() {
+    const mathFieldSpan = document.getElementById(this.props.id)
+    if (window.MathQuill) {
+      const MQ = window.MathQuill.getInterface(2)
+      MQ.StaticMath(mathFieldSpan)
+    }
+    else {
+      console.error('can not load MathQuill')
+    }
+  }
+
+  render() {
+    const { text, id } = this.props
+    return (
+      <span id={id} readOnly>{text}</span>
+    )
+  }
+}
 
 export default LaTeX

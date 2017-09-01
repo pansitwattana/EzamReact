@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import uuid from 'uuid'
+import { typed } from './paper/MathQuill'
+import 'mathquill/build/mathquill.css'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
+import Input from './commons/Input'
 
 const Wrapper = styled.div`
   background: white;
@@ -17,18 +21,24 @@ const Paper = styled.div`
 
 class PaperComponent extends Component {
   state = {
-    methods: [{
-      text: ''
-    }]
-  }
-
-  renderInput() {
-    return <span />
+    methods: [
+      {
+        text: '',
+        id: uuid(),
+      },
+    ],
+    line: 0,
   }
 
   handleKeyboard(value) {
-    console.log(value)
-    input(value)
+    console.log(value, 'is pressed')
+    typed(value, this.state.methods[this.state.line].id)
+  }
+
+  renderInput() {
+    return this.state.methods.map((method) => {
+      return <Input key={method.id} id={method.id} />
+    })
   }
 
   render() {
@@ -40,34 +50,11 @@ class PaperComponent extends Component {
             {this.renderInput()}
           </Paper>
         </Wrapper>
-        <Keyboard onPress={this.handleKeyboard} />
+        <Keyboard onPress={value => this.handleKeyboard(value)} />
       </div>
     )
   }
 }
 
-let mathFieldSpan = document.getElementById('math-field');
-let MQ = window.MathQuill.getInterface(2);
-let mathField = MQ.MathField(mathFieldSpan, {
-  spaceBehavesLikeTab: true,
-  handlers: {
-    edit() {
-      this.focus();
-    },
-  },
-});
-
-function input(str) {
-  if (mathField) {
-    mathField.cmd(str);
-    mathField.focus();
-  } else {
-    mathFieldSpan = document.getElementById('math-field');
-    MQ = window.MathQuill.getInterface(2);
-    mathField = MQ.MathField(mathFieldSpan);
-    mathField.cmd(str);
-    mathField.focus();
-  }
-}
 
 export default PaperComponent

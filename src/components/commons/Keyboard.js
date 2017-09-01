@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Key from './Key'
 
@@ -33,12 +34,12 @@ const KeyboardComponent = ({ onPress }) =>
       <Key keyType="number" keyValue="7" keySymbol="7" onPress={onPress} />
       <Key keyType="number" keyValue="8" keySymbol="8" onPress={onPress} />
       <Key keyType="number" keyValue="9" keySymbol="9" onPress={onPress} />
-      <Key keyType="number" keyValue="9" keySymbol="9" onPress={onPress} />
+      <Key keyType="number" keyValue="0" keySymbol="0" onPress={onPress} />
     </KeyboardRow>
     <KeyboardRow>
-      <Key keyType="number" keyValue="/pm" keySymbol="+/-" onPress={onPress} />
+      <Key keyType="number" keyValue="-" keySymbol="+/-" onPress={onPress} />
       <Key keyType="number" keyValue="0" keySymbol="0" onPress={onPress} />
-      <Key keyType="number" keyValue="^" keySymbol="^" onPress={onPress} />
+      <Key keyType="number" keyValue="." keySymbol="." onPress={onPress} />
       <Key keyType="number" keyValue="." keySymbol="." onPress={onPress} />
     </KeyboardRow>
 
