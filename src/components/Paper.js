@@ -56,11 +56,24 @@ class PaperComponent extends Component {
   handleKeyboard(value) {
     console.log(value, 'is pressed')
     math.typed(value, this.state.methods[this.state.line].id)
-    if (KeyAction(value) === Actions.NEWLINE) {
+    const action = KeyAction(value)
+    if (action === Actions.NEWLINE) {
       const methods = this.state.methods
       const method = { test: '', id: uuid() }
-      methods.push(method)
+      // methods.push(method)
+      methods.splice(this.state.line + 1, 0, method);
       this.setState({ methods, line: this.state.line + 1 })
+    } else if (action === Actions.CLEAR) {
+      let methods = this.state.methods
+      if (methods.length <= 1) {
+        return;
+      }
+      const line = this.state.line
+      methods = methods.filter((item, index) => index !== line)
+      this.setState({
+        methods,
+        line: line > 0 ? line - 1 : line,
+      })
     }
   }
 

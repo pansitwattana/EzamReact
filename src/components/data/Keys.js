@@ -1,4 +1,5 @@
 const Keys = {
+  ALPHABET: 'ALPHABET',
   PLUS: '+',
   MINUS: '-',
   NEGATIVE: 'NEGATIVE',
@@ -8,6 +9,7 @@ const Keys = {
   DOT: '.',
   PERIOD: 'PERIOD',
   PERCENT: 'PERCENT',
+  CLEAR: 'CLEAR',
   CDOT: 'CDOT',
   EQUAL: '=',
   NEQ: 'NEQ',
@@ -18,18 +20,18 @@ const Keys = {
   FRAC_INCLUSIVE: 'FRAC_INCLUSIVE',
   FRAC_EXCLUSIVE: 'FRAC_EXCLUSIVE',
   ENTER: 'ENTER',
-  EXP: 'EXP',
-  EXP_2: 'EXP_2',
+  EXP: '^',
+  EXP_2: '^2',
   EXP_3: 'EXP_3',
-  SQRT: 'SQRT',
+  SQRT: '\\sqrt',
   CUBE_ROOT: 'CUBE_ROOT',
   RADICAL: 'RADICAL',
   LEFT_PAREN: 'LEFT_PAREN',
   RIGHT_PAREN: 'RIGHT_PAREN',
   LN: 'LN',
-  LOG: 'LOG',
+  LOG: '\\log_{10}',
   LOG_N: 'LOG_N',
-  SIN: 'SIN',
+  SIN: '\\sin',
   COS: 'COS',
   TAN: 'TAN',
 
@@ -64,9 +66,13 @@ const Keys = {
 const Actions = {
   NEWLINE: 'NEWLINE',
   COMMAND: 'COMMAND',
+  COMMANDOPEN: 'COMMANDOPEN',
   KEYSTROKE: 'KEYSTROKE',
+  LATEX: 'LATEX',
   TYPE: 'TYPE',
   HIDE: 'HIDE',
+  CLEAR: 'CLEAR',
+  ALPHABET: 'ALPHABET',
 }
 
 const KeyAction = (key) => {
@@ -74,10 +80,18 @@ const KeyAction = (key) => {
     return Actions.NEWLINE
   } else if (key === Keys.LEFT || key === Keys.RIGHT || key === Keys.BACKSPACE) {
     return Actions.KEYSTROKE
-  } else if (key === Keys.SQRT || key === Keys.SIN) {
+  } else if (key === Keys.SQRT) {
     return Actions.COMMAND
+  } else if (key === Keys.SIN) {
+    return Actions.COMMANDOPEN
+  } else if (key === Keys.LOG) {
+    return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE
+  } else if (key === Keys.CLEAR) {
+    return Actions.CLEAR
+  } else if (key === Keys.ALPHABET) {
+    return Actions.ALPHABET
   }
 
   return Actions.TYPE

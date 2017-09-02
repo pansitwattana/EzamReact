@@ -4,7 +4,6 @@ const mathFields = []
 let MathQuill
 let MQ
 const typed = (str, id) => {
-  console.log('typed')
   const mathField = mathFields[id]
   if (mathField) {
     mathField.focus()
@@ -15,8 +14,15 @@ const typed = (str, id) => {
       mathField.keystroke(str)
     } else if (action === Actions.COMMAND) {
       mathField.cmd(str)
+    } else if (action === Actions.COMMANDOPEN) {
+      mathField.cmd(str)
+      mathField.typedText('(')
     } else if (action === Actions.NEWLINE) {
       mathField.blur()
+    } else if (action === Actions.LATEX) {
+      mathField.write(str)
+    } else if (action === Actions.CLEAR) {
+      mathField.latex('')
     }
   } else {
     const mathFieldSpan = document.getElementById(id)
@@ -43,7 +49,6 @@ const typed = (str, id) => {
 }
 
 const focus = (id) => {
-  console.log('focus')
   typed(' ', id)
   typed(Keys.BACKSPACE, id)
 }
