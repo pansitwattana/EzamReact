@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Keys } from '../data/Keys'
 
 const Key = styled.div`
   background-color: #ffffff;
@@ -62,27 +63,27 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
   } else if (keyType === 'operator') {
     operator = true
     borderRadius = '20px'
-    if (keyValue === 'add') {
+    if (keyValue === Keys.PLUS) {
       padding = '12px'
       backgroundColor = '#cb7dc9'
-    } else if (keyValue === 'substract') {
+    } else if (keyValue === Keys.MINUS) {
       backgroundColor = '#fcb064'
       padding = '15px'
-    } else if (keyValue === 'divide') {
+    } else if (keyValue === Keys.DIVIDE) {
       backgroundColor = '#fb96cf'
       padding = '12px'
-    } else if (keyValue === 'multiply') {
+    } else if (keyValue === Keys.TIMES) {
       backgroundColor = '#68cef1'
       padding = '13px'
     }
   } else if (keyType === 'action') {
     action = true
     borderRadius = '10px'
-    if (keyValue === 'back') {
+    if (keyValue === Keys.BACKSPACE) {
       color = '#d68086'
-    } else if (keyValue === 'equal') {
+    } else if (keyValue === Keys.EQUAL) {
       color = '#9ed8a6'
-    } else if (keyValue === 'enter') {
+    } else if (keyValue === Keys.ENTER) {
       color = 'red'
     }
     border = `1px solid ${color}`

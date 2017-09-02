@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { typed } from '../paper/MathQuill'
 
 const Input = styled.span`
-  padding: 10px 10px;
   borderWidth: 0px;
+  font-size: 15px;
+  color: black;
+  border-color: white;
+  background: white;
 `
 
 const InputComponent = ({ id }) =>

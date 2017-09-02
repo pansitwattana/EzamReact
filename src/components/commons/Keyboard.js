@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Key from './Key'
+import { Keys } from '../data/Keys'
 
 const Keyboard = styled.div`
   position: fixed;
@@ -37,38 +38,38 @@ const KeyboardComponent = ({ onPress }) =>
       <Key keyType="number" keyValue="0" keySymbol="0" onPress={onPress} />
     </KeyboardRow>
     <KeyboardRow>
-      <Key keyType="number" keyValue="-" keySymbol="+/-" onPress={onPress} />
+      <Key keyType="number" keyValue="x" keySymbol="x" onPress={onPress} />
       <Key keyType="number" keyValue="0" keySymbol="0" onPress={onPress} />
-      <Key keyType="number" keyValue="." keySymbol="." onPress={onPress} />
-      <Key keyType="number" keyValue="." keySymbol="." onPress={onPress} />
+      <Key keyType="number" keyValue={Keys.LEFT} keySymbol="<" onPress={onPress} />
+      <Key keyType="number" keyValue={Keys.RIGHT} keySymbol=">" onPress={onPress} />
     </KeyboardRow>
 
     <KeyboardRow>
       <Key
         keyType="operator"
-        keyValue="divide"
+        keyValue={Keys.DIVIDE}
         keySymbol="÷"
         onPress={onPress}
       />
       <Key
         keyType="operator"
-        keyValue="substract"
+        keyValue={Keys.MINUS}
         keySymbol="-"
         onPress={onPress}
       />
-      <Key keyType="operator" keyValue="add" keySymbol="+" onPress={onPress} />
+      <Key keyType="operator" keyValue={Keys.PLUS} keySymbol="+" onPress={onPress} />
       <Key
         keyType="operator"
-        keyValue="multiply"
+        keyValue={Keys.TIMES}
         keySymbol="x"
         onPress={onPress}
       />
     </KeyboardRow>
 
     <KeyboardRow>
-      <Key keyType="action" keyValue="back" keySymbol="<<" onPress={onPress} />
-      <Key keyType="action" keyValue="equal" keySymbol="=" onPress={onPress} />
-      <Key keyType="action" keyValue="enter" keySymbol="↵" onPress={onPress} />
+      <Key keyType="action" keyValue={Keys.BACKSPACE} keySymbol="<<" onPress={onPress} />
+      <Key keyType="action" keyValue={Keys.EQUAL} keySymbol="=" onPress={onPress} />
+      <Key keyType="action" keyValue={Keys.ENTER} keySymbol="↵" onPress={onPress} />
     </KeyboardRow>
   </Keyboard>)
 
