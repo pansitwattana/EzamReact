@@ -2,6 +2,7 @@
   "name": "ezamreact",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://ezam.azurewebsites.net",
   "dependencies": {
     "mathquill": "^0.10.1-a",
     "prop-types": "^15.5.10",

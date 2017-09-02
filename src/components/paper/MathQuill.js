@@ -1,9 +1,10 @@
-import { KeyAction, Actions } from '../data/Keys'
+import { KeyAction, Actions, Keys } from '../data/Keys'
 
 const mathFields = []
 let MathQuill
 let MQ
 const typed = (str, id) => {
+  console.log('typed')
   const mathField = mathFields[id]
   if (mathField) {
     mathField.focus()
@@ -41,6 +42,19 @@ const typed = (str, id) => {
   }
 }
 
+const focus = (id) => {
+  console.log('focus')
+  typed(' ', id)
+  typed(Keys.BACKSPACE, id)
+}
+
+const blur = (id) => {
+  const mathField = mathFields[id]
+  if (mathField) {
+    mathField.blur()
+  }
+}
+
 const getLaTeX = (id) => {
   if (!MQ) {
     return null;
@@ -55,4 +69,4 @@ const getLaTeX = (id) => {
   return MQ.latex()
 }
 
-export { typed, getLaTeX }
+export default { typed, getLaTeX, blur, focus }

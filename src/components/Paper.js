@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import VirtualList from 'react-tiny-virtual-list';
 import uuid from 'uuid'
-import { KeyAction, Actions, Keys } from './data/Keys'
-import { typed } from './paper/MathQuill'
+import { KeyAction, Actions } from './data/Keys'
+import math from './paper/MathQuill'
 import 'mathquill/build/mathquill.css'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
@@ -38,18 +38,24 @@ class PaperComponent extends Component {
   }
 
   componentDidMount() {
-    typed(' ', this.state.methods[0].id)
-    typed(Keys.BACKSPACE, this.state.methods[0].id)
+    console.log('did mount')
+    math.focus(this.state.methods[this.state.line].id)
   }
 
   componentDidUpdate() {
-    typed(' ', this.state.methods[this.state.line].id)
-    typed(Keys.BACKSPACE, this.state.methods[this.state.line].id)
+    console.log('did update')
+    math.focus(this.state.methods[this.state.line].id)
+  }
+
+  onInputTouch(index) {
+    console.log(index)
+    math.blur(this.state.methods[this.state.line].id)
+    this.setState({ line: index })
   }
 
   handleKeyboard(value) {
     console.log(value, 'is pressed')
-    typed(value, this.state.methods[this.state.line].id)
+    math.typed(value, this.state.methods[this.state.line].id)
     if (KeyAction(value) === Actions.NEWLINE) {
       const methods = this.state.methods
       const method = { test: '', id: uuid() }
@@ -57,11 +63,6 @@ class PaperComponent extends Component {
       this.setState({ methods, line: this.state.line + 1 })
     }
   }
-
-  renderInput() {
-    return this.state.methods.map(method => <Input key={method.id} id={method.id} />)
-  }
-
 
   render() {
     return (
@@ -75,7 +76,7 @@ class PaperComponent extends Component {
               itemCount={this.state.methods.length}
               itemSize={50} // Also supports variable heights (array or function getter)
               renderItem={({ index }) =>
-                (<List key={this.state.methods[index].id}>
+                (<List onClick={() => this.onInputTouch(index)} key={this.state.methods[index].id}>
                   <Input id={this.state.methods[index].id} />
                 </List>)
               }
