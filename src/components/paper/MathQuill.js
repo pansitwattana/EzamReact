@@ -21,6 +21,7 @@ const typed = (str, id) => {
       mathField.blur()
     } else if (action === Actions.LATEX) {
       mathField.write(str)
+      mathField.keystroke('Right')
     } else if (action === Actions.CLEAR) {
       mathField.latex('')
     }

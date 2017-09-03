@@ -9,8 +9,10 @@ const Keyboard = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 50%;
-  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.25), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  height: ${props => props.height}%;
+  box-shadow: 
+    10px 10px 10px 10px rgba(0, 0, 0, 0.25), 
+    0 3px 1px -2px rgba(0, 0, 0, 0.2),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 `
 
@@ -18,10 +20,12 @@ const KeyboardRow = styled.div`
   display: table;
   background-color: #db8a8a;
   width: 100%;
-  height: ${props => props.height};
+  height: ${props => props.height}%;
 `
 
 const KeyboardComponent = ({ onPress, keyValues, keySymbols }) => {
+  const rowCount = keySymbols.length
+  const height = (9 * keyValues.length)
   const keyboardRows = keyValues.map((values, row) => {
     const symbolRow = keySymbols[row]
     const col = symbolRow.length
@@ -39,12 +43,13 @@ const KeyboardComponent = ({ onPress, keyValues, keySymbols }) => {
           colCount={col}
         />)
     })
-    return <KeyboardRow key={key} height={'16%'} >{keys}</KeyboardRow>
+    const rowHeight = (100 - 20) / rowCount
+    return <KeyboardRow key={key} height={rowHeight} >{keys}</KeyboardRow>
   })
   return (
-    <Keyboard>
+    <Keyboard height={height}>
       {keyboardRows}
-      <KeyboardRow height={'20%'} >
+      <KeyboardRow height={'20'} >
         <Key keyType="operator" keyValue={Keys.CLEAR} keySymbol="C" onPress={onPress} />
         <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={onPress} />
         <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={onPress} />

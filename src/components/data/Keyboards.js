@@ -2,27 +2,33 @@ import { Keys } from './Keys'
 
 const Math = {
   value: [
-    ['1', Keys.LOG, Keys.ALPHABET, Keys.SIN, Keys.BACKSPACE, Keys.DIVIDE],
-    ['1', Keys.SQRT, '7', '8', '9', Keys.TIMES],
-    ['1', Keys.EXP, '4', '5', '6', Keys.MINUS],
-    ['0', 'x', '1', '2', '3', Keys.PLUS],
-    ['1', '(', ')', '0', '.', Keys.EQUAL],
+    [Keys.LOG, '<', '>', Keys.EXP, Keys.BACKSPACE, Keys.DIVIDE],
+    [Keys.INT, Keys.SIN, '7', '8', '9', Keys.TIMES],
+    [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.MINUS],
+    [Keys.EXP_2, 'x', '1', '2', '3', Keys.PLUS],
+    [Keys.ALPHABET, '(', ')', '0', '.', Keys.EQUAL],
   ],
   symbol: [
-    ['1', 'Log', 'ABC', 'Sin', '<<', '÷'],
-    ['1', '√', '7', '8', '9', '×'],
-    ['1', '^', '4', '5', '6', '-'],
-    ['0', 'x', '1', '2', '3', '+'],
-    ['1', '(', ')', '0', '.', '='],
+    ['log', '<', '>', '^', '<<', '÷'],
+    ['int', 'sin', '7', '8', '9', '×'],
+    ['d/dx', '√', '4', '5', '6', '-'],
+    ['^2', 'x', '1', '2', '3', '+'],
+    ['ABC', '(', ')', '0', '.', '='],
   ],
 }
 
 const Alphabet = {
   value: [
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+    ['i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'],
+    ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
+    [Keys.NUMBER, '', ' ', '', '', '', 'y', 'z'],
+  ],
+  symbol: [
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
     ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'],
     ['Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'],
-    [Keys.NUMBER, '', '', '', '', '', 'Y', 'Z'],
+    ['123', ' ', '  ', '   ', '     ', '      ', 'Y', 'Z'],
   ],
 }
 

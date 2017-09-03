@@ -6,9 +6,10 @@ import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
 import math from './paper/MathQuill'
 import Screen from './commons/Screen'
-import Keyboard, { KeyboardType } from './commons/Keyboard'
+import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
-import { Math } from './data/Keyboards'
+import FloatButton from './commons/FloatButton'
+import { Math, Alphabet } from './data/Keyboards'
 
 
 const Wrapper = styled.div`
@@ -36,7 +37,7 @@ class PaperComponent extends Component {
   state = {
     methods: [{ text: '', id: uuid() }],
     line: 0,
-    keyboard: KeyboardType.MATH,
+    keyboard: Math,
   }
 
   componentDidMount() {
@@ -74,6 +75,10 @@ class PaperComponent extends Component {
         methods,
         line: line > 0 ? line - 1 : line,
       })
+    } else if (action === Actions.ALPHABET) {
+      this.setState({ keyboard: Alphabet })
+    } else if (action === Actions.NUMBER) {
+      this.setState({ keyboard: Math })
     }
   }
 
@@ -82,7 +87,7 @@ class PaperComponent extends Component {
       <div>
         <Wrapper>
           <Paper>
-            <Screen displayText={'10^2+5x=7'} />
+            <Screen displayText={'x^2+3x-10=0'} />
             <VirtualList
               width="100%"
               height={300}
@@ -96,7 +101,8 @@ class PaperComponent extends Component {
             />
           </Paper>
         </Wrapper>
-        <Keyboard keySymbols={Math.symbol} keyValues={Math.value} onPress={value => this.handleKeyboard(value)} />
+        <FloatButton>✓</FloatButton>
+        <Keyboard keySymbols={this.state.keyboard.symbol} keyValues={this.state.keyboard.value} onPress={value => this.handleKeyboard(value)} />
       </div>
     )
   }

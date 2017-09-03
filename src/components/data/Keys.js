@@ -22,7 +22,7 @@ const Keys = {
   FRAC_EXCLUSIVE: 'FRAC_EXCLUSIVE',
   ENTER: 'ENTER',
   EXP: '^',
-  EXP_2: '^2',
+  EXP_2: '\\^2',
   EXP_3: 'EXP_3',
   SQRT: '\\sqrt',
   CUBE_ROOT: 'CUBE_ROOT',
@@ -54,6 +54,9 @@ const Keys = {
   JUMP_OUT_NUMERATOR: 'JUMP_OUT_NUMERATOR',
   JUMP_OUT_DENOMINATOR: 'JUMP_OUT_DENOMINATOR',
 
+  DIFF: '\\frac{d}{dx}',
+  INT: '\\int',
+
   NOOP: 'NOOP',
 
   // Multi-functional keys.
@@ -84,9 +87,9 @@ const KeyAction = (key) => {
     return Actions.KEYSTROKE
   } else if (key === Keys.SQRT) {
     return Actions.COMMAND
-  } else if (key === Keys.SIN) {
+  } else if (key === Keys.SIN || key === Keys.COS || key === Keys.TAN) {
     return Actions.COMMANDOPEN
-  } else if (key === Keys.LOG) {
+  } else if (key === Keys.LOG || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

@@ -1,24 +1,7 @@
-import React from 'react';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
-import logo from './icon.png';
-import Paper from './components/Paper';
-import Button from './components/commons/Button'
-import './App.css';
-
-const Page = ({ title }) =>
-  (<div className="App">
-    <div className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-    </div>
-    <p className="App-intro">
-      This is the {title} page.
-    </p>
-    <Link style={{ textDecoration: 'none' }} to="/paper">
-      <Button>Paper</Button>
-    </Link>
-  </div>);
-
-const Home = () => <Page title="Home" />;
+import React from 'react'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
+import Paper from './components/Paper'
+import Home from './components/Home'
 
 const App = () => (
   <Router>

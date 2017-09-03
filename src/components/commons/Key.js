@@ -8,13 +8,15 @@ const Key = styled.div`
   display: table-cell;
   vertical-align: middle;
   text-align: center;
-  font-weight: border;
-  font-size: 18px;
+  font-size: auto;
+  font-weight: bolder;
+  font-family: 'Droid Serif', serif;
+  font-family: 'Bitter', serif;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none;
+  user-select: none
   transition: all 0.2s;
   width: ${props => props.width}%;
   ${props => props.highlight && `
@@ -60,7 +62,7 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress, c
   let backgroundColor = 'white'
   let borderRadius = '0px'
   let border = ''
-  let color = '#000000'
+  let color = '#555555'
   if (keyType === 'number') {
     number = true
   } else if (keyType === 'operator') {
@@ -79,6 +81,7 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress, c
       padding = '12px'
     } else if (keyValue === Keys.ENTER) {
       backgroundColor = '#ec1b5b'
+      color = '#ffffff'
       padding = '15px'
       borderRadius = '7px'
     }
