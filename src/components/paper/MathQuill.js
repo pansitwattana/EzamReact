@@ -4,7 +4,7 @@ const mathFields = []
 let MathQuill
 let MQ
 const typed = (str, id) => {
-  const mathField = mathFields[id]
+  let mathField = mathFields[id]
   if (mathField) {
     mathField.focus()
     const action = KeyAction(str)
@@ -27,7 +27,6 @@ const typed = (str, id) => {
   } else {
     const mathFieldSpan = document.getElementById(id)
     if (!mathFieldSpan) {
-      console.error('cannot find the id in span ', id)
       return;
     }
 
@@ -38,7 +37,7 @@ const typed = (str, id) => {
       if (!MQ) {
         MQ = window.MathQuill.getInterface(2)
       }
-      const mathField = MQ.MathField(mathFieldSpan, {
+      mathField = MQ.MathField(mathFieldSpan, {
         substituteTextarea: () => document.createElement('span'),
       })
       mathField.typedText(str)
@@ -66,12 +65,11 @@ const getLaTeX = (id) => {
   }
 
   const mathField = mathFields[id]
-  
   if (!mathField) {
     return null;
   }
 
-  return MQ.latex()
+  return mathField.latex()
 }
 
 export default { typed, getLaTeX, blur, focus }

@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^4.5.0",
-    "eslint-config-airbnb": "^15.1.0"
+    "eslint-config-airbnb": "^15.1.0",
+    "workbox-webpack-plugin": "^2.0.0"
   }
 }

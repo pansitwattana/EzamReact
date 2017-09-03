@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class LaTeX extends Component {
   componentDidMount() {
@@ -7,9 +7,6 @@ class LaTeX extends Component {
     if (window.MathQuill) {
       const MQ = window.MathQuill.getInterface(2)
       MQ.StaticMath(mathFieldSpan)
-    }
-    else {
-      console.error('can not load MathQuill')
     }
   }
 
@@ -19,6 +16,11 @@ class LaTeX extends Component {
       <span id={id} readOnly>{text}</span>
     )
   }
+}
+
+LaTeX.propTypes = {
+  text: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 }
 
 export default LaTeX

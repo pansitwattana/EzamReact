@@ -8,25 +8,24 @@ const Key = styled.div`
   display: table-cell;
   vertical-align: middle;
   text-align: center;
-  padding: 10px 0;
-  font-weight: lighter;
+  font-weight: border;
+  font-size: 18px;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
   transition: all 0.2s;
+  width: ${props => props.width}%;
   ${props => props.highlight && `
     transform: scale(0.9);
   `}
   ${props => props.operator && `
     width: 25%;
     color: white;
-    padding: 20px 0;
   `}
   ${props => props.number && `
-    border: 1px solid #f8f8f8;
-    width: 20%;
+    border: 1px solid #e8e8e8;
     color: #919191;
   `}
   ${props => props.action && `
@@ -53,7 +52,7 @@ const Operation = styled.div`
   `}
 `
 
-const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress }) => {
+const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress, colCount }) => {
   let operator = false
   let number = false
   let action = false
@@ -61,7 +60,7 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
   let backgroundColor = 'white'
   let borderRadius = '0px'
   let border = ''
-  let color = ''
+  let color = '#000000'
   if (keyType === 'number') {
     number = true
   } else if (keyType === 'operator') {
@@ -74,10 +73,10 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
       backgroundColor = '#00ffff'
       color = '#000000'
       padding = '13px'
-    } else if (keyValue === Keys.BACKSPACE) {
-      backgroundColor = '#89e8e1'
-      color = '#000000'
-      padding = '7px'
+    } else if (keyValue === Keys.CLEAR) {
+      backgroundColor = '#323156'
+      color = '#ffffff'
+      padding = '12px'
     } else if (keyValue === Keys.ENTER) {
       backgroundColor = '#ec1b5b'
       padding = '15px'
@@ -96,7 +95,9 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress })
     border = `1px solid ${color}`
   }
 
-  return (<Key onClick={() => onPress(keyValue)} number={number} operator={operator} action={action}>
+  const width = Math.floor(100 / colCount)
+
+  return (<Key onClick={() => onPress(keyValue)} number={number} operator={operator} action={action} width={width}>
     <Operation
       operator={operator}
       padding={padding}
@@ -116,6 +117,7 @@ KeyComponent.defaultProps = {
   keySymbol: '',
   keyValue: '',
   highlight: false,
+  colCount: 5,
 }
 
 KeyComponent.propTypes = {
@@ -124,6 +126,7 @@ KeyComponent.propTypes = {
   keyValue: PropTypes.string,
   highlight: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
+  colCount: PropTypes.number,
 }
 
 export default KeyComponent

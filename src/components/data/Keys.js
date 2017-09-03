@@ -13,6 +13,7 @@ const Keys = {
   CDOT: 'CDOT',
   EQUAL: '=',
   NEQ: 'NEQ',
+  NUMBER: 'NUMBER',
   GT: 'GT',
   LT: 'LT',
   GEQ: 'GEQ',
@@ -73,6 +74,7 @@ const Actions = {
   HIDE: 'HIDE',
   CLEAR: 'CLEAR',
   ALPHABET: 'ALPHABET',
+  NUMBER: 'NUMBER',
 }
 
 const KeyAction = (key) => {
@@ -92,6 +94,8 @@ const KeyAction = (key) => {
     return Actions.CLEAR
   } else if (key === Keys.ALPHABET) {
     return Actions.ALPHABET
+  } else if (key === Keys.NUMBER) {
+    return Actions.NUMBER
   }
 
   return Actions.TYPE
