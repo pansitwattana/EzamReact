@@ -5,6 +5,10 @@ import uuid from 'uuid'
 import LaTeX from './LaTeX'
 
 const Screen = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   background-color: #68cef2;
   color: #190d08;
   font-size: 30px;
@@ -17,13 +21,38 @@ const Screen = styled.div`
     0 1px 10px 0 rgba(0,0,0,.1);
 `
 
-const ScreenComponent = ({ displayText }) =>
+const LeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 0px 15px;
+`
+
+const Submit = styled.div`
+  font-size: 30px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+`
+
+const Text = styled.span`
+  font-size: 13px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+`
+
+const ScreenComponent = ({ displayText, onSubmit }) =>
   (<Screen>
     <LaTeX text={displayText} id={uuid()} />
+    <LeftContainer onClick={onSubmit}>
+      <Submit>✓</Submit>
+      <Text>Send</Text>
+    </LeftContainer>
   </Screen>)
 
 ScreenComponent.propTypes = {
   displayText: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default ScreenComponent

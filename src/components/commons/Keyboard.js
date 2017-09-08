@@ -23,7 +23,7 @@ const KeyboardRow = styled.div`
   height: ${props => props.height}%;
 `
 
-const KeyboardComponent = ({ onPress, keyValues, keySymbols }) => {
+const KeyboardComponent = ({ onPress, keyValues, keySymbols, action }) => {
   const rowCount = keySymbols.length
   const height = (9 * keyValues.length)
   const keyboardRows = keyValues.map((values, row) => {
@@ -50,7 +50,7 @@ const KeyboardComponent = ({ onPress, keyValues, keySymbols }) => {
     <Keyboard height={height}>
       {keyboardRows}
       <KeyboardRow height={'20'} >
-        <Key keyType="operator" keyValue={Keys.CLEAR} keySymbol="C" onPress={onPress} />
+        <Key keyType="operator" keyValue={action} keySymbol={action} onPress={onPress} />
         <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={onPress} />
         <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={onPress} />
         <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={onPress} />
@@ -68,6 +68,7 @@ KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
   keyValues: PropTypes.array.isRequired,
   keySymbols: PropTypes.array.isRequired,
+  action: PropTypes.string.isRequired,
 }
 
 export default KeyboardComponent

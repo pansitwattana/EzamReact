@@ -8,7 +8,6 @@ import math from './paper/MathQuill'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
-import FloatButton from './commons/FloatButton'
 import { Math, Alphabet } from './data/Keyboards'
 
 
@@ -35,34 +34,57 @@ const List = styled.div`
 
 class PaperComponent extends Component {
   state = {
-    methods: [{ text: '', id: uuid() }],
+    methods: [{ text: '', id: uuid(), focus: true }],
     line: 0,
     keyboard: Math,
   }
 
   componentDidMount() {
-    math.focus(this.state.methods[this.state.line].id)
+    const line = this.state.line
+    const methods = this.state.methods
+    const method = methods[line]
+    method.focus = true
+    math.focus(method.id)
   }
 
   componentDidUpdate() {
-    math.focus(this.state.methods[this.state.line].id)
+    const line = this.state.line
+    const methods = this.state.methods
+    const method = methods[line]
+    method.focus = true
+    math.focus(method.id)
   }
 
-  onInputTouch(index) {
-    math.blur(this.state.methods[this.state.line].id)
-    this.setState({ line: index })
+  onInputTouch(line) {
+    const methods = this.state.methods
+    const oldMethod = methods[this.state.line]
+    oldMethod.focus = false
+    const newMethod = methods[line]
+    newMethod.focus = true
+    this.setState({ methods, line })
+    math.blur(oldMethod.id)
+  }
+
+  handleKeyPress(event) {
+    console.log(event)
+    if (event.key === 'Enter') {
+      console.log('enter press here! ')
+    }
   }
 
   handleKeyboard(value) {
     math.typed(value, this.state.methods[this.state.line].id)
     const action = KeyAction(value)
     if (action === Actions.NEWLINE) {
+      if (this.state.methods.length > 9) { return; }
       const methods = this.state.methods
       const latex = math.getLaTeX(methods[this.state.line].id)
       if (latex) {
-        const method = { test: '', id: uuid() }
-        methods.splice(this.state.line + 1, 0, method);
-        this.setState({ methods, line: this.state.line + 1 })
+        const method = { test: '', id: uuid(), focus: true }
+        const line = this.state.line
+        methods[line].focus = false
+        methods.splice(line + 1, 0, method);
+        this.setState({ methods, line: line + 1 })
       }
     } else if (action === Actions.CLEAR) {
       let methods = this.state.methods
@@ -82,27 +104,39 @@ class PaperComponent extends Component {
     }
   }
 
+  submitAnswer() {
+    const methods = this.state.methods
+    const equations = []
+    methods.forEach((method) => {
+      const equation = math.getLaTeX(method.id)
+      equations.push(equation)
+    })
+    console.log(equations)
+  }
+
   render() {
+    const { symbol, value, action } = this.state.keyboard
+    const length = this.state.methods.length
+    const itemSize = 40
     return (
-      <div>
+      <div onKeyPress={event => this.handleKeyPress(event)} tabIndex="0">
         <Wrapper>
           <Paper>
-            <Screen displayText={'x^2+3x-10=0'} />
+            <Screen displayText={'x^2+3x-10=0'} onSubmit={() => this.submitAnswer()} />
             <VirtualList
               width="100%"
-              height={300}
-              itemCount={this.state.methods.length}
-              itemSize={50} // Also supports variable heights (array or function getter)
+              height={350}
+              itemCount={length}
+              itemSize={itemSize} // Also supports variable heights (array or function getter)
               renderItem={({ index }) =>
                 (<List onClick={() => this.onInputTouch(index)} key={this.state.methods[index].id}>
-                  <Input id={this.state.methods[index].id} />
+                  <Input focus={this.state.methods[index].focus} id={this.state.methods[index].id} />
                 </List>)
               }
             />
           </Paper>
         </Wrapper>
-        <FloatButton>✓</FloatButton>
-        <Keyboard keySymbols={this.state.keyboard.symbol} keyValues={this.state.keyboard.value} onPress={value => this.handleKeyboard(value)} />
+        <Keyboard keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
       </div>
     )
   }

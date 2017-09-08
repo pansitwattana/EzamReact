@@ -10,3 +10,14 @@ const Button = styled.button`
 `
 
 export default Button
+
+// import React from 'react'
+// import { Button } from 'semantic-ui-react'
+
+// const ButtonComponent = () => (
+//   <Button>
+//     Calculus
+//   </Button>
+// )
+
+// export default ButtonComponent

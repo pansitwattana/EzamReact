@@ -37,6 +37,7 @@ const Key = styled.div`
 `
 
 const Operation = styled.div`
+  text-shadow: 0 1px 2px rgba(0,0,0,0.20);
   padding-left: ${props => props.padding};
   padding-right: ${props => props.padding};
   background-color: ${props => props.backgroundColor};
@@ -75,10 +76,11 @@ const KeyComponent = ({ keyType, keySymbol = '', keyValue, highlight, onPress, c
       backgroundColor = '#00ffff'
       color = '#000000'
       padding = '13px'
-    } else if (keyValue === Keys.CLEAR) {
+    } else if (keyValue === Keys.ALPHABET || keyValue === Keys.NUMBER) {
       backgroundColor = '#323156'
       color = '#ffffff'
       padding = '12px'
+      borderRadius = '2px'
     } else if (keyValue === Keys.ENTER) {
       backgroundColor = '#ec1b5b'
       color = '#ffffff'

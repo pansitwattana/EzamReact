@@ -12,18 +12,20 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.12",
     "react-tiny-virtual-list": "^2.1.2",
+    "semantic-ui-css": "^2.2.12",
+    "semantic-ui-react": "^0.72.0",
     "styled-components": "^2.1.2",
     "uuid": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && workbox-cli generate:sw",
+    "build-production": "npm run build && node delete-map.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
     "eslint": "^4.5.0",
-    "eslint-config-airbnb": "^15.1.0",
-    "workbox-webpack-plugin": "^2.0.0"
+    "eslint-config-airbnb": "^15.1.0"
   }
 }
