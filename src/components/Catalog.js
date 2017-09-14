@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from 'semantic-ui-react'
-import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Header from './commons/Header'
 
