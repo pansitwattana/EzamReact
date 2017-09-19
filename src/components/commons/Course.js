@@ -5,11 +5,11 @@ import PropTypes from 'prop-types'
 
 const CourseComponent = ({ title, subtitle, itemCount }) => (
   <Link style={{ width: '33%', textDecoration: 'none' }} to={`/catalog/${title}`} >
-    <Card style={{ width: '95%', margin: '10px 10px 10px 10px' }}>
+    <Card style={{ width: '95%', margin: '10px 10px 5px 5px' }}>
       <Card.Content>
         <Card.Header>{title}</Card.Header>
         <Card.Meta>
-          <span className="date">Created in 2015</span>
+          <span className="date">Created in 2017</span>
         </Card.Meta>
         <Card.Description>
           {subtitle}

@@ -2,6 +2,7 @@ const Keys = {
   ALPHABET: 'ABC',
   PLUS: '+',
   MINUS: '-',
+  PLUSMINUS: '\\pm',
   NEGATIVE: 'NEGATIVE',
   TIMES: '×',
   DIVIDE: '/',
@@ -89,7 +90,7 @@ const KeyAction = (key) => {
     return Actions.COMMAND
   } else if (key === Keys.SIN || key === Keys.COS || key === Keys.TAN) {
     return Actions.COMMANDOPEN
-  } else if (key === Keys.LOG || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2) {
+  } else if (key === Keys.LOG || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.PLUSMINUS) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

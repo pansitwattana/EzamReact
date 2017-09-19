@@ -2,14 +2,14 @@ import { Keys } from './Keys'
 
 const Math = {
   value: [
-    [Keys.LOG, '<', '>', ' ', Keys.EXP, Keys.BACKSPACE],
+    [Keys.LOG, '<', '>', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.SIN, '7', '8', '9', Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
     [Keys.EXP_2, 'x', '1', '2', '3', Keys.MINUS],
     ['(', ')', '.', '0', Keys.EQUAL, Keys.PLUS],
   ],
   symbol: [
-    ['log', '<', '>', '', '^', 'DEL'],
+    ['log', '<', '>', '±', '^', 'DEL'],
     ['int', 'sin', '7', '8', '9', '÷'],
     ['d/dx', '√', '4', '5', '6', '×'],
     ['^2', 'x', '1', '2', '3', '-'],

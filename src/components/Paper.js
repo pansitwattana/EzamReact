@@ -69,6 +69,9 @@ class PaperComponent extends Component {
     console.log(event)
     if (event.key === 'Enter') {
       console.log('enter press here! ')
+      this.state.methods.forEach((value) => {
+        console.log(math.getLaTeX(value.id))
+      })
     }
   }
 
@@ -141,6 +144,5 @@ class PaperComponent extends Component {
     )
   }
 }
-
 
 export default PaperComponent

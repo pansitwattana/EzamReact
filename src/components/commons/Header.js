@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 const View = styled.div`
+  display: flex;
   background-color: #F8F8F8;
-  justify-content; center;
+  justify-content: center;
+  align-items: center;
   height: 50px;
-  padding-top: 15px;
   shadow-color: #000;
-  flex: 1;
   shadow-offset: width 0, height 2;
   shadow-opacity: 0.2;
   elevation: 2,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { Input } from 'semantic-ui-react'
 import Menu from './commons/Menu'
 import Course from './commons/Course'
 import logo from '../icon.png'
@@ -11,6 +12,10 @@ const Header = styled.div`
   height: 80px;
   padding: 20px 10px;
   color: white;
+`
+
+const Search = styled.div`
+  padding: 10px 10px 10px 10px;
 `
 
 const CourseContainer = styled.div`
@@ -38,34 +43,37 @@ class Home extends Component {
         <Header>
           <Image src={logo} alt="logo" />
         </Header>
+        <Search>
+          <Input style={{ width: '100%' }} icon="search" placeholder="Search..." />
+        </Search>
         <Menu />
         <CourseContainer>
           <CourseRow>
             <Course
               title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              subtitle={'Basic'}
             />
             <Course
               title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              subtitle={'Hard'}
             />
             <Course
-              title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              title={'Set'}
+              subtitle={'Basic'}
             />
           </CourseRow>
           <CourseRow>
             <Course
-              title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              title={'Possibility'}
+              subtitle={'Basic'}
             />
             <Course
-              title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              title={'Algebra'}
+              subtitle={'Basic'}
             />
             <Course
-              title={'Calculus'}
-              subtitle={'learn about Differential and Integration'}
+              title={'Trigonometry'}
+              subtitle={'Intermediate'}
             />
           </CourseRow>
         </CourseContainer>
