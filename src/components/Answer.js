@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Card } from 'semantic-ui-react'
+import { Card, Button, Form, TextArea } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import LaTex from './commons/LaTeX'
@@ -74,7 +74,7 @@ class Answer extends Component {
           {
             text: 'x=-5,\\space2',
             id: uuid(),
-          }
+          },
         ],
       },
     },
@@ -129,7 +129,7 @@ class Answer extends Component {
         name: 'Pansit',
         id: 2,
         rate: 3,
-      }
+      },
     ]
     return users.map(user => (
       <Container>
@@ -138,6 +138,15 @@ class Answer extends Component {
           <Rate>{user.rate} Upvote</Rate>
         </Cover>
         {this.getAnswer(user.id)}
+        <Button.Group labeled style={{ width: '100%' }}>
+          <Button icon="rocket" content="Genuius!" />
+          <Button.Or />
+          <Button icon="comment" content="Comment" />
+        </Button.Group>
+        <Form style={{ padding: '10px 0 0 0' }}>
+          <TextArea autoHeight placeholder="Any Suggestions ?" />
+          <Form.Button floated="right">Submit</Form.Button>
+        </Form>
       </Container>))
   }
 

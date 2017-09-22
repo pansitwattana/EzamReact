@@ -2,21 +2,11 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Input } from 'semantic-ui-react'
 import Menu from './commons/Menu'
+import Logo from './commons/Logo'
 import Course from './commons/Course'
-import logo from '../icon.png'
+import Search from './commons/Search'
 
 const Background = styled.div`text-align: center;`
-
-const Header = styled.div`
-  background-color: #222;
-  height: 80px;
-  padding: 20px 10px;
-  color: white;
-`
-
-const Search = styled.div`
-  padding: 10px 10px 10px 10px;
-`
 
 const CourseContainer = styled.div`
   display: flex;
@@ -30,8 +20,6 @@ const CourseRow = styled.div`
   width: 100%;
 `
 
-const Image = styled.img`height: 60px;`
-
 class Home extends Component {
   componentWillMount() {
     console.log('upate')
@@ -40,12 +28,8 @@ class Home extends Component {
   render() {
     return (
       <Background>
-        <Header>
-          <Image src={logo} alt="logo" />
-        </Header>
-        <Search>
-          <Input style={{ width: '100%' }} icon="search" placeholder="Search..." />
-        </Search>
+        <Logo />
+        <Search />
         <Menu />
         <CourseContainer>
           <CourseRow>

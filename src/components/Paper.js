@@ -125,7 +125,7 @@ class PaperComponent extends Component {
       <div onKeyPress={event => this.handleKeyPress(event)} tabIndex="0">
         <Wrapper>
           <Paper>
-            <Screen displayText={'x^2+3x-10=0'} onSubmit={() => this.submitAnswer()} />
+            <Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer()} />
             <VirtualList
               width="100%"
               height={350}

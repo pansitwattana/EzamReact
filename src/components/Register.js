@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Input, Button } from 'semantic-ui-react'
 import Header from './commons/Header'
+import Logo from './commons/Logo'
 
 const Form = styled.div`
   display: flex;
@@ -12,7 +13,8 @@ const Form = styled.div`
 
 const Register = () => (
   <div>
-    <Header text="Login" />
+    <Logo />
+    <Header text="Register" />
     <Form>
       <Input icon="user" iconPosition="left" placeholder="Username" />
       <Input icon="mail" iconPosition="left" placeholder="abc@gmail.com" />
