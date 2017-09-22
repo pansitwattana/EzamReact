@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Card, Button, Form, TextArea } from 'semantic-ui-react'
-import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
@@ -132,7 +131,7 @@ class Answer extends Component {
       },
     ]
     return users.map(user => (
-      <Container>
+      <Container key={user.id}>
         <Cover>
           <Author>Solved by {user.name}</Author>
           <Rate>{user.rate} Upvote</Rate>
@@ -141,7 +140,7 @@ class Answer extends Component {
         <Button.Group labeled style={{ width: '100%' }}>
           <Button icon="rocket" content="Genuius!" />
           <Button.Or />
-          <Button icon="comment" content="Comment" />
+          <Button icon="comment" content="Comment" positive />
         </Button.Group>
         <Form style={{ padding: '10px 0 0 0' }}>
           <TextArea autoHeight placeholder="Any Suggestions ?" />

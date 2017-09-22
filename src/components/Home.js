@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Input } from 'semantic-ui-react'
 import Menu from './commons/Menu'
 import Logo from './commons/Logo'
 import Course from './commons/Course'

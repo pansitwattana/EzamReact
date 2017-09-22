@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import uuid from 'uuid'
-import { Math, Alphabet } from './data/Keyboards'
+import { Math } from './data/Keyboards'
 import math from './paper/MathQuill'
 import Keyboard from './commons/Keyboard'
 import styled from 'styled-components'
