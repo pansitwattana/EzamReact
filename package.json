@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://ezam.azurewebsites.net",
   "dependencies": {
+    "firebase": "^4.4.0",
     "mathquill": "^0.10.1-a",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
