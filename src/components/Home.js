@@ -21,7 +21,11 @@ const CourseRow = styled.div`
 
 class Home extends Component {
   componentWillMount() {
-    console.log('upate')
+    if (this.props.location.state.data)
+      console.log('login as ' + this.props.location.state.data.username)
+    else {
+      console.log('guest')
+    }
   }
 
   render() {

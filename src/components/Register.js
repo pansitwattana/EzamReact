@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
+import { push } from 'react-router-redux'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import firebase from 'firebase'
-import { withRouter } from 'react-router-dom'
 import { Input, Button } from 'semantic-ui-react'
 import Header from './commons/Header'
 import Logo from './commons/Logo'
+import {
+  increment,
+} from '../modules/counter'
 
 const Form = styled.div`
   display: flex;
@@ -22,8 +27,9 @@ class Register extends Component {
   }
 
   onSubmit = () => {
+    console.log(this.props)
     firebase.auth().createUserWithEmailAndPassword(this.state.mail, this.state.password)
-      .then(response => this.props.history.push('/'))
+      .then(() => this.props.changePage({ username: this.state.username, email: this.state.mail }))
       .catch(error => alert(error.message))
   }
 
@@ -44,4 +50,12 @@ class Register extends Component {
   }
 }
 
-export default withRouter(Register)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  increment,
+  changePage: user => push('/', { data: user }),
+}, dispatch)
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Register)

@@ -1,7 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import firebase from 'firebase'
 import 'semantic-ui-css/semantic.min.css';
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'react-router-redux'
+import store, { history } from './store'
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -16,5 +19,13 @@ const config = {
 };
 firebase.initializeApp(config)
 
-ReactDOM.render(<App />, document.getElementById('root'));
+render(
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <App />
+    </ConnectedRouter>
+  </Provider>,
+  document.querySelector('#root'),
+)
+
 registerServiceWorker();
