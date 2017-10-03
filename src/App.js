@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { TransitionGroup } from 'react-transition-group'
 import Paper from './components/Paper'
 import Home from './components/Home'
 import Catalog from './components/Catalog'
@@ -10,7 +11,7 @@ import Register from './components/Register'
 import Problem from './components/Problem'
 
 const App = () => (
-  <div>
+  <TransitionGroup>
     <Route exact path="/" component={Home} />
     <Route path="/paper" component={Paper} />
     <Route path="/catalog/:title" component={Catalog} />
@@ -19,7 +20,7 @@ const App = () => (
     <Route path="/login" component={Login} />
     <Route path="/register" render={() => <Register data={'test'} />} />
     <Route path="/problem" component={Problem} />
-  </div>
+  </TransitionGroup>
 );
 
 

@@ -4,8 +4,8 @@ import logo from '../../icon.png'
 
 const Header = styled.div`
   background-color: #222;
-  height: 80px;
-  padding: 20px 10px;
+  height: 70px;
+  padding-top: 5px;
   color: white;
   text-align: center;
 `

@@ -107,14 +107,14 @@ class PaperComponent extends Component {
     }
   }
 
-  submitAnswer() {
+  submitAnswer(ans) {
     const methods = this.state.methods
     const equations = []
     methods.forEach((method) => {
       const equation = math.getLaTeX(method.id)
       equations.push(equation)
     })
-    console.log(equations)
+    console.log(equations[equations.length - 1] === ans)
   }
 
   render() {
@@ -125,7 +125,7 @@ class PaperComponent extends Component {
       <div onKeyPress={event => this.handleKeyPress(event)} tabIndex="0">
         <Wrapper>
           <Paper>
-            <Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer()} />
+            <Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer('x=0.4')} />
             <VirtualList
               width="100%"
               height={350}
