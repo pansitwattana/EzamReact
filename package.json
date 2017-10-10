@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://ezam.azurewebsites.net",
   "dependencies": {
+    "algebra": "^0.12.1",
     "algebra-latex": "^0.5.0",
     "algebrite": "^1.1.2",
     "firebase": "^4.4.0",
