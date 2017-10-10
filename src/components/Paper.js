@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import VirtualList from 'react-tiny-virtual-list'
 import uuid from 'uuid'
-import AlgebraLatex from 'algebra-latex'
-import algebrite from 'algebrite'
 import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
+import solver from './paper/Solver'
 import math from './paper/MathQuill'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
@@ -36,7 +35,7 @@ const List = styled.div`
 class PaperComponent extends Component {
   state = {
     problem: null,
-    methods: [{ text: '', id: uuid(), focus: true }],
+    methods: [{ text: '', id: uuid(), focus: true, error: false }],
     line: 0,
     keyboard: Math,
   }
@@ -98,7 +97,7 @@ class PaperComponent extends Component {
       const methods = this.state.methods
       const latex = math.getLaTeX(methods[this.state.line].id)
       if (latex) {
-        const method = { test: '', id: uuid(), focus: true }
+        const method = { test: '', id: uuid(), focus: true, error: false }
         const line = this.state.line
         methods[line].focus = false
         methods.splice(line + 1, 0, method);
@@ -123,20 +122,31 @@ class PaperComponent extends Component {
   }
 
   submitAnswer(ans) {
-    const methods = this.state.methods
+    const problem = '\\frac{5x+4}{5} = 3x'
+    let methods = this.state.methods
+    const answer = solver(problem)
     const equations = []
-    methods.forEach((method) => {
+    let alreadyCheck = false
+    methods = methods.map((method) => {
+      const newMethod = method
       const equation = math.getLaTeX(method.id)
-      const algebraObj = new AlgebraLatex(equation)
-      algebraObj.toAlgebrite(algebrite)
-      const mathAnswer = algebraObj.toMath()
-      console.log(mathAnswer)
-      const answer = algebrite.run(mathAnswer)
-      console.log(answer)
+      const x = solver(equation)
+      if (answer !== false && alreadyCheck === false && x !== answer) {
+        newMethod.error = true
+        alreadyCheck = true
+        console.log(equation, ' not correct')
+        console.log(x, ' is not equal ', answer)
+      }
+      else {
+        newMethod.error = false
+      }
       equations.push(equation)
+      return newMethod
     })
-    console.log(equations[equations.length - 1] === ans)
-    console.log(equations)
+    console.log(methods)
+    this.setState({ methods })
+    // console.log(equations[equations.length - 1] === ans)
+    // console.log(equations)
   }
 
   render() {
@@ -158,7 +168,7 @@ class PaperComponent extends Component {
                 itemSize={itemSize} // Also supports variable heights (array or function getter)
                 renderItem={({ index }) =>
                   (<List onClick={() => this.onInputTouch(index)} key={this.state.methods[index].id}>
-                    <Input focus={this.state.methods[index].focus} id={this.state.methods[index].id} />
+                    <Input focus={this.state.methods[index].focus} id={this.state.methods[index].id} error={this.state.methods[index].error} />
                   </List>)
                 }
               />
