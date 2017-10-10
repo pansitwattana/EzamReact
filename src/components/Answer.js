@@ -22,14 +22,48 @@ const Rate = styled.div`
   
 `
 
-
 class Answer extends Component {
+  static renderMethods(methods) {
+    if (!methods) {
+      return <div>Not Availiable</div>;
+    }
+
+    return methods.map((method) => {
+      const latex = method.text
+      const description = method.meta
+      let header = ''
+      if (latex) {
+        header = <LaTex text={latex} id={uuid()} />
+      }
+
+      let meta = ''
+      if (description) {
+        meta = <Card.Meta>{description}</Card.Meta>
+      }
+
+      return (
+        <Card key={method.id} style={{ width: '100%' }}>
+          <Card.Content>
+            <Card.Header>
+              {header}
+            </Card.Header>
+            {meta}
+          </Card.Content>
+        </Card>
+      )
+    })
+  }
+
   state = {
     id: 1,
-    methods: {
-      1: {
-        name: 'Karn Patanukum',
+    methods: [
+      {
+        author: 'Karn Patanukum',
         userType: 'Teacher',
+        id: 1,
+        rate: 22,
+        comment: false,
+        rated: false,
         values: [
           {
             text: 'x^2+3x-10=0',
@@ -47,10 +81,13 @@ class Answer extends Component {
           },
         ],
       },
-      2: {
-        name: 'Oil',
+      {
+        author: 'Pansit',
         userType: 'Student',
         id: 2,
+        rate: 5,
+        comment: false,
+        rated: false,
         values: [
           {
             text: 'x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}',
@@ -76,83 +113,58 @@ class Answer extends Component {
           },
         ],
       },
-    },
+    ],
   }
 
-  getAnswer(id) {
-    const methodsList = this.state.methods
-    if (!methodsList[id]) {
-      return <div>no id found</div>;
+  onCommentPress = (index) => {
+    const methods = this.state.methods
+    const method = methods[index]
+    if (method) {
+      method.comment = !method.comment
     }
+    this.setState({ methods })
+  }
 
-    const methods = methodsList[id].values
-    if (!methods) {
-      return <div>no values found</div>
+  onGenuiusPress = (index) => {
+    const methods = this.state.methods
+    const method = methods[index]
+    if (method) {
+      method.rated = !method.rated
+      method.rate += method.rated ? 1 : -1
     }
+    this.setState({ methods })
+  }
 
-    return methods.map((method) => {
-      const latex = method.text
-      const description = method.meta
-      let header = ''
-      if (latex) {
-        header = <LaTex text={latex} id={uuid()} />
-      }
-
-      let meta = ''
-      if (description) {
-        meta = <Card.Meta>{description}</Card.Meta>
-      }
-
-
+  generateAnswers() {
+    const methods = this.state.methods
+    return methods.map((method, index) => {
+      const genuiusButton = (method.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
+      const commentButton = (method.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const commentForm = (method.comment ? (<Form style={{ padding: '10px 0 0 0' }}>
+        <TextArea autoHeight placeholder="Any Suggestions ?" />
+        <Form.Button floated="right">Submit</Form.Button>
+      </Form>) : <div />)
       return (
-        <Card key={method.id} style={{ width: '100%' }}>
-          <Card.Content>
-            <Card.Header>
-              {header}
-            </Card.Header>
-            {meta}
-          </Card.Content>
-        </Card>
-      )
+        <Container key={method.id}>
+          <Cover>
+            <Author>Solved by {method.author}</Author>
+            <Rate>{method.rate} Upvote</Rate>
+          </Cover>
+          {Answer.renderMethods(method.values)}
+          <Button.Group labeled style={{ width: '100%' }}>
+            {genuiusButton}
+            <Button.Or />
+            {commentButton}
+          </Button.Group>
+          {commentForm}
+        </Container>)
     })
-  }
-
-  generateAnswer(userIds) {
-    const users = [
-      {
-        name: 'Karn',
-        id: 1,
-        rate: 25,
-      },
-      {
-        name: 'Pansit',
-        id: 2,
-        rate: 3,
-      },
-    ]
-    return users.map(user => (
-      <Container key={user.id}>
-        <Cover>
-          <Author>Solved by {user.name}</Author>
-          <Rate>{user.rate} Upvote</Rate>
-        </Cover>
-        {this.getAnswer(user.id)}
-        <Button.Group labeled style={{ width: '100%' }}>
-          <Button icon="rocket" content="Genuius!" />
-          <Button.Or />
-          <Button icon="comment" content="Comment" positive />
-        </Button.Group>
-        <Form style={{ padding: '10px 0 0 0' }}>
-          <TextArea autoHeight placeholder="Any Suggestions ?" />
-          <Form.Button floated="right">Submit</Form.Button>
-        </Form>
-      </Container>))
   }
 
   render() {
     return (<div>
       <Header text="Answer Sheet" />
-      {this.generateAnswer([1, 2])}
+      {this.generateAnswers()}
     </div>)
   }
 }

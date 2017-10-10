@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import VirtualList from 'react-tiny-virtual-list'
 import uuid from 'uuid'
+import AlgebraLatex from 'algebra-latex'
+import algebrite from 'algebrite'
 import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
 import math from './paper/MathQuill'
@@ -9,7 +11,6 @@ import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import { Math, Alphabet } from './data/Keyboards'
-
 
 const Wrapper = styled.div`
   background: white;
@@ -34,9 +35,22 @@ const List = styled.div`
 
 class PaperComponent extends Component {
   state = {
+    problem: null,
     methods: [{ text: '', id: uuid(), focus: true }],
     line: 0,
     keyboard: Math,
+  }
+
+  componentWillMount() {
+    console.log(this.props.location)
+    const location = this.props.location
+    if (!location) return;
+    const state = location.state
+    if (!state) return;
+    const data = state.data
+    if (!data) return;
+
+    this.setState({ problem: data })
   }
 
   componentDidMount() {
@@ -65,14 +79,15 @@ class PaperComponent extends Component {
     math.blur(oldMethod.id)
   }
 
-  handleKeyPress(event) {
-    console.log(event)
-    if (event.key === 'Enter') {
-      console.log('enter press here! ')
-      this.state.methods.forEach((value) => {
-        console.log(math.getLaTeX(value.id))
-      })
-    }
+  handleKeyPress = (event) => {
+    console.log(event.key)
+    // if (event.key === 'Enter') {
+    //   console.log('enter press here! ')
+    //   this.state.methods.forEach((value) => {
+    //     console.log(math.getLaTeX(value.id))
+    //   })
+    // }
+    this.handleKeyboard(event.key)
   }
 
   handleKeyboard(value) {
@@ -112,34 +127,50 @@ class PaperComponent extends Component {
     const equations = []
     methods.forEach((method) => {
       const equation = math.getLaTeX(method.id)
+      const algebraObj = new AlgebraLatex(equation)
+      algebraObj.toAlgebrite(algebrite)
+      const mathAnswer = algebraObj.toMath()
+      console.log(mathAnswer)
+      const answer = algebrite.run(mathAnswer)
+      console.log(answer)
       equations.push(equation)
     })
     console.log(equations[equations.length - 1] === ans)
+    console.log(equations)
   }
 
   render() {
     const { symbol, value, action } = this.state.keyboard
     const length = this.state.methods.length
     const itemSize = 40
+    if (this.state.problem) {
+      const { detail, id } = this.state.problem
+      return (
+        <div>
+          <Wrapper onKeyDown={this.handleKeyPress} tabIndex="0">
+            <Paper>
+              {<Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer('x=0.4')} />}
+              {/* <Screen displayText={detail} onSubmit={() => this.submitAnswer(id)} /> */}
+              <VirtualList
+                width="100%"
+                height={350}
+                itemCount={length}
+                itemSize={itemSize} // Also supports variable heights (array or function getter)
+                renderItem={({ index }) =>
+                  (<List onClick={() => this.onInputTouch(index)} key={this.state.methods[index].id}>
+                    <Input focus={this.state.methods[index].focus} id={this.state.methods[index].id} />
+                  </List>)
+                }
+              />
+            </Paper>
+          </Wrapper>
+          <Keyboard keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+        </div>
+      )
+    }
     return (
-      <div onKeyPress={event => this.handleKeyPress(event)} tabIndex="0">
-        <Wrapper>
-          <Paper>
-            <Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer('x=0.4')} />
-            <VirtualList
-              width="100%"
-              height={350}
-              itemCount={length}
-              itemSize={itemSize} // Also supports variable heights (array or function getter)
-              renderItem={({ index }) =>
-                (<List onClick={() => this.onInputTouch(index)} key={this.state.methods[index].id}>
-                  <Input focus={this.state.methods[index].focus} id={this.state.methods[index].id} />
-                </List>)
-              }
-            />
-          </Paper>
-        </Wrapper>
-        <Keyboard keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+      <div>
+        404 Not Found
       </div>
     )
   }

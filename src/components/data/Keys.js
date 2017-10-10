@@ -21,7 +21,7 @@ const Keys = {
   LEQ: 'LEQ',
   FRAC_INCLUSIVE: 'FRAC_INCLUSIVE',
   FRAC_EXCLUSIVE: 'FRAC_EXCLUSIVE',
-  ENTER: 'ENTER',
+  ENTER: 'Enter',
   EXP: '^',
   EXP_2: '\\^2',
   EXP_3: 'EXP_3',

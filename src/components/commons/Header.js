@@ -24,9 +24,9 @@ const Text = styled.div`
 const Header = (props) => {
   return (
     <View>
-      <Button icon style={{ flex: 1 }}>
+      {/* <Button icon style={{ flex: 1 }}>
         <Icon name="left arrow" />
-      </Button>
+      </Button> */}
       <Text>{props.text}</Text>
     </View>
   )

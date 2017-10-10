@@ -1,9 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react'
+import { push } from 'react-router-redux'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { Card } from 'semantic-ui-react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import uuid from 'uuid'
 import Header from './commons/Header'
 import Search from './commons/Search'
 import LaTex from './commons/LaTeX'
@@ -13,61 +14,103 @@ const Author = styled.div`
   color: grey;
 `
 
-const Catalog = props =>
-  (<div>
-    <Header text={'Calculus'} />
-    <Search />
-    <Card.Group style={{ display: 'flex', justifyContent: 'center', margin: 0 }}>
-      <Link to="/paper" style={{ textDecoration: 'none', width: '95%' }}>
-        <Card style={{ width: '100%' }}>
+const Status = styled.span`
+  font-size: 15px;
+  color: green;
+`
+
+class Catalog extends Component {
+  state = {
+    problems: [
+      {
+        id: '11',
+        content: 'Differential',
+        difficulty: 'Easy',
+        author: 'NeoKarn',
+        detail: 'y = 5x^2+7 \\text{, find } \\space \\frac{dy}{dx}',
+        isClear: true,
+      },
+      {
+        id: '21',
+        content: 'Differential',
+        difficulty: 'Easy',
+        author: 'NeoKarn',
+        detail: 'y = (x+\\frac{1}{x})(x-\\frac{1}{x}+1) \\text{, find } \\space \\frac{dy}{dx}',
+        isClear: true,
+      },
+      {
+        id: '12',
+        content: 'Limit',
+        difficulty: 'Easy',
+        author: 'FBKarn',
+        detail: '\\lim_{x\\to2}f(x)=5',
+        isClear: false,
+      },
+      {
+        id: '13',
+        content: 'Integration',
+        difficulty: 'Normal',
+        author: 'Anonymous',
+        detail: '\\int_{3}^{5} x^2 dx',
+        isClear: true,
+      },
+      {
+        id: '14',
+        content: 'Integration',
+        difficulty: 'Hard',
+        author: 'Anonymous',
+        detail: '\\int \\sqrt{1+y^2} dy',
+        isClear: false,
+      },
+      {
+        id: '15',
+        content: 'Integration',
+        difficulty: 'Normal',
+        author: 'Anonymous',
+        detail: '\\int \\frac{1}{x^4+1} dx',
+        isClear: true,
+      },
+    ],
+  }
+
+  onClick(index) {
+    console.log(this.state.problems[index])
+    this.props.changePage(this.state.problems[index], 'Paper')
+  }
+
+  renderProblems() {
+    return this.state.problems.map((problem, index) => {
+      const answerSpan = problem.isClear ? <Status>Answered</Status> : <div />
+      return (
+        <Card key={problem.id} style={{ width: '95%' }} onClick={() => this.onClick(index)}>
           <Card.Content>
             <Card.Header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span>Differential</span>
-              <Author>Author by Karn</Author>
+              <span>{problem.content}</span>
+              {answerSpan}
             </Card.Header>
-            <Card.Meta>Easy</Card.Meta>
-            <Card.Description><LaTex text="5x^2+7" id={uuid()} /></Card.Description>
+            <Card.Meta style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <span>{problem.difficulty}</span>
+              <Author>Author by {problem.author}</Author>
+            </Card.Meta>
+            <Card.Description><LaTex text={problem.detail} id={problem.id} /></Card.Description>
           </Card.Content>
         </Card>
-      </Link>
-      <Link to="/paper" style={{ textDecoration: 'none', width: '95%' }}>
-        <Card style={{ width: '100%' }}>
-          <Card.Content>
-            <Card.Header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span>Limit</span>
-              <Author>Author by Kru Club</Author>
-            </Card.Header>
-            <Card.Meta>Easy</Card.Meta>
-            <Card.Description><LaTex text="\lim_{x \to 2} f(x) = 5" id={uuid()} /></Card.Description>
-          </Card.Content>
-        </Card>
-      </Link>
-      <Link to="/paper" style={{ textDecoration: 'none', width: '95%' }}>
-        <Card style={{ width: '100%' }}>
-          <Card.Content>
-            <Card.Header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span>Integreation</span>
-              <Author>Author by JJ</Author>
-            </Card.Header>
-            <Card.Meta>Easy</Card.Meta>
-            <Card.Description><LaTex text="\int_{3}^{5} x^2 dx" id={uuid()} /></Card.Description>
-          </Card.Content>
-        </Card>
-      </Link>
-      <Link to="/paper" style={{ textDecoration: 'none', width: '95%' }}>
-        <Card style={{ width: '100%' }}>
-          <Card.Content>
-            <Card.Header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span>Differential</span>
-              <Author>Author by The Brand</Author>
-            </Card.Header>
-            <Card.Meta>Easy</Card.Meta>
-            <Card.Description><LaTex text="5x^2+7" id={uuid()} /></Card.Description>
-          </Card.Content>
-        </Card>
-      </Link>
-    </Card.Group>
-  </div>)
+      )
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <Header text={'Calculus'} />
+        <Search />
+        <Card.Group style={{ display: 'flex', justifyContent: 'center', margin: 0 }}>
+          {this.renderProblems()}
+        </Card.Group>
+      </div>
+    )
+  }
+}
 
 Catalog.defaultProps = {
   title: 'Course',
@@ -77,4 +120,11 @@ Catalog.propTypes = {
   title: PropTypes.string,
 }
 
-export default Catalog
+const mapDispatchToProps = dispatch => bindActionCreators({
+  changePage: (problem, page) => push(`/${page}`, { data: problem }),
+}, dispatch)
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Catalog)
