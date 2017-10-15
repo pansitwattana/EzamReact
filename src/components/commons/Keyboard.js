@@ -40,10 +40,11 @@ const KeyboardComponent = ({ onPress, keyValues, keySymbols, action }) => {
           keyValue={value}
           keySymbol={symbol}
           onPress={onPress}
+          onTouchMove={(event) => console.log(event)}
           colCount={col}
         />)
     })
-    const rowHeight = (100 - 20) / rowCount
+    const rowHeight = 80 / rowCount
     return <KeyboardRow key={key} height={rowHeight} >{keys}</KeyboardRow>
   })
   return (

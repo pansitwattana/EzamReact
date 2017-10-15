@@ -122,7 +122,7 @@ class PaperComponent extends Component {
   }
 
   submitAnswer(ans) {
-    const problem = '\\frac{5x+4}{5} = 3x'
+    const problem = '\\frac{5x+4}{5}=3x'
     let methods = this.state.methods
     const answer = solver(problem)
     const equations = []
@@ -159,7 +159,7 @@ class PaperComponent extends Component {
         <div>
           <Wrapper onKeyDown={this.handleKeyPress} tabIndex="0">
             <Paper>
-              {<Screen displayText={'\\frac{5x+4}{5} = 3x'} onSubmit={() => this.submitAnswer('x=0.4')} />}
+              {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />}
               {/* <Screen displayText={detail} onSubmit={() => this.submitAnswer(id)} /> */}
               <VirtualList
                 width="100%"
