@@ -66,7 +66,7 @@ class KeyComponent extends Component {
   }
 
   onTouchStart = (event) => {
-    console.log('start event')
+    // console.log('start event')
     const touches = event.touches
     if (touches.length > 0) {
       this.setState({
@@ -94,7 +94,8 @@ class KeyComponent extends Component {
 
   onTouchEnd = (event) => {
     const status = this.state.status
-    console.log(status)
+    // console.log(status)
+    this.eventFire(status)
 
     this.setState({
       pos: { x: 0, y: 0 },
@@ -103,9 +104,18 @@ class KeyComponent extends Component {
     })
   }
 
+  eventFire(status) {
+    const { onPress, keyValue, swipeDown } = this.props
+    if (status === 'touch') {
+      onPress(keyValue)
+    } else if (status === 'swipe') {
+      onPress(swipeDown)
+    }
+  }
+
   render() {
-    const { keyType, keySymbol = '', keyValue, highlight, onPress, colCount } = this.props
-    let align = this.state.status === 'swipe' ? 'bottom' : 'middle'
+    const { keyType, keySymbol = '', keyValue, highlight, colCount } = this.props
+    const align = this.state.status === 'swipe' ? 'bottom' : 'middle'
     let operator = false
     let number = false
     let action = false
@@ -152,7 +162,6 @@ class KeyComponent extends Component {
     const width = Math.floor(100 / colCount)
     return (
       <Key
-        onClick={() => onPress(keyValue)}
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
@@ -190,7 +199,7 @@ KeyComponent.propTypes = {
   keyValue: PropTypes.string,
   highlight: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
-  onSwipeDown: PropTypes.func.isRequired,
+  swipeDown: PropTypes.string.isRequired,
   colCount: PropTypes.number,
 }
 

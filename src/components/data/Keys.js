@@ -1,5 +1,10 @@
 const Keys = {
   ALPHABET: 'ABC',
+  ALPHA: '\\alpha',
+  BETA: '\\beta',
+  MU: '\\mu',
+  EPSILON: '\\epsilon',
+  ZETA: '\\zeta',
   PLUS: '+',
   MINUS: '-',
   PLUSMINUS: '\\pm',
@@ -33,8 +38,9 @@ const Keys = {
   LN: 'LN',
   LOG: '\\log_{10}',
   LOG_N: 'LOG_N',
+  LOG_2: '\\log_{2}',
   SIN: '\\sin',
-  COS: 'COS',
+  COS: '\\cos',
   TAN: 'TAN',
 
   // TODO(charlie): Add in additional Greek letters.
@@ -90,7 +96,8 @@ const KeyAction = (key) => {
     return Actions.COMMAND
   } else if (key === Keys.SIN || key === Keys.COS || key === Keys.TAN) {
     return Actions.COMMANDOPEN
-  } else if (key === Keys.LOG || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.PLUSMINUS) {
+  } else if (key === Keys.LOG || key === Keys.LOG_2 || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.EXP_3 || key === Keys.PLUSMINUS ||
+            key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

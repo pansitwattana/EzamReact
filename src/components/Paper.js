@@ -150,7 +150,7 @@ class PaperComponent extends Component {
   }
 
   render() {
-    const { symbol, value, action } = this.state.keyboard
+    const { symbol, value, downValue, action } = this.state.keyboard
     const length = this.state.methods.length
     const itemSize = 40
     if (this.state.problem) {
@@ -174,7 +174,7 @@ class PaperComponent extends Component {
               />
             </Paper>
           </Wrapper>
-          <Keyboard keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+          <Keyboard keySymbols={symbol} keyValues={value} swipeDownValue={downValue} action={action} onPress={key => this.handleKeyboard(key)} />
         </div>
       )
     }
