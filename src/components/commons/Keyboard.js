@@ -52,11 +52,11 @@ const KeyboardComponent = ({ onPress, keyValues, keySymbols, swipeDownValue, act
   return (
     <Keyboard height={height}>
       {keyboardRows}
-      <KeyboardRow height={'20'} >
-        <Key keyType="operator" keyValue={action} keySymbol={action} onPress={onPress} />
-        <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={onPress} />
-        <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={onPress} />
-        <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={onPress} />
+      <KeyboardRow height={'20'}  >
+        <Key keyType="operator" keyValue={action} keySymbol={action} onPress={onPress} swipeDown={action} />
+        <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={onPress} swipeDown={Keys.LEFT} />
+        <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={onPress} swipeDown={Keys.RIGHT} />
+        <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={onPress} swipeDown={Keys.ENTER} />
       </KeyboardRow>
     </Keyboard>
   )

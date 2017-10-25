@@ -5,10 +5,17 @@ import { connect } from 'react-redux'
 import { Card } from 'semantic-ui-react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+// import queryPosts from '../graph/Post'
 import Header from './commons/Header'
 import Search from './commons/Search'
 import LaTex from './commons/LaTeX'
+import { GraphQLClient } from 'graphql-request'
 
+const client = new GraphQLClient('https://api.graph.cool/simple/v1/cj951wqgw0iy40126c3pm1z8x', {
+  headers: {
+    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MDgzMTYyNDksImNsaWVudElkIjoiY2o4d3NqdHB6MGhlbzAxNDE2d3AyeXdzbyJ9.jrIdcEsm6Ip5OH8XIq8Q6GGDhKU8v3PRZK-5IMaaS0M',
+  },
+});
 const Author = styled.div`
   font-size: 10px;
   color: grey;
@@ -27,7 +34,8 @@ class Catalog extends Component {
         content: 'Differential',
         difficulty: 'Easy',
         author: 'NeoKarn',
-        detail: 'y = 5x^2+7 \\text{, find } \\space \\frac{dy}{dx}',
+        detail: 'y = 5x^2+7',
+        description: '\\text{find } \\space \\frac{dy}{dx}',
         isClear: true,
       },
       {
@@ -35,7 +43,8 @@ class Catalog extends Component {
         content: 'Differential',
         difficulty: 'Easy',
         author: 'NeoKarn',
-        detail: 'y = (x+\\frac{1}{x})(x-\\frac{1}{x}+1) \\text{, find } \\space \\frac{dy}{dx}',
+        detail: 'y = (x+\\frac{1}{x})(x-\\frac{1}{x}+1)',
+        description: '\\text{find } \\space \\frac{dy}{dx}',
         isClear: true,
       },
       {
@@ -44,6 +53,7 @@ class Catalog extends Component {
         difficulty: 'Easy',
         author: 'FBKarn',
         detail: '\\lim_{x\\to2}f(x)=5',
+        description: '\\text{, find } x',
         isClear: false,
       },
       {
@@ -52,6 +62,7 @@ class Catalog extends Component {
         difficulty: 'Normal',
         author: 'Anonymous',
         detail: '\\int_{3}^{5} x^2 dx',
+        description: '',
         isClear: true,
       },
       {
@@ -60,6 +71,7 @@ class Catalog extends Component {
         difficulty: 'Hard',
         author: 'Anonymous',
         detail: '\\int \\sqrt{1+y^2} dy',
+        description: '',
         isClear: false,
       },
       {
@@ -67,10 +79,24 @@ class Catalog extends Component {
         content: 'Integration',
         difficulty: 'Normal',
         author: 'Anonymous',
-        detail: '\\int \\frac{1}{x^4+1} dx',
+        detail: '\\begin{cases}F(R_i) & d(R) = 0\\\\1 &d(R) = i\\\\0 & \textrm{otherwise.}\\end{cases}',
+        description: '',
         isClear: true,
       },
     ],
+  }
+
+  componentWillMount() {
+    client.request(`
+    {
+      allPosts{
+        title
+        latex
+      }
+    }
+    `).then((value) => {
+      console.log(value)
+    })
   }
 
   onClick(index) {

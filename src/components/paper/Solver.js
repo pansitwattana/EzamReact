@@ -7,6 +7,9 @@ export default (equation, variable = 'x') => {
   if (mathAnswer === '') {
     return false
   }
+  if (!mathAnswer.includes(variable)) {
+    return 'Variables (x) not found';
+  }
   let eq
   try {
     eq = algebra.parse(mathAnswer)

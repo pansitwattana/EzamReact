@@ -12,6 +12,7 @@
       "type": "chrome",
       "request": "attach",
       "name": "Attach to Chrome",
+      "url": "http://localhost:3000",
       "port": 9222,
       "webRoot": "${workspaceRoot}"
     }

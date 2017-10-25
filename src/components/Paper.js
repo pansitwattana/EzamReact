@@ -155,6 +155,7 @@ class PaperComponent extends Component {
     const itemSize = 40
     if (this.state.problem) {
       const { detail, id } = this.state.problem
+      console.log(this.state.problem)
       return (
         <div>
           <Wrapper onKeyDown={this.handleKeyPress} tabIndex="0">

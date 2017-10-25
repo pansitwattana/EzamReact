@@ -8,6 +8,7 @@
     "algebra.js": "^0.2.6",
     "algebrite": "^1.1.2",
     "firebase": "^4.4.0",
+    "graphql-request": "^1.4.0",
     "history": "^4.7.2",
     "mathquill": "^0.10.1-a",
     "prop-types": "^15.5.10",
