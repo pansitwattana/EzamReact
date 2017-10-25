@@ -3,7 +3,7 @@ import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import firebase from 'firebase'
+// import firebase from 'firebase'
 import { Input, Button } from 'semantic-ui-react'
 import Header from './commons/Header'
 import Logo from './commons/Logo'
@@ -23,9 +23,9 @@ class Login extends Component {
 
   onSubmit = () => {
     console.log(this.props)
-    firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password)
-      .then(() => this.props.changePage({ username: this.state.username, email: this.state.user }, ''))
-      .catch(error => alert(error.message))
+    // firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password)
+    //   .then(() => this.props.changePage({ username: this.state.username, email: this.state.user }, ''))
+    //   .catch(error => alert(error.message))
   }
 
   render() {

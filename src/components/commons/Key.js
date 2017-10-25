@@ -116,7 +116,7 @@ class KeyComponent extends Component {
   render() {
     const { keyType, keySymbol = '', keyValue, highlight, colCount } = this.props
     const align = this.state.status === 'swipe' ? 'bottom' : 'middle'
-    let operator = false
+    let operator = 'false'
     let number = false
     let action = false
     let padding = '0px'
@@ -166,13 +166,13 @@ class KeyComponent extends Component {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
         number={number}
-        operator={operator}
-        action={action}
+        operator={operator ? "1" : "0"}
+        action={action ? "1" : "0"}
         width={width}
         align={align}
       >
         <Operation
-          operator={operator}
+          operator={operator ? "1" : "0"}
           padding={padding}
           backgroundColor={backgroundColor}
           color={color}
