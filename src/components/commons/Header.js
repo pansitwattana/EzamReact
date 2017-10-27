@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Icon } from 'semantic-ui-react'
+// import { Button, Icon } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 
 const View = styled.div`

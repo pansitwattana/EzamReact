@@ -7,6 +7,7 @@ import Catalog from './components/Catalog'
 import Answer from './components/Answer'
 import Profile from './components/Profile'
 import Login from './components/Login'
+import CreateUser from './components/CreateUser'
 import Register from './components/Register'
 import Problem from './components/Problem'
 
@@ -18,6 +19,7 @@ const App = () => (
     <Route path="/answer" component={Answer} />
     <Route path="/profile" component={Profile} />
     <Route path="/login" component={Login} />
+    <Route path="/create" component={CreateUser} />
     <Route path="/register" render={() => <Register data={'test'} />} />
     <Route path="/problem" component={Problem} />
   </TransitionGroup>
