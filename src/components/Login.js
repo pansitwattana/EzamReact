@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { push } from 'react-router-redux'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import { push } from 'react-router-redux'
+import { withRouter } from 'react-router-dom'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 import styled from 'styled-components'
 // import firebase from 'firebase'
 import Auth0Lock from 'auth0-lock';
@@ -18,10 +19,10 @@ const Form = styled.div`
   flex-direction: column;
 `
 
-
 class Login extends Component {
   static propTypes = {
-    mutate: PropTypes.func.isRequired
+    createUser: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired,
   };
 
   state = {
@@ -47,18 +48,40 @@ class Login extends Component {
     //   .catch(error => alert(error.message))
   }
 
+  componentWillUpdate() {
+    if (this.props.data.user || window.localStorage.getItem('auth0IdToken') === null) {
+      // console.log(this.props.data)
+      this.props.history.replace('/');
+    }
+  }
+
   componentDidMount() {
+    console.log(this.props)
     this.lock.on('authenticated', authResult => {
       window.localStorage.setItem('auth0IdToken', authResult.idToken);
       console.log('authen done', authResult)
+      console.log(this.props)
       const variables = {
         idToken: authResult.idToken,
         email: authResult.idTokenPayload.email
       }
-      this.props.mutate({ variables })
+      // const queryVar = {
+      //   auth0UserId: authResult.idTokenPayload.sub,
+      // }
+      // console.log(this.props.data.user)
+      // this.props.query({ queryVar })
+      //   .then(res => {
+      //     console.log(res)
+      //   })
+      //   .catch(error => {
+      //     console.error(error)
+      //   })
+
+      this.props.createUser({ variables })
         .then(res => {
           console.log(res)
-          this.props.history.replace('/');
+          // window.localStorage.setItem('id', res.)
+          // this.props.history.replace('/');
         })
         .catch(error => {
           console.error(error);
@@ -72,6 +95,9 @@ class Login extends Component {
   };
 
   render() {
+    if (this.props.data.loading) {
+      return (<div>Loading</div>)
+    }
     return (
       <div>
         <Logo />
@@ -86,7 +112,8 @@ class Login extends Component {
             onChange={(e, password) => this.setState({ password: password.value })}
           />
           <Button positive onClick={this.login}>Login</Button>
-          <Button onClick={() => this.props.changePage(null, 'register')}>Sign Up</Button>
+          {/* <Button onClick={() => this.props.changePage(null, 'register')}>Sign Up</Button> */}
+          
         </Form>
       </div>
     )
@@ -110,13 +137,16 @@ query {
     id
   }
 }
-`;
+`
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  changePage: (user, page) => push(`/${page}`, { data: user }),
-}, dispatch)
+// const mapDispatchToProps = dispatch => bindActionCreators({
+//   changePage: (user, page) => push(`/${page}`, { data: user }),
+// }, dispatch)
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(graphql(createUser)(graphql(userQuery)(Login)))
+// export default connect(
+//   null,
+//   mapDispatchToProps,
+// )(graphql(createUser)(graphql(userQuery)(Login)))
+export default graphql(createUser, {name: 'createUser'})(
+  graphql(userQuery, { options: { fetchPolicy: 'network-only' }})(withRouter(Login))
+)

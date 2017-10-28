@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { push } from 'react-router-redux'
+import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { gql, graphql } from 'react-apollo'
 import { Card } from 'semantic-ui-react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
@@ -9,13 +11,7 @@ import PropTypes from 'prop-types'
 import Header from './commons/Header'
 import Search from './commons/Search'
 import LaTex from './commons/LaTeX'
-import { GraphQLClient } from 'graphql-request'
 
-const client = new GraphQLClient('https://api.graph.cool/simple/v1/cj951wqgw0iy40126c3pm1z8x', {
-  headers: {
-    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MDgzMTYyNDksImNsaWVudElkIjoiY2o4d3NqdHB6MGhlbzAxNDE2d3AyeXdzbyJ9.jrIdcEsm6Ip5OH8XIq8Q6GGDhKU8v3PRZK-5IMaaS0M',
-  },
-});
 const Author = styled.div`
   font-size: 10px;
   color: grey;
@@ -87,21 +83,18 @@ class Catalog extends Component {
   }
 
   componentWillMount() {
-    client.request(`
-    {
-      allPosts{
-        title
-        latex
-      }
-    }
-    `).then((value) => {
-      console.log(value)
-    })
+    
+  }
+
+  componentDidMount() {
+    console.log(this.props)
   }
 
   onClick(index) {
     console.log(this.state.problems[index])
-    this.props.changePage(this.state.problems[index], 'Paper')
+    const post = this.state.problems[index]
+    // this.props.changePage(this.state.problems[index], 'Paper')
+    this.props.history.push('/paper', post)
   }
 
   renderProblems() {
@@ -146,11 +139,27 @@ Catalog.propTypes = {
   title: PropTypes.string,
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  changePage: (problem, page) => push(`/${page}`, { data: problem }),
-}, dispatch)
+// const mapDispatchToProps = dispatch => bindActionCreators({
+//   changePage: (problem, page) => push(`/${page}`, { data: problem }),
+// }, dispatch)
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(Catalog)
+// export default connect(
+//   null,
+//   mapDispatchToProps,
+// )(Catalog)
+
+const postQuery = gql`
+query($title: String!) {
+  Tag(name: $title) {
+    name
+    posts {
+      id
+			latex
+    }
+  }
+}
+`
+
+export default withRouter(graphql(postQuery, {
+  options: (ownProps) => ({ variables: { title: ownProps.match.params.title } })
+})(Catalog))

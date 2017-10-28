@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import uuid from 'uuid'
+import { gql, graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
 import { Math } from './data/Keyboards'
 import math from './paper/MathQuill'
 import Keyboard from './commons/Keyboard'
@@ -50,4 +52,22 @@ class Problem extends Component {
   }
 }
 
-export default Problem
+const createPost = gql`
+mutation ($description: String!){
+  createPost(description: $description) {
+    id
+  }
+}
+`
+
+const userQuery = gql`
+query {
+  user {
+    id
+  }
+}
+`
+
+export default graphql(createPost)(
+  graphql(userQuery, { options: { fetchPolicy: 'network-only' }} )(withRouter(Problem))
+)

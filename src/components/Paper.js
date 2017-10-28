@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 import VirtualList from 'react-tiny-virtual-list'
 import uuid from 'uuid'
 import 'mathquill/build/mathquill.css'
@@ -44,12 +45,10 @@ class PaperComponent extends Component {
     console.log(this.props.location)
     const location = this.props.location
     if (!location) return;
-    const state = location.state
-    if (!state) return;
-    const data = state.data
-    if (!data) return;
-
-    this.setState({ problem: data })
+    const data = location.state
+    
+    if (data)
+      this.setState({ problem: data })
   }
 
   componentDidMount() {
@@ -187,4 +186,4 @@ class PaperComponent extends Component {
   }
 }
 
-export default PaperComponent
+export default withRouter(PaperComponent)
