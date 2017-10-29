@@ -22,7 +22,7 @@ const Key = styled.div`
   ${props => props.highlight && `
     transform: scale(0.9);
   `}
-  ${props => props.operator && `
+  ${props => props.operator == 'true' && `
     width: 25%;
     color: white;
   `}
@@ -30,7 +30,7 @@ const Key = styled.div`
     border: 1px solid #e8e8e8;
     color: #919191;
   `}
-  ${props => props.action && `
+  ${props => props.action == 'true' && `
     width: 33%;
     padding: 20px;
   `}
@@ -44,7 +44,7 @@ const Operation = styled.div`
   border-radius: ${props => props.borderRadius};
   border: ${props => props.border};
   color: ${props => props.color};
-  ${props => props.operator && `
+  ${props => props.operator == 'true' && `
     padding-top: 8px;
     padding-bottom: 8px;
     display: inline;
@@ -116,7 +116,7 @@ class KeyComponent extends Component {
   render() {
     const { keyType, keySymbol = '', keyValue, highlight, colCount } = this.props
     const align = this.state.status === 'swipe' ? 'bottom' : 'middle'
-    let operator = 'false'
+    let operator = false
     let number = false
     let action = false
     let padding = '0px'
@@ -166,13 +166,13 @@ class KeyComponent extends Component {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
         number={number}
-        operator={operator ? "1" : "0"}
-        action={action ? "1" : "0"}
+        operator={operator.toString()}
+        action={action.toString()}
         width={width}
         align={align}
       >
         <Operation
-          operator={operator ? "1" : "0"}
+          operator={operator.toString()}
           padding={padding}
           backgroundColor={backgroundColor}
           color={color}

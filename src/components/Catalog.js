@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { push } from 'react-router-redux'
 import { withRouter } from 'react-router-dom'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import { push } from 'react-router-redux'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 import { gql, graphql } from 'react-apollo'
 import { Card } from 'semantic-ui-react'
 import styled from 'styled-components'
@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import Header from './commons/Header'
 import Search from './commons/Search'
 import LaTex from './commons/LaTeX'
+import Error from './commons/Error'
 
 const Author = styled.div`
   font-size: 10px;
@@ -32,7 +33,7 @@ class Catalog extends Component {
         author: 'NeoKarn',
         detail: 'y = 5x^2+7',
         description: '\\text{find } \\space \\frac{dy}{dx}',
-        isClear: true,
+        isClear: true
       },
       {
         id: '21',
@@ -41,7 +42,7 @@ class Catalog extends Component {
         author: 'NeoKarn',
         detail: 'y = (x+\\frac{1}{x})(x-\\frac{1}{x}+1)',
         description: '\\text{find } \\space \\frac{dy}{dx}',
-        isClear: true,
+        isClear: true
       },
       {
         id: '12',
@@ -50,7 +51,7 @@ class Catalog extends Component {
         author: 'FBKarn',
         detail: '\\lim_{x\\to2}f(x)=5',
         description: '\\text{, find } x',
-        isClear: false,
+        isClear: false
       },
       {
         id: '13',
@@ -59,7 +60,7 @@ class Catalog extends Component {
         author: 'Anonymous',
         detail: '\\int_{3}^{5} x^2 dx',
         description: '',
-        isClear: true,
+        isClear: true
       },
       {
         id: '14',
@@ -68,26 +69,19 @@ class Catalog extends Component {
         author: 'Anonymous',
         detail: '\\int \\sqrt{1+y^2} dy',
         description: '',
-        isClear: false,
+        isClear: false
       },
       {
         id: '15',
         content: 'Integration',
         difficulty: 'Normal',
         author: 'Anonymous',
-        detail: '\\begin{cases}F(R_i) & d(R) = 0\\\\1 &d(R) = i\\\\0 & \textrm{otherwise.}\\end{cases}',
+        detail:
+          '\\begin{cases}F(R_i) & d(R) = 0\\\\1 &d(R) = i\\\\0 & \textrm{otherwise.}\\end{cases}',
         description: '',
-        isClear: true,
-      },
-    ],
-  }
-
-  componentWillMount() {
-    
-  }
-
-  componentDidMount() {
-    console.log(this.props)
+        isClear: true
+      }
+    ]
   }
 
   onClick(index) {
@@ -98,20 +92,48 @@ class Catalog extends Component {
   }
 
   renderProblems() {
-    return this.state.problems.map((problem, index) => {
+    if (this.props.data.loading) {
+      return (
+        <Error message="Loading..." />
+      )
+    }
+    else if (!this.props.data || !this.props.data.Tag) {
+      return (
+        <Error message="No Internet Connection. Please refresh this page." />
+      )
+    }
+    return this.props.data.Tag.posts.map((problem, index) => {
       const answerSpan = problem.isClear ? <Status>Answered</Status> : <div />
       return (
-        <Card key={problem.id} style={{ width: '95%' }} onClick={() => this.onClick(index)}>
+        <Card
+          key={problem.id}
+          style={{ width: '95%' }}
+          onClick={() => this.onClick(index)}
+        >
           <Card.Content>
-            <Card.Header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span>{problem.content}</span>
+            <Card.Header
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}
+            >
+              <span>{problem.title}</span>
               {answerSpan}
             </Card.Header>
-            <Card.Meta style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Card.Meta
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}
+            >
               <span>{problem.difficulty}</span>
-              <Author>Author by {problem.author}</Author>
+              <Author>Posted by {problem.author.name}</Author>
             </Card.Meta>
-            <Card.Description><LaTex text={problem.detail} id={problem.id} /></Card.Description>
+            <Card.Description>
+              <LaTex text={problem.latex} id={problem.id} />
+            </Card.Description>
           </Card.Content>
         </Card>
       )
@@ -123,7 +145,9 @@ class Catalog extends Component {
       <div>
         <Header text={'Calculus'} />
         <Search />
-        <Card.Group style={{ display: 'flex', justifyContent: 'center', margin: 0 }}>
+        <Card.Group
+          style={{ display: 'flex', justifyContent: 'center', margin: 0 }}
+        >
           {this.renderProblems()}
         </Card.Group>
       </div>
@@ -132,11 +156,11 @@ class Catalog extends Component {
 }
 
 Catalog.defaultProps = {
-  title: 'Course',
+  title: 'Course'
 }
 
 Catalog.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.string
 }
 
 // const mapDispatchToProps = dispatch => bindActionCreators({
@@ -149,17 +173,25 @@ Catalog.propTypes = {
 // )(Catalog)
 
 const postQuery = gql`
-query($title: String!) {
-  Tag(name: $title) {
-    name
-    posts {
-      id
-			latex
+  query($title: String!) {
+    Tag(name: $title) {
+      name
+      posts {
+        id
+        title
+        latex
+        difficulty
+        description
+        author {
+          name
+        }
+      }
     }
   }
-}
 `
 
-export default withRouter(graphql(postQuery, {
-  options: (ownProps) => ({ variables: { title: ownProps.match.params.title } })
-})(Catalog))
+export default withRouter(
+  graphql(postQuery, {
+    options: ownProps => ({ variables: { title: ownProps.match.params.title } })
+  })(Catalog)
+)

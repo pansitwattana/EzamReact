@@ -10,6 +10,7 @@ import math from './paper/MathQuill'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
+import Error from './commons/Error'
 import { Math, Alphabet } from './data/Keyboards'
 
 const Wrapper = styled.div`
@@ -153,14 +154,14 @@ class PaperComponent extends Component {
     const length = this.state.methods.length
     const itemSize = 40
     if (this.state.problem) {
-      // const { detail, id } = this.state.problem
+      const { detail, id } = this.state.problem
       console.log(this.state.problem)
       return (
         <div>
           <Wrapper onKeyDown={this.handleKeyPress} tabIndex="0">
             <Paper>
-              {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />}
-              {/* <Screen displayText={detail} onSubmit={() => this.submitAnswer(id)} /> */}
+              {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
+              <Screen displayText={detail} onSubmit={() => this.submitAnswer(id)} />
               <VirtualList
                 width="100%"
                 height={350}
@@ -179,9 +180,7 @@ class PaperComponent extends Component {
       )
     }
     return (
-      <div>
-        404 Not Found
-      </div>
+      <Error message="Not Found" />
     )
   }
 }
