@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, withRouter } from 'react-router-dom'
 import { TransitionGroup } from 'react-transition-group'
-import { graphql, gql } from 'react-apollo'
+// import { graphql, gql } from 'react-apollo'
 import Paper from './components/Paper'
 import Home from './components/Home'
 import Catalog from './components/Catalog'
@@ -26,12 +26,4 @@ const App = () => (
   </TransitionGroup>
 );
 
-const userQuery = gql`
-query {
-  user {
-    id
-  }
-}
-`
-
-export default graphql(userQuery, { options: { fetchPolicy: 'network-only' } })(withRouter(App))
+export default withRouter(App)

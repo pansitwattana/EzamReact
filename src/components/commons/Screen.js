@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import uuid from 'uuid'
 import LaTeX from './LaTeX'
 
 const Screen = styled.div`
@@ -31,22 +30,28 @@ const LeftContainer = styled.div`
 
 const Submit = styled.div`
   font-size: 30px;
-  color: #ffffff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: #ffffff;
+  ${props => props.done && `
+    color: #cbf442;
+  `}
 `
 
 const Text = styled.span`
   font-size: 13px;
-  color: #ffffff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: #ffffff;
+  ${props => props.done && `
+    color: #cbf442;
+  `}
 `
 
-const ScreenComponent = ({ displayText, onSubmit }) =>
+const ScreenComponent = ({ displayText, id, done, onSubmit, onShowAnswers }) =>
   (<Screen>
-    <LaTeX text={displayText} id={uuid()} />
-    <LeftContainer onClick={onSubmit}>
-      <Submit>✓</Submit>
-      <Text>Send</Text>
+    <LaTeX text={displayText} id={id} />
+    <LeftContainer onClick={done ? onSubmit : onShowAnswers}>
+      <Submit done={done} >✓</Submit>
+      <Text done={done} >{done ? 'Show Answers' : 'Submit'}</Text>
     </LeftContainer>
   </Screen>)
 

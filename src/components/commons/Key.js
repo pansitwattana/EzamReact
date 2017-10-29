@@ -22,7 +22,7 @@ const Key = styled.div`
   ${props => props.highlight && `
     transform: scale(0.9);
   `}
-  ${props => props.operator == 'true' && `
+  ${props => props.operator === 'true' && `
     width: 25%;
     color: white;
   `}
@@ -30,7 +30,7 @@ const Key = styled.div`
     border: 1px solid #e8e8e8;
     color: #919191;
   `}
-  ${props => props.action == 'true' && `
+  ${props => props.action === 'true' && `
     width: 33%;
     padding: 20px;
   `}
@@ -44,7 +44,7 @@ const Operation = styled.div`
   border-radius: ${props => props.borderRadius};
   border: ${props => props.border};
   color: ${props => props.color};
-  ${props => props.operator == 'true' && `
+  ${props => props.operator === 'true' && `
     padding-top: 8px;
     padding-bottom: 8px;
     display: inline;

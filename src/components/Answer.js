@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 import { Card, Button, Form, TextArea } from 'semantic-ui-react'
+import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
@@ -169,4 +171,23 @@ class Answer extends Component {
   }
 }
 
-export default Answer
+const answerQuery = gql`
+query($id: ID!) {
+  Post(id:$id) {
+    solutions {
+      answers {
+        latex
+        text
+      }
+    }
+  }
+}
+`
+
+// export default withRouter(Answer)
+
+export default (
+  graphql(answerQuery, {
+    options: ownProps => ({ variables: { id: ownProps.location.state } })
+  })(withRouter(Answer))
+)

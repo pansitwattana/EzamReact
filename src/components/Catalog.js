@@ -84,31 +84,59 @@ class Catalog extends Component {
     ]
   }
 
-  onClick(index) {
-    console.log(this.state.problems[index])
-    const post = this.state.problems[index]
+  onClick(index, isDone) {
+    // console.log(this.state.problems[index])
+    const post = this.props.data.Tag.posts[index]
     // this.props.changePage(this.state.problems[index], 'Paper')
-    this.props.history.push('/paper', post)
+    this.props.history.push('/paper', {
+      post: post,
+      done: isDone,
+    })
   }
 
-  renderProblems() {
+  isProblemDone(solutions, user) {
+    if (!user) {
+      return false
+    }
+    
+    let done = false
+
+    solutions.forEach((solution) => {
+      if (solution.author.id === user.id) {
+        done = true
+        
+      }
+    })
+
+    return done
+  }
+
+  renderProblems(title, user) {
     if (this.props.data.loading) {
       return (
         <Error message="Loading..." />
       )
     }
     else if (!this.props.data || !this.props.data.Tag) {
-      return (
-        <Error message="No Internet Connection. Please refresh this page." />
-      )
+      if (this.props.data.error) {
+        return (
+          <Error message="No Internet Connection. Please refresh this page." />
+        )
+      }
+      else {
+        return (
+          <Error message={`0 Problems in ${title}`} />
+        )
+      }
     }
     return this.props.data.Tag.posts.map((problem, index) => {
-      const answerSpan = problem.isClear ? <Status>Answered</Status> : <div />
+      const isDone = this.isProblemDone(problem.solutions, user)
+      const answerSpan = isDone ? <Status>Done</Status> : <div />
       return (
         <Card
           key={problem.id}
           style={{ width: '95%' }}
-          onClick={() => this.onClick(index)}
+          onClick={() => this.onClick(index, isDone)}
         >
           <Card.Content>
             <Card.Header
@@ -119,7 +147,6 @@ class Catalog extends Component {
               }}
             >
               <span>{problem.title}</span>
-              {answerSpan}
             </Card.Header>
             <Card.Meta
               style={{
@@ -131,8 +158,15 @@ class Catalog extends Component {
               <span>{problem.difficulty}</span>
               <Author>Posted by {problem.author.name}</Author>
             </Card.Meta>
-            <Card.Description>
+            <Card.Description
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}
+            >
               <LaTex text={problem.latex} id={problem.id} />
+              {answerSpan}
             </Card.Description>
           </Card.Content>
         </Card>
@@ -141,14 +175,15 @@ class Catalog extends Component {
   }
 
   render() {
+    const title = this.props.match.params.title
     return (
       <div>
-        <Header text={'Calculus'} />
+        <Header text={title} />
         <Search />
         <Card.Group
           style={{ display: 'flex', justifyContent: 'center', margin: 0 }}
         >
-          {this.renderProblems()}
+          {this.renderProblems(title, this.props.userQuery.user)}
         </Card.Group>
       </div>
     )
@@ -182,16 +217,30 @@ const postQuery = gql`
         latex
         difficulty
         description
+        solutions {
+          author {
+            id
+          }
+        }
         author {
           name
+          id
         }
       }
     }
   }
 `
 
+const userQuery = gql`
+query {
+  user {
+    id
+  }
+}
+`
+
 export default withRouter(
   graphql(postQuery, {
     options: ownProps => ({ variables: { title: ownProps.match.params.title } })
-  })(Catalog)
+  })(graphql(userQuery, { name: 'userQuery' })(Catalog))
 )

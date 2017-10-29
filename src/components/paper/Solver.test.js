@@ -21,6 +21,28 @@ test('Solver 5y=3 -> y=3/5', () => {
   expect(solver('5y=3', 'y')).toBe('3/5')
 })
 
+test('Solver \\frac{1}{y}=3 -> y=1/3', () => {
+  expect(solver('\\frac{1}{y}=3', 'y')).toBe('1/3')
+})
+
+test('Solver (1/y)=3 -> y=1/3', () => {
+  expect(solver('(1/y)=3', 'y')).toBe('1/3')
+})
+
+test('Solver y/5=3 -> y=15', () => {
+  expect(solver('y/5=3', 'y')).toBe('15')
+})
+
+test('Solver y=(x+\\frac{1}{x})(x-\\frac{1}{x}+1)', () => {
+  const answer = solver('y=(x+(1)/(x))(x-(1)/(x)+1)')
+  expect(solver(answer)).toBe(false)
+})
+
+test('Solver y=5x^2+7 -> can not do error detection', () => {
+  const answer = solver('y=5x^2+7')
+  expect(answer).toBe(false)
+})
+
 test('Solver should return False when Variable is wrong', () => {
   expect(solver('5y=3', 'x')).toBe("Variables (x) not found")
 })

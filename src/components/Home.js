@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
+import { gql, graphql } from 'react-apollo'
 import Menu from './commons/Menu'
 import Logo from './commons/Logo'
 import Course from './commons/Course'
@@ -20,7 +22,7 @@ const CourseRow = styled.div`
 `
 
 class Home extends Component {
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.location || !this.props.location.state) {
       return;
     }
@@ -75,4 +77,12 @@ class Home extends Component {
   }
 }
 
-export default Home
+const userQuery = gql`
+query {
+  user {
+    id
+  }
+}
+`
+
+export default graphql(userQuery, { options: { fetchPolicy: 'network-only' } })(withRouter(Home))
