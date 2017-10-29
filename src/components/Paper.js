@@ -212,7 +212,7 @@ class PaperComponent extends Component {
                 id={id}
                 done={isDone}
                 onSubmit={() => this.submitAnswer()}
-                onShowAnswers={() => this.showAnswer(id)}
+                onShowAnswers={() => this.onShowAnswers(id)}
               />
               <VirtualList
                 width="100%"
@@ -251,7 +251,9 @@ class PaperComponent extends Component {
 const submitSolutions = gql`
   mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!) {
     createSolution(
-      authorId: $userId 
+      rate: 0
+      rateCount: 0
+      authorId: $userId
       postId: $postId
       answers: $answers
     ) {

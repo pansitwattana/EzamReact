@@ -49,7 +49,7 @@ class Login extends Component {
   }
 
   componentWillUpdate() {
-    if (this.props.data.user || window.localStorage.getItem('auth0IdToken') === null) {
+    if (this.props.data.user || window.localStorage.getItem('auth0IdToken') !== null) {
       // console.log(this.props.data)
       this.props.history.replace('/');
     }

@@ -49,7 +49,7 @@ const Text = styled.span`
 const ScreenComponent = ({ displayText, id, done, onSubmit, onShowAnswers }) =>
   (<Screen>
     <LaTeX text={displayText} id={id} />
-    <LeftContainer onClick={done ? onSubmit : onShowAnswers}>
+    <LeftContainer onClick={done ? onShowAnswers : onSubmit}>
       <Submit done={done} >✓</Submit>
       <Text done={done} >{done ? 'Show Answers' : 'Submit'}</Text>
     </LeftContainer>

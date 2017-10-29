@@ -6,6 +6,7 @@ import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
+import Error from './commons/Error'
 
 const Container = styled.div`
   margin: 10px 10px 50px 10px;
@@ -25,14 +26,14 @@ const Rate = styled.div`
 `
 
 class Answer extends Component {
-  static renderMethods(methods) {
-    if (!methods) {
+  static renderMethods(answers) {
+    if (!answers) {
       return <div>Not Availiable</div>;
     }
 
-    return methods.map((method) => {
-      const latex = method.text
-      const description = method.meta
+    return answers.map((answer) => {
+      const latex = answer.latex
+      const description = answer.text
       let header = ''
       if (latex) {
         header = <LaTex text={latex} id={uuid()} />
@@ -44,7 +45,7 @@ class Answer extends Component {
       }
 
       return (
-        <Card key={method.id} style={{ width: '100%' }}>
+        <Card key={answer.id} style={{ width: '100%' }}>
           <Card.Content>
             <Card.Header>
               {header}
@@ -138,21 +139,25 @@ class Answer extends Component {
   }
 
   generateAnswers() {
-    const methods = this.state.methods
-    return methods.map((method, index) => {
-      const genuiusButton = (method.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
-      const commentButton = (method.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
-      const commentForm = (method.comment ? (<Form style={{ padding: '10px 0 0 0' }}>
+    if (this.props.data.loading) {
+      return <Error message="Loading..." />
+    }
+    // const methods = this.state.methods
+    const solutions = this.props.data.Post.solutions
+    return solutions.map((solution, index) => {
+      const genuiusButton = (solution.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
+      const commentButton = (solution.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const commentForm = (solution.comment ? (<Form style={{ padding: '10px 0 0 0' }}>
         <TextArea autoHeight placeholder="Any Suggestions ?" />
         <Form.Button floated="right">Submit</Form.Button>
       </Form>) : <div />)
       return (
-        <Container key={method.id}>
+        <Container key={solution.id}>
           <Cover>
-            <Author>Solved by {method.author}</Author>
-            <Rate>{method.rate} Upvote</Rate>
+            <Author>Solved by {solution.author.name}</Author>
+            <Rate>{solution.rate} Upvote</Rate>
           </Cover>
-          {Answer.renderMethods(method.values)}
+          {Answer.renderMethods(solution.answers)}
           <Button.Group labeled style={{ width: '100%' }}>
             {genuiusButton}
             <Button.Or />
@@ -173,9 +178,15 @@ class Answer extends Component {
 
 const answerQuery = gql`
 query($id: ID!) {
-  Post(id:$id) {
+  Post(id: $id) {
     solutions {
+      id
+      rate
+      author {
+        name
+      }
       answers {
+        id
         latex
         text
       }
