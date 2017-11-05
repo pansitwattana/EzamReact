@@ -26,12 +26,13 @@ const InputComponent = ({ id, focus, error }) => {
 
 InputComponent.defaultProps = {
   focus: false,
+  error: false,
 }
 
 InputComponent.propTypes = {
   id: PropTypes.string.isRequired,
   focus: PropTypes.bool,
-  error: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
 }
 
 export default InputComponent

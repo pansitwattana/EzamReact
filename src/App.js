@@ -22,7 +22,7 @@ const App = () => (
     <Route path="/login" component={Login} />
     <Route path="/create" component={CreateUser} />
     <Route path="/register" render={() => <Register data={'test'} />} />
-    <Route path="/problem" component={Problem} />
+    <Route path="/post" component={Problem} />
   </TransitionGroup>
 );
 

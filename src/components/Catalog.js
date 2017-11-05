@@ -28,7 +28,7 @@ class Catalog extends Component {
     problems: [
       {
         id: '11',
-        content: 'Differential',
+        content: 'ไ',
         difficulty: 'Easy',
         author: 'NeoKarn',
         detail: 'y = 5x^2+7',

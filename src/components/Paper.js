@@ -13,7 +13,6 @@ import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
-import { Math, Alphabet } from './data/Keyboards'
 
 const Wrapper = styled.div`
   background: white;
@@ -43,7 +42,6 @@ class PaperComponent extends Component {
     done: false,
     methods: [{ text: '', id: uuid(), focus: true, error: false }],
     line: 0,
-    keyboard: Math
   }
 
   componentWillMount() {
@@ -119,10 +117,6 @@ class PaperComponent extends Component {
         methods,
         line: line > 0 ? line - 1 : line
       })
-    } else if (action === Actions.ALPHABET) {
-      this.setState({ keyboard: Alphabet })
-    } else if (action === Actions.NUMBER) {
-      this.setState({ keyboard: Math })
     } else {
       const methods = this.state.methods.map(method => {
         const methodReset = method
@@ -196,7 +190,6 @@ class PaperComponent extends Component {
   }
 
   render() {
-    const { symbol, value, downValue, action } = this.state.keyboard
     const length = this.state.methods.length
     const itemSize = 40
     if (this.state.problem) {
@@ -234,13 +227,7 @@ class PaperComponent extends Component {
               />
             </Paper>
           </Wrapper>
-          <Keyboard
-            keySymbols={symbol}
-            keyValues={value}
-            swipeDownValue={downValue}
-            action={action}
-            onPress={key => this.handleKeyboard(key)}
-          />
+          <Keyboard onPress={key => this.handleKeyboard(key)} />
         </div>
       )
     }

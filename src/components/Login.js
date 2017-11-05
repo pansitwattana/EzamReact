@@ -48,8 +48,8 @@ class Login extends Component {
     //   .catch(error => alert(error.message))
   }
 
-  componentWillUpdate() {
-    if (this.props.data.user || window.localStorage.getItem('auth0IdToken') !== null) {
+  componentDidUpdate() {
+    if (this.props.data.user) {
       // console.log(this.props.data)
       this.props.history.replace('/');
     }
@@ -63,7 +63,8 @@ class Login extends Component {
       console.log(this.props)
       const variables = {
         idToken: authResult.idToken,
-        email: authResult.idTokenPayload.email
+        email: authResult.idTokenPayload.email,
+        name: 'NewUser'
       }
       // const queryVar = {
       //   auth0UserId: authResult.idTokenPayload.sub,
@@ -76,16 +77,18 @@ class Login extends Component {
       //   .catch(error => {
       //     console.error(error)
       //   })
-
+      // console.log(this.props.data)
       this.props.createUser({ variables })
         .then(res => {
           console.log(res)
+          this.props.data.refetch()
           // window.localStorage.setItem('id', res.)
           // this.props.history.replace('/');
         })
         .catch(error => {
           console.error(error);
-          this.props.history.replace('/');
+          this.props.data.refetch()
+          // this.props.history.replace('/');
         });
     });
   }
@@ -121,10 +124,11 @@ class Login extends Component {
 }
 
 const createUser = gql`
-mutation($idToken: String!, $email: String!) {
+mutation($idToken: String!, $email: String!, $name: String!) {
   createUser(
     authProvider: { auth0: { idToken: $idToken } }
     email: $email
+    name: $name
   ) {
     id
   }

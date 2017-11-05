@@ -18,7 +18,7 @@ const Keys = {
   CLEAR: 'CLEAR',
   CDOT: 'CDOT',
   EQUAL: '=',
-  NEQ: 'NEQ',
+  NOTEQUAL: 'NEQ',
   NUMBER: '123',
   GT: 'GT',
   LT: 'LT',
@@ -42,7 +42,7 @@ const Keys = {
   SIN: '\\sin',
   COS: '\\cos',
   TAN: 'TAN',
-
+  NOTEQUAL: '\\neq',
   // TODO(charlie): Add in additional Greek letters.
   PI: 'PI',
   THETA: 'THETA',
@@ -97,7 +97,7 @@ const KeyAction = (key) => {
   } else if (key === Keys.SIN || key === Keys.COS || key === Keys.TAN) {
     return Actions.COMMANDOPEN
   } else if (key === Keys.LOG || key === Keys.LOG_2 || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.EXP_3 || key === Keys.PLUSMINUS ||
-            key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA) {
+            key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA || key === Keys.NOTEQUAL) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

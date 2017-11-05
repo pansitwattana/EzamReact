@@ -6,8 +6,11 @@ import Menu from './commons/Menu'
 import Logo from './commons/Logo'
 import Course from './commons/Course'
 import Search from './commons/Search'
+import AddButton from './commons/AddButton'
 
-const Background = styled.div`text-align: center;`
+const Background = styled.div`
+  text-align: center; 
+`
 
 const CourseContainer = styled.div`
   display: flex;
@@ -72,6 +75,7 @@ class Home extends Component {
             />
           </CourseRow>
         </CourseContainer>
+        <AddButton onClick={() => this.props.history.push('/post')} />
       </Background>
     )
   }
