@@ -42,6 +42,11 @@ class KeyboardComponent extends Component {
   }
 
   render() {
+    if (!this.props.show) {
+      return (
+        <div></div>
+      )
+    }
     const { value, symbol, downValue, action } = this.state.type
     const rowCount = symbol.length
     const height = (9 * value.length)
@@ -126,8 +131,13 @@ const KeyboardType = {
   ALPHABET: 'ALPHABET',
 }
 
+KeyboardComponent.defaultProps = {
+  show: true
+}
+
 KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
+  show: PropTypes.bool
 }
 
 export default KeyboardComponent

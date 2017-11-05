@@ -7,6 +7,7 @@ import Logo from './commons/Logo'
 import Course from './commons/Course'
 import Search from './commons/Search'
 import AddButton from './commons/AddButton'
+import LoginButton from './commons/LoginButton'
 
 const Background = styled.div`
   text-align: center; 
@@ -40,6 +41,15 @@ class Home extends Component {
   }
 
   render() {
+    let addButton = <div></div>
+    let loginButton = <LoginButton onClick={() => this.props.history.push('./login')} />
+    if (!this.props.data.loading) {
+      let user = this.props.data.user
+      if (user) {
+        addButton = <AddButton onClick={() => this.props.history.push('/post')} />
+        loginButton = <div></div>
+      }
+    }
     return (
       <Background>
         <Logo />
@@ -75,7 +85,8 @@ class Home extends Component {
             />
           </CourseRow>
         </CourseContainer>
-        <AddButton onClick={() => this.props.history.push('/post')} />
+        {addButton}
+        {loginButton}
       </Background>
     )
   }
@@ -89,4 +100,4 @@ query {
 }
 `
 
-export default graphql(userQuery, { options: { fetchPolicy: 'network-only' } })(withRouter(Home))
+export default graphql(userQuery)(withRouter(Home))

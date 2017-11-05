@@ -8,6 +8,7 @@ import math from './paper/MathQuill'
 import Keyboard from './commons/Keyboard'
 import styled from 'styled-components'
 import MathInput from './commons/Input'
+import Options from './commons/Options'
 import Header from './commons/Header'
 
 const Question = styled.div`
@@ -35,6 +36,9 @@ const InputContainer = styled.div`
 class Problem extends Component {
   state = {
     problemId: uuid(),
+    title: '',
+    tag: '',
+    showKeyboard: true,
   }
 
   handleKeyboard(key) {
@@ -43,25 +47,32 @@ class Problem extends Component {
 
   submit = () => {
     const latex = math.getLaTeX(this.state.problemId)
-    if (!latex || latex == '') {
+    if (!latex || latex === '') {
+      alert('Please Input Problem')
       return;
     } 
     const user = this.props.data.user
     if (!user) {
-      console.error('user not login')
+      alert('user not login')
       return;
     }
     
-    console.log('submit', latex)
     const variables = {
-      title: 'Differential',
+      title: this.state.title,
       authorId: user.id,
       latex,
-      description: ''
+      description: '',
+      difficulty: 'Easy',
+      tagId: "cj9cyhqeg0zk70148dn2lj93p"
     }
+    console.log('submit', variables)
     this.props.createPost({ variables })
       .then((res) => {
-        console.log(res)
+        const post = res.data.createPost
+        this.props.history.push('./paper', {
+          post: post,
+          done: false,
+        })
       })
       .catch((error) => {
         console.error(error)
@@ -72,7 +83,8 @@ class Problem extends Component {
     const { symbol, value, action } = Math
     return (
       <div>
-        <Header text="Add Problem" />
+        <Header text="Post" />
+        <span>Problem</span>
         <Question>
           <MathInput id={this.state.problemId} />
         </Question>
@@ -80,10 +92,15 @@ class Problem extends Component {
         <Question>
           <Input id={this.state.solutionId} />
         </Question> */}
-        <Form>
+        <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
           <InputContainer>
-            <span>Title</span>
-            <Input placeholder='eg. Calculus, Function' />
+            Tags
+            <Input placeholder='eg. Calculus' onChange={(e) => this.setState({ tag: e.target.value})} />
+          </InputContainer>
+          <br />
+          <InputContainer>
+            Title
+            <Input placeholder='eg. Calculus, Function' onChange={(e) => this.setState({ title: e.target.value})} />
           </InputContainer>
           <br />
           <Button style={{ padding: 10 }} icon onClick={this.submit}>
@@ -91,22 +108,27 @@ class Problem extends Component {
             Submit
           </Button>
         </Form>
-        <Keyboard keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+        <Keyboard show={this.state.showKeyboard} keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
       </div>
     )
   }
 }
 
 const createPost = gql`
-mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String){
+mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagId: ID!, $difficulty: Difficulty){
   createPost (
     title: $title
     authorId: $authorId
     latex: $latex
     description: $description
-    tagsIds: ["cj9b4w85l0vxn01483g8nhxza"]
+    difficulty: $difficulty
+    tagsIds: [$tagId]
   ) {
     id
+    title
+    latex
+    difficulty
+    description
   }
 }
 `
@@ -119,6 +141,19 @@ query {
 }
 `
 
+const tagQuery = gql`
+query {
+  allTags {
+    id
+    name
+  }
+}
+`
+
 export default graphql(createPost, { name: 'createPost' })(
-  graphql(userQuery, { options: { fetchPolicy: 'network-only' }} )(withRouter(Problem))
+  graphql(userQuery, { options: { fetchPolicy: 'network-only' }} )(
+    graphql(tagQuery, { name: 'tagQuery' })(
+      withRouter(Problem)
+    )
+  )
 )

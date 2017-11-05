@@ -6,14 +6,14 @@ const Math = {
     [Keys.INT, Keys.SIN, '7', '8', '9', Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
     [Keys.EXP_2, 'x', '1', '2', '3', Keys.MINUS],
-    ['(', ')', '.', '0', Keys.NOTEQUAL, Keys.PLUS],
+    ['(', ')', '.', '0', Keys.EQUAL, Keys.PLUS],
   ],
   downValue: [
     [Keys.LOG_2, '<', '>', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.COS, '7', '8', '9', Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
     [Keys.EXP_3, 'x', '1', '2', '3', Keys.MINUS],
-    ['(', ')', '.', '0', Keys.EQUAL, Keys.PLUS],
+    ['(', ')', '.', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   symbol: [
     ['log', '<', '>', '±', '^', 'DEL'],

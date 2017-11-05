@@ -18,7 +18,7 @@ const Keys = {
   CLEAR: 'CLEAR',
   CDOT: 'CDOT',
   EQUAL: '=',
-  NOTEQUAL: 'NEQ',
+  NOTEQUAL: '\\neq',
   NUMBER: '123',
   GT: 'GT',
   LT: 'LT',
@@ -42,7 +42,6 @@ const Keys = {
   SIN: '\\sin',
   COS: '\\cos',
   TAN: 'TAN',
-  NOTEQUAL: '\\neq',
   // TODO(charlie): Add in additional Greek letters.
   PI: 'PI',
   THETA: 'THETA',
