@@ -37,7 +37,12 @@ class Problem extends Component {
   state = {
     problemId: uuid(),
     title: '',
-    tag: '',
+    selectedTags: [],
+    tags: [{
+      key: '1212',
+      text: 'Calculus',
+      value: 'Calculus',
+    }],
     showKeyboard: true,
   }
 
@@ -57,13 +62,21 @@ class Problem extends Component {
       return;
     }
     
+    const tags = this.state.selectedTags
+    const tagIds = []
+    this.props.tagQuery.allTags.forEach((tag) => {
+      if (tags.includes(tag.name)) {
+        tagIds.push(tag.id)
+      }
+    })
+    console.log(tagIds)
     const variables = {
       title: this.state.title,
       authorId: user.id,
       latex,
       description: '',
       difficulty: 'Easy',
-      tagId: "cj9cyhqeg0zk70148dn2lj93p"
+      tagIds: tagIds
     }
     console.log('submit', variables)
     this.props.createPost({ variables })
@@ -79,50 +92,51 @@ class Problem extends Component {
       })
   }
 
+  onTagAdded = (selectedTags) => {
+    this.setState({ selectedTags })
+  }
+
   render() {
     const { symbol, value, action } = Math
+    const { selectedTags, problemId, showKeyboard } = this.state
+    const { loading, allTags } = this.props.tagQuery
+    const tags = loading ? [] : allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
       <div>
         <Header text="Post" />
         <span>Problem</span>
         <Question>
-          <MathInput id={this.state.problemId} />
+          <MathInput id={problemId} />
         </Question>
         {/* <Header text="Add Solution" />
         <Question>
           <Input id={this.state.solutionId} />
         </Question> */}
         <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
-          <InputContainer>
-            Tags
-            <Input placeholder='eg. Calculus' onChange={(e) => this.setState({ tag: e.target.value})} />
-          </InputContainer>
+          <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
           <br />
-          <InputContainer>
-            Title
-            <Input placeholder='eg. Calculus, Function' onChange={(e) => this.setState({ title: e.target.value})} />
-          </InputContainer>
+          <Input placeholder='Title' onChange={(e) => this.setState({ title: e.target.value})} />
           <br />
           <Button style={{ padding: 10 }} icon onClick={this.submit}>
             <Icon name='send' />
             Submit
           </Button>
         </Form>
-        <Keyboard show={this.state.showKeyboard} keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+        <Keyboard show={showKeyboard} keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
       </div>
     )
   }
 }
-
+//SolutionanswersAnswer
 const createPost = gql`
-mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagId: ID!, $difficulty: Difficulty){
+mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty){
   createPost (
     title: $title
     authorId: $authorId
     latex: $latex
     description: $description
     difficulty: $difficulty
-    tagsIds: [$tagId]
+    tagsIds: $tagIds
   ) {
     id
     title

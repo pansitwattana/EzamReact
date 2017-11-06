@@ -1,10 +1,9 @@
 import React from 'react'
-import { Select } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
+// stateOptions = [ { key: 'AL', value: 'AL', text: 'Alabama' }, ...  ]
 
-const Options = () => (
-  <Select>
-    <Select.Item>Gender</Select.Item>
-  </Select>
+const Options = ({ tags, onChange }) => (
+  <Dropdown placeholder='Tags' onChange={(e, { value }) => onChange(value)} fluid multiple search selection options={tags} />
 )
 
 export default Options
