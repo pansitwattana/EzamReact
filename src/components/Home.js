@@ -53,7 +53,7 @@ class Home extends Component {
     return (
       <Background>
         <Logo />
-        <Search />
+        <Search value='' />
         <Menu />
         <CourseContainer>
           <CourseRow>
@@ -100,4 +100,6 @@ query {
 }
 `
 
-export default graphql(userQuery)(withRouter(Home))
+export default graphql(userQuery)(
+  withRouter(Home)
+)

@@ -26,6 +26,7 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px;
 `
 
 const InputContainer = styled.div`
@@ -38,12 +39,11 @@ class Problem extends Component {
     problemId: uuid(),
     title: '',
     selectedTags: [],
-    tags: [{
-      key: '1212',
-      text: 'Calculus',
-      value: 'Calculus',
-    }],
-    showKeyboard: true,
+    showKeyboard: false,
+  }
+
+  componentDidMount() {
+    this.titleInput.focus()
   }
 
   handleKeyboard(key) {
@@ -99,12 +99,19 @@ class Problem extends Component {
   render() {
     const { symbol, value, action } = Math
     const { selectedTags, problemId, showKeyboard } = this.state
-    const { loading, allTags } = this.props.tagQuery
-    const tags = loading ? [] : allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
+    const { loading, allTags, error } = this.props.tagQuery
+    const tags = loading | !allTags ? [{ key: '0', text: 'Loading', value: '' }] : 
+      allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
       <div>
         <Header text="Post" />
-        <span>Problem</span>
+        <Input
+         style={{ margin: '10px', width: '100%' }} 
+         placeholder='Question Title' 
+         onChange={(e) => this.setState({ title: e.target.value})} 
+         onFocus={() => this.setState({ showKeyboard: false })} 
+         onBlur={() => this.setState({ showKeyboard: true })}
+         ref={(input) => { this.titleInput = input; }} />
         <Question>
           <MathInput id={problemId} />
         </Question>
@@ -114,8 +121,7 @@ class Problem extends Component {
         </Question> */}
         <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
           <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
-          <br />
-          <Input placeholder='Title' onChange={(e) => this.setState({ title: e.target.value})} />
+          
           <br />
           <Button style={{ padding: 10 }} icon onClick={this.submit}>
             <Icon name='send' />
