@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 // import queryPosts from '../graph/Post'
 import Header from './commons/Header'
 import Search from './commons/Search'
-import LaTex from './commons/LaTeX'
+// import LaTex from './commons/LaTeX'
 import Error from './commons/Error'
 import LaTexContainer from './commons/LaTexContainer'
 
@@ -31,7 +31,7 @@ class Catalog extends Component {
     // this.props.changePage(this.state.problems[index], 'Paper')
     this.props.history.push('/paper', {
       post: post,
-      done: status == 'Done' || status == 'Editor',
+      done: status === 'Done' || status === 'Editor',
       tag: this.props.data.Tag.name
     })
   }

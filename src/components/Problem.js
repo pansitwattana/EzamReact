@@ -29,10 +29,10 @@ const Form = styled.div`
   margin: 10px;
 `
 
-const InputContainer = styled.div`
-  display: flex;
-  align-items: center;
-`
+// const InputContainer = styled.div`
+//   display: flex;
+//   align-items: center;
+// `
 
 class Problem extends Component {
   state = {
@@ -99,7 +99,7 @@ class Problem extends Component {
   render() {
     const { symbol, value, action } = Math
     const { selectedTags, problemId, showKeyboard } = this.state
-    const { loading, allTags, error } = this.props.tagQuery
+    const { loading, allTags } = this.props.tagQuery
     const tags = loading | !allTags ? [{ key: '0', text: 'Loading', value: '' }] : 
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (

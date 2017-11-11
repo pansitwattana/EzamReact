@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Search, Grid, Header } from 'semantic-ui-react'
+import { Search } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 // const source = _.times(5, () => ({
 //   title: faker.company.companyName(),
@@ -20,7 +20,7 @@ class SearchComponent extends Component {
   handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
   handleSearchChange = (e, { value }) => {
-    const { loading, allPosts } = this.props.data
+    const { allPosts } = this.props.data
     const posts = allPosts.map(post => ({ key: post.id, title: post.title + ' ' + post.latex }))
     const newValue = value
     // this.setState({ value })

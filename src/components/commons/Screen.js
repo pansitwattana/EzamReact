@@ -27,16 +27,16 @@ const LeftContainer = styled.div`
   padding: 0px 10px;
 `
 
-const Submit = styled.div`
-  font-size: 30px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  ${props =>
-    props.done &&
-    `
-    color: #cbf442;
-  `};
-`
+// const Submit = styled.div`
+//   font-size: 30px;
+//   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+//   color: #ffffff;
+//   ${props =>
+//     props.done &&
+//     `
+//     color: #cbf442;
+//   `};
+// `
 
 const Text = styled.span`
   font-size: 10px;
