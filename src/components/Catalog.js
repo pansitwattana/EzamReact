@@ -12,6 +12,7 @@ import Header from './commons/Header'
 import Search from './commons/Search'
 import LaTex from './commons/LaTeX'
 import Error from './commons/Error'
+import LaTexContainer from './commons/LaTexContainer'
 
 const Author = styled.div`
   font-size: 10px;
@@ -24,87 +25,32 @@ const Status = styled.span`
 `
 
 class Catalog extends Component {
-  state = {
-    problems: [
-      {
-        id: '11',
-        content: 'ไ',
-        difficulty: 'Easy',
-        author: 'NeoKarn',
-        detail: 'y = 5x^2+7',
-        description: '\\text{find } \\space \\frac{dy}{dx}',
-        isClear: true
-      },
-      {
-        id: '21',
-        content: 'Differential',
-        difficulty: 'Easy',
-        author: 'NeoKarn',
-        detail: 'y = (x+\\frac{1}{x})(x-\\frac{1}{x}+1)',
-        description: '\\text{find } \\space \\frac{dy}{dx}',
-        isClear: true
-      },
-      {
-        id: '12',
-        content: 'Limit',
-        difficulty: 'Easy',
-        author: 'FBKarn',
-        detail: '\\lim_{x\\to2}f(x)=5',
-        description: '\\text{, find } x',
-        isClear: false
-      },
-      {
-        id: '13',
-        content: 'Integration',
-        difficulty: 'Normal',
-        author: 'Anonymous',
-        detail: '\\int_{3}^{5} x^2 dx',
-        description: '',
-        isClear: true
-      },
-      {
-        id: '14',
-        content: 'Integration',
-        difficulty: 'Hard',
-        author: 'Anonymous',
-        detail: '\\int \\sqrt{1+y^2} dy',
-        description: '',
-        isClear: false
-      },
-      {
-        id: '15',
-        content: 'Integration',
-        difficulty: 'Normal',
-        author: 'Anonymous',
-        detail:
-          '\\begin{cases}F(R_i) & d(R) = 0\\\\1 &d(R) = i\\\\0 & \textrm{otherwise.}\\end{cases}',
-        description: '',
-        isClear: true
-      }
-    ]
-  }
-
-  onClick(index, isDone) {
+  onClick(index, status) {
     // console.log(this.state.problems[index])
     const post = this.props.data.Tag.posts[index]
     // this.props.changePage(this.state.problems[index], 'Paper')
     this.props.history.push('/paper', {
       post: post,
-      done: isDone,
+      done: status == 'Done' || status == 'Editor',
+      tag: this.props.data.Tag.name
     })
   }
 
-  isProblemDone(solutions, user) {
+  getUserStatus(problem, user) {
     if (!user) {
       return false
     }
     
     let done = false
+      
+    if (problem.author.id === user.id) {
+      return 'Edit'
+    }
 
-    solutions.forEach((solution) => {
+    problem.solutions.forEach((solution) => {
       if (solution.author.id === user.id) {
-        done = true
-        
+        done = 'Done'
+        return;
       }
     })
 
@@ -130,13 +76,13 @@ class Catalog extends Component {
       }
     }
     return this.props.data.Tag.posts.map((problem, index) => {
-      const isDone = this.isProblemDone(problem.solutions, user)
-      const answerSpan = isDone ? <Status>Done</Status> : <div />
+      const status = this.getUserStatus(problem, user)
+      const answerSpan = status ? <Status>{status}</Status> : <div />
       return (
         <Card
           key={problem.id}
           style={{ width: '95%' }}
-          onClick={() => this.onClick(index, isDone)}
+          onClick={() => this.onClick(index, status)}
         >
           <Card.Content>
             <Card.Header
@@ -165,7 +111,7 @@ class Catalog extends Component {
                 justifyContent: 'space-between'
               }}
             >
-              <LaTex text={problem.latex} id={problem.id} />
+              <LaTexContainer text={problem.latex} id={problem.id} />
               {answerSpan}
             </Card.Description>
           </Card.Content>

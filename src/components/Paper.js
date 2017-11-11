@@ -34,7 +34,7 @@ const List = styled.div`
 class PaperComponent extends Component {
   static propTypes = {
     submitSolutions: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired
   }
 
   state = {
@@ -42,6 +42,7 @@ class PaperComponent extends Component {
     done: false,
     methods: [{ text: '', id: uuid(), focus: true, error: false }],
     line: 0,
+    submiting: false
   }
 
   componentWillMount() {
@@ -128,17 +129,19 @@ class PaperComponent extends Component {
   }
 
   submitAnswer() {
-    
+    this.setState({ submiting: true })
     const problem = this.state.problem
     let methods = this.state.methods
 
     if (methods.length === 0) {
       console.log('no solution added')
+      this.setState({ submiting: false })
       return
     }
 
     const answer = solver(problem.latex)
     const equations = []
+    let isError = false
     let alreadyCheck = false
     methods = methods.map(method => {
       const newMethod = method
@@ -147,6 +150,7 @@ class PaperComponent extends Component {
       const x = solver(equation)
       if (answer !== false && alreadyCheck === false && x !== answer) {
         newMethod.error = true
+        isError = true
         alreadyCheck = true
         console.log(equation, ' not correct')
         console.log(x, ' is not equal ', answer)
@@ -159,41 +163,52 @@ class PaperComponent extends Component {
     console.log(methods)
     this.setState({ methods })
 
-    const answers = methods.map(method => ({ latex: method.text, text: '',}))
-    console.log(answers)
-    const user = this.props.data.user
-    if (this.props.data.user) {
-      const variables = {
-        postId: problem.id,
-        userId: user.id,
-        answers: answers
-      }
-      this.props.submitSolutions({ variables })
-        .then((res) => {
-          console.log(res)
-          this.props.history.push('/answer', problem.id)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-    else {
-      console.log('please log in before submit solution')
-    }
+    if (!isError) {
+      const answers = methods.map(method => ({ latex: method.text, text: '' }))
+      console.log(answers)
+      const user = this.props.data.user
+      if (user) {
+        const variables = {
+          postId: problem.id,
+          userId: user.id,
+          answers: answers
+        }
 
-    // console.log(equations[equations.length - 1] === ans)
-    // console.log(equations)
+        this.props
+          .submitSolutions({ variables })
+          .then(res => {
+            console.log(res)
+            this.setState({ submiting: false })
+            this.props.history.push('/answer', problem.id)
+          })
+          .catch(error => {
+            this.setState({ submiting: false })
+            console.error(error)
+            alert(error)
+          })
+      } else {
+        this.setState({ submiting: false })
+        const error = 'please log in before submit solution'
+        alert(error)
+      }
+
+      // console.log(equations[equations.length - 1] === ans)
+      // console.log(equations)
+    } else {
+      this.setState({ submiting: false })
+    }
   }
 
   onShowAnswers(id) {
-    this.props.history.push('/answer', id)
+    this.props.history.push('/answer', { id, tag: this.props.location.state.tag})
   }
 
   render() {
     const length = this.state.methods.length
     const itemSize = 40
     if (this.state.problem) {
-      const { latex, id } = this.state.problem
+      const { submiting, problem } = this.state
+      const { latex, id } = problem
       const isDone = this.state.done
       return (
         <div>
@@ -204,6 +219,7 @@ class PaperComponent extends Component {
                 displayText={latex}
                 id={id}
                 done={isDone}
+                loading={submiting}
                 onSubmit={() => this.submitAnswer()}
                 onShowAnswers={() => this.onShowAnswers(id)}
               />
@@ -256,10 +272,12 @@ const userQuery = gql`
   }
 `
 
-const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperComponent)
+const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(
+  PaperComponent
+)
 
 const PaperWithData = graphql(userQuery, {
   options: { fetchPolicy: 'network-only' }
 })(PaperWithMutation)
 
-export default (withRouter(PaperWithData))
+export default withRouter(PaperWithData)

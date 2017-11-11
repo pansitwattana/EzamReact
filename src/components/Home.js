@@ -26,6 +26,108 @@ const CourseRow = styled.div`
 `
 
 class Home extends Component {
+  state = {
+    tags: {
+      Mathematics: [
+        {
+          title: 'Calculus',
+          subtitle: 'Basic',
+          id: 1
+        },
+        {
+          title: 'Trigonometry',
+          subtitle: 'Basic',
+          id: 2
+        },
+        {
+          title: 'Set',
+          subtitle: 'Basic',
+          id: 3
+        },
+        {
+          title: 'Probability',
+          subtitle: 'Basic',
+          id: 4
+        },
+        {
+          title: 'Algebra',
+          subtitle: 'Basic',
+          id: 5
+        },
+        {
+          title: 'Function',
+          subtitle: 'Basic',
+          id: 6
+        }
+      ],
+      Physics: [
+        {
+          title: 'Newton',
+          subtitle: 'Basic',
+          id: 1
+        },
+        {
+          title: 'Trigonometry',
+          subtitle: 'Basic',
+          id: 2
+        },
+        {
+          title: 'Set',
+          subtitle: 'Basic',
+          id: 3
+        },
+        {
+          title: 'Probability',
+          subtitle: 'Basic',
+          id: 4
+        },
+        {
+          title: 'Algebra',
+          subtitle: 'Basic',
+          id: 5
+        },
+        {
+          title: 'Function',
+          subtitle: 'Basic',
+          id: 6
+        }
+      ],
+      Sciences: [
+        {
+          title: 'Newton',
+          subtitle: 'Basic',
+          id: 1
+        },
+        {
+          title: 'Trigonometry',
+          subtitle: 'Basic',
+          id: 2
+        },
+        {
+          title: 'Set',
+          subtitle: 'Basic',
+          id: 3
+        },
+        {
+          title: 'Probability',
+          subtitle: 'Basic',
+          id: 4
+        },
+        {
+          title: 'Algebra',
+          subtitle: 'Basic',
+          id: 5
+        },
+        {
+          title: 'Function',
+          subtitle: 'Basic',
+          id: 6
+        }
+      ]
+    },
+    currentSubject: 'Mathematics'
+  }
+
   componentDidMount() {
     if (!this.props.location || !this.props.location.state) {
       return;
@@ -40,6 +142,10 @@ class Home extends Component {
     }
   }
 
+  onSubjectChange = (subject) => {
+    this.setState({ currentSubject: subject })
+  }
+
   render() {
     let addButton = <div></div>
     let loginButton = <LoginButton onClick={() => this.props.history.push('./login')} />
@@ -50,39 +156,33 @@ class Home extends Component {
         loginButton = <div></div>
       }
     }
+    const titles = this.state.tags[this.state.currentSubject]
+    console.log(titles)
+    const firstRow = titles.slice(0, 3).map((subject) => (
+      <Course 
+        key={subject.id}
+        title={subject.title}
+        subtitle={subject.subtitle}
+      />
+    ))
+    const secondRow = titles.slice(3, 6).map((subject) => (
+      <Course 
+        key={subject.id}
+        title={subject.title}
+        subtitle={subject.subtitle}
+      />
+    ))
     return (
       <Background>
         <Logo />
         <Search value='' />
-        <Menu />
+        <Menu onClick={this.onSubjectChange} />
         <CourseContainer>
           <CourseRow>
-            <Course
-              title={'Calculus'}
-              subtitle={'Basic'}
-            />
-            <Course
-              title={'Calculus'}
-              subtitle={'Hard'}
-            />
-            <Course
-              title={'Set'}
-              subtitle={'Basic'}
-            />
+            {firstRow}
           </CourseRow>
           <CourseRow>
-            <Course
-              title={'Possibility'}
-              subtitle={'Basic'}
-            />
-            <Course
-              title={'Algebra'}
-              subtitle={'Basic'}
-            />
-            <Course
-              title={'Trigonometry'}
-              subtitle={'Intermediate'}
-            />
+            {secondRow}
           </CourseRow>
         </CourseContainer>
         {addButton}

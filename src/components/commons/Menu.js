@@ -30,6 +30,7 @@ export default class MenuExampleColoredInverted extends Component {
 
   handleClick = (item) => {
     this.setState({ activeItem: item })
+    this.props.onClick(item)
   }
 
   render() {
