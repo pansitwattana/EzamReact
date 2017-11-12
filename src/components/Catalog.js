@@ -31,7 +31,7 @@ class Catalog extends Component {
     // this.props.changePage(this.state.problems[index], 'Paper')
     this.props.history.push('/paper', {
       post: post,
-      done: status === 'Done' || status === 'Editor',
+      done: status === 'Done' || status === 'Edit',
       tag: this.props.data.Tag.name
     })
   }

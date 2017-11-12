@@ -60,7 +60,7 @@ const Keys = {
   JUMP_OUT_NUMERATOR: 'JUMP_OUT_NUMERATOR',
   JUMP_OUT_DENOMINATOR: 'JUMP_OUT_DENOMINATOR',
 
-  DIFF: '\\frac{d}{dx}',
+  DIFF: '\\frac{dy}{dx}',
   INT: '\\int',
 
   NOOP: 'NOOP',

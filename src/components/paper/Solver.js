@@ -20,7 +20,7 @@ export default (equation, variable = 'x') => {
   }
   if (eq instanceof Equation) {
     const ans = eq.solveFor(variable)
-    if (ans){
+    if (ans) {
       return ans.toString()
     }
   }

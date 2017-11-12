@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Button } from 'semantic-ui-react'
 import Key from './Key'
 import { Math, Alphabet } from '../data/Keyboards'
 import { Keys } from '../data/Keys'
@@ -25,6 +26,10 @@ const KeyboardRow = styled.div`
   height: ${props => props.height}%;
 `
 
+const Suggestion = styled.div`
+  height: 15px
+  width: 100%
+`
 class KeyboardComponent extends Component {
   state = {
     type: Math
@@ -47,6 +52,25 @@ class KeyboardComponent extends Component {
         <div></div>
       )
     }
+
+    const keywords = this.props.keywords
+    let suggestionComponent = <div></div>
+    let keyHeight = 75
+    let keyActionHeight = 15
+    let keySuggestionHeight = '10%'
+    if (keywords && keywords.length > 0) {
+      keyHeight = 75
+      keyActionHeight = 15
+      suggestionComponent = <Suggestion>
+        <Button style={{height: keySuggestionHeight}}>x</Button>
+      </Suggestion>
+    }
+    else {
+      keyHeight = 85
+      keyActionHeight = 15
+      keySuggestionHeight = '0%'
+    }
+
     const { value, symbol, downValue, action } = this.state.type
     const rowCount = symbol.length
     const height = (9 * value.length)
@@ -70,13 +94,14 @@ class KeyboardComponent extends Component {
             colCount={col}
           />)
       })
-      const rowHeight = 80 / rowCount
+      const rowHeight = keyHeight / rowCount
       return <KeyboardRow key={key} height={rowHeight} >{keys}</KeyboardRow>
     })
     return (
       <Keyboard height={height}>
+        {suggestionComponent}
         {keyboardRows}
-        <KeyboardRow height={'20'}  >
+        <KeyboardRow height={keyActionHeight}>
           <Key keyType="operator" keyValue={action} keySymbol={action} onPress={this.handleKeyPress} swipeDown={action} />
           <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={this.handleKeyPress} swipeDown={Keys.LEFT} />
           <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={this.handleKeyPress} swipeDown={Keys.RIGHT} />
@@ -132,11 +157,13 @@ const KeyboardType = {
 }
 
 KeyboardComponent.defaultProps = {
-  show: true
+  show: true,
+  keywords: [],
 }
 
 KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
+  keywords: PropTypes.array,
   show: PropTypes.bool
 }
 

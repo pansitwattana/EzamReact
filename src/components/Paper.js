@@ -7,12 +7,14 @@ import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
+import suggest from './paper/Suggest'
 import solver from './paper/Solver'
 import math from './paper/MathQuill'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
+const { getKeywords } = suggest
 
 const Wrapper = styled.div`
   background: white;
@@ -42,7 +44,8 @@ class PaperComponent extends Component {
     done: false,
     methods: [{ text: '', id: uuid(), focus: true, error: false }],
     line: 0,
-    submiting: false
+    submiting: false,
+    keywords: [],
   }
 
   componentWillMount() {
@@ -51,7 +54,10 @@ class PaperComponent extends Component {
     if (!location) return
     const data = location.state.post
     const done = location.state.done
-    if (data) this.setState({ problem: data, done })
+    console.log(data, done)
+    const keywords = getKeywords(data.latex)
+    console.log('keywords: ', keywords)
+    if (data) this.setState({ problem: data, done, keywords })
   }
 
   componentDidMount() {
@@ -207,7 +213,7 @@ class PaperComponent extends Component {
     const length = this.state.methods.length
     const itemSize = 40
     if (this.state.problem) {
-      const { submiting, problem } = this.state
+      const { submiting, problem, keywords } = this.state
       const { latex, id } = problem
       const isDone = this.state.done
       return (
@@ -243,7 +249,9 @@ class PaperComponent extends Component {
               />
             </Paper>
           </Wrapper>
-          <Keyboard onPress={key => this.handleKeyboard(key)} />
+          <Keyboard 
+            onPress={key => this.handleKeyboard(key)} 
+            keywords={keywords} />
         </div>
       )
     }

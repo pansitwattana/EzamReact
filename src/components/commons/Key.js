@@ -32,7 +32,7 @@ const Key = styled.div`
   `}
   ${props => props.action === 'true' && `
     width: 33%;
-    padding: 20px;
+    padding: 15px;
   `}
 `
 
