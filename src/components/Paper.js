@@ -14,6 +14,7 @@ import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
+
 const { getKeywords } = suggest
 
 const Wrapper = styled.div`
@@ -36,13 +37,20 @@ const List = styled.div`
 class PaperComponent extends Component {
   static propTypes = {
     submitSolutions: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
   }
 
   state = {
     problem: null,
     done: false,
-    methods: [{ text: '', id: uuid(), focus: true, error: false }],
+    methods: [
+      {
+        text: '',
+        id: uuid(),
+        focus: true,
+        error: false,
+      },
+    ],
     line: 0,
     submiting: false,
     keywords: [],
@@ -50,14 +58,15 @@ class PaperComponent extends Component {
 
   componentWillMount() {
     // console.log(this.props.location)
-    const location = this.props.location
+    const { location } = this.props
     if (!location) return
     const data = location.state.post
     const done = location.state.done
     console.log(data, done)
     const keywords = getKeywords(data.latex)
+    const keywordsWitID = keywords.map(keyword => ({ value: keyword, id: uuid() }))
     console.log('keywords: ', keywords)
-    if (data) this.setState({ problem: data, done, keywords })
+    if (data) this.setState({ problem: data, done, keywords: keywordsWitID })
   }
 
   componentDidMount() {
@@ -86,58 +95,17 @@ class PaperComponent extends Component {
     math.blur(oldMethod.id)
   }
 
-  handleKeyPress = event => {
-    console.log(event.key)
-    // if (event.key === 'Enter') {
-    //   console.log('enter press here! ')
-    //   this.state.methods.forEach((value) => {
-    //     console.log(math.getLaTeX(value.id))
-    //   })
-    // }
-    this.handleKeyboard(event.key)
-  }
-
-  handleKeyboard(value) {
-    math.typed(value, this.state.methods[this.state.line].id)
-    const action = KeyAction(value)
-    if (action === Actions.NEWLINE) {
-      if (this.state.methods.length > 9) {
-        return
-      }
-      const methods = this.state.methods
-      const latex = math.getLaTeX(methods[this.state.line].id)
-      if (latex) {
-        const method = { test: '', id: uuid(), focus: true, error: false }
-        const line = this.state.line
-        methods[line].focus = false
-        methods.splice(line + 1, 0, method)
-        this.setState({ methods, line: line + 1 })
-      }
-    } else if (action === Actions.CLEAR) {
-      let methods = this.state.methods
-      if (methods.length <= 1) {
-        return
-      }
-      const line = this.state.line
-      methods = methods.filter((item, index) => index !== line)
-      this.setState({
-        methods,
-        line: line > 0 ? line - 1 : line
-      })
-    } else {
-      const methods = this.state.methods.map(method => {
-        const methodReset = method
-        methodReset.error = false
-        return methodReset
-      })
-      this.setState({ methods })
-    }
+  onShowAnswers(id) {
+    this.props.history.push('/answer', {
+      id,
+      tag: this.props.location.state.tag,
+    })
   }
 
   submitAnswer() {
     this.setState({ submiting: true })
-    const problem = this.state.problem
-    let methods = this.state.methods
+    const { problem } = this.state
+    let { methods } = this.state
 
     if (methods.length === 0) {
       console.log('no solution added')
@@ -149,7 +117,7 @@ class PaperComponent extends Component {
     const equations = []
     let isError = false
     let alreadyCheck = false
-    methods = methods.map(method => {
+    methods = methods.map((method) => {
       const newMethod = method
       const equation = math.getLaTeX(method.id)
       newMethod.text = equation
@@ -172,22 +140,27 @@ class PaperComponent extends Component {
     if (!isError) {
       const answers = methods.map(method => ({ latex: method.text, text: '' }))
       console.log(answers)
-      const user = this.props.data.user
+      const { user } = this.props.data
       if (user) {
         const variables = {
           postId: problem.id,
           userId: user.id,
-          answers: answers
+          answers,
         }
 
         this.props
           .submitSolutions({ variables })
-          .then(res => {
+          .then((res) => {
             console.log(res)
             this.setState({ submiting: false })
-            this.props.history.push('/answer', problem.id)
+            const { id } = problem
+            if (id) {
+              this.props.history.push('/answer', { id: problem.id })
+            } else {
+              console.error('id is null')
+            }
           })
-          .catch(error => {
+          .catch((error) => {
             this.setState({ submiting: false })
             console.error(error)
             alert(error)
@@ -205,12 +178,61 @@ class PaperComponent extends Component {
     }
   }
 
-  onShowAnswers(id) {
-    this.props.history.push('/answer', { id, tag: this.props.location.state.tag})
+  handleKeyboard(value) {
+    math.typed(value, this.state.methods[this.state.line].id)
+    const action = KeyAction(value)
+    if (action === Actions.NEWLINE) {
+      if (this.state.methods.length > 9) {
+        return
+      }
+      const { methods } = this.state
+      const latex = math.getLaTeX(methods[this.state.line].id)
+      if (latex) {
+        const method = {
+          test: '',
+          id: uuid(),
+          focus: true,
+          error: false,
+        }
+        const { line } = this.state
+        methods[line].focus = false
+        methods.splice(line + 1, 0, method)
+        this.setState({ methods, line: line + 1 })
+      }
+    } else if (action === Actions.CLEAR) {
+      let { methods } = this.state
+      if (methods.length <= 1) {
+        return
+      }
+      const { line } = this.state
+      methods = methods.filter((item, index) => index !== line)
+      this.setState({
+        methods,
+        line: line > 0 ? line - 1 : line,
+      })
+    } else {
+      const methods = this.state.methods.map((method) => {
+        const methodReset = method
+        methodReset.error = false
+        return methodReset
+      })
+      this.setState({ methods })
+    }
+  }
+
+  handleKeyPress = (event) => {
+    console.log(event.key)
+    // if (event.key === 'Enter') {
+    //   console.log('enter press here! ')
+    //   this.state.methods.forEach((value) => {
+    //     console.log(math.getLaTeX(value.id))
+    //   })
+    // }
+    this.handleKeyboard(event.key)
   }
 
   render() {
-    const length = this.state.methods.length
+    const { length } = this.state.methods
     const itemSize = 40
     if (this.state.problem) {
       const { submiting, problem, keywords } = this.state
@@ -249,9 +271,10 @@ class PaperComponent extends Component {
               />
             </Paper>
           </Wrapper>
-          <Keyboard 
-            onPress={key => this.handleKeyboard(key)} 
-            keywords={keywords} />
+          <Keyboard
+            onPress={key => this.handleKeyboard(key)}
+            keywords={keywords}
+          />
         </div>
       )
     }
@@ -280,12 +303,10 @@ const userQuery = gql`
   }
 `
 
-const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(
-  PaperComponent
-)
+const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperComponent)
 
 const PaperWithData = graphql(userQuery, {
-  options: { fetchPolicy: 'network-only' }
+  options: { fetchPolicy: 'network-only' },
 })(PaperWithMutation)
 
 export default withRouter(PaperWithData)

@@ -12,13 +12,11 @@ class LaTeXContainer extends Component {
   }
 
   render() {
-    const { text } = this.props
-    console.log(text.length)
+    // const { text } = this.props
+    // console.log(text.length)
     return (
       <div>
-        <div ref={(latex) => { this.latexDisplay = latex }}>
-
-        </div>
+        <div ref={(latex) => { this.latexDisplay = latex }} />
       </div>
     )
   }
@@ -26,7 +24,6 @@ class LaTeXContainer extends Component {
 
 LaTeXContainer.propTypes = {
   text: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
 }
 
 export default LaTeXContainer

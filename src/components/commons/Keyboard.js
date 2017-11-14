@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button } from 'semantic-ui-react'
+import LaTeX from './LaTeX'
 import Key from './Key'
 import { Math, Alphabet } from '../data/Keyboards'
-import { Keys } from '../data/Keys'
-import { KeyAction, Actions } from '../data/Keys'
+import { Keys, KeyAction, Actions } from '../data/Keys'
 
 const Keyboard = styled.div`
   position: fixed;
@@ -32,7 +32,18 @@ const Suggestion = styled.div`
 `
 class KeyboardComponent extends Component {
   state = {
-    type: Math
+    type: Math,
+  }
+  
+  onKeywordPress = (e) => {
+    const mathfield = e.target.firstChild
+    console.log(mathfield)
+    if (mathfield) {
+      const latex = mathfield.id
+      if (latex) {
+        this.props.onPress(latex)
+      }
+    }
   }
 
   handleKeyPress = (value) => {
@@ -45,50 +56,55 @@ class KeyboardComponent extends Component {
       this.props.onPress(value)
     }
   }
+  
+  renderKeywords(keywords, height) {
+    return keywords.map(keyword => (
+      <Button key={keyword.id} onClick={this.onKeywordPress} style={{ height }}>
+        <LaTeX text={keyword.value} id={keyword.value} />
+      </Button>))
+  }
 
   render() {
     if (!this.props.show) {
       return (
-        <div></div>
+        <div />
       )
     }
 
-    const keywords = this.props.keywords
-    let suggestionComponent = <div></div>
+    const { keywords } = this.props
+    let suggestionComponent = <div />
     let keyHeight = 75
     let keyActionHeight = 15
-    let keySuggestionHeight = '10%'
+    const keySuggestionHeight = '10%'
     if (keywords && keywords.length > 0) {
       keyHeight = 75
       keyActionHeight = 15
-      suggestionComponent = <Suggestion>
-        <Button style={{height: keySuggestionHeight}}>x</Button>
-      </Suggestion>
-    }
-    else {
+      suggestionComponent = (<Suggestion>{this.renderKeywords(keywords, keySuggestionHeight)}</Suggestion>)
+    } else {
       keyHeight = 85
       keyActionHeight = 15
-      keySuggestionHeight = '0%'
     }
 
-    const { value, symbol, downValue, action } = this.state.type
+    const {
+      value, symbol, down, action,
+    } = this.state.type
     const rowCount = symbol.length
     const height = (9 * value.length)
     const keyboardRows = value.map((values, row) => {
       const symbolRow = symbol[row]
-      const downRow = downValue[row]
+      const downRow = down[row]
       const col = symbolRow.length
       let key = ''
-      const keys = values.map((value, index) => {
-        const symbol = symbolRow[index]
+      const keys = values.map((keyValue, index) => {
+        const symbolValue = symbolRow[index]
         const downValue = downRow[index]
-        key += symbol
+        key += symbolValue
         return (
           <Key
-            key={symbol}
+            key={symbolValue}
             keyType="number"
-            keyValue={value}
-            keySymbol={symbol}
+            keyValue={keyValue}
+            keySymbol={symbolValue}
             swipeDown={downValue}
             onPress={this.handleKeyPress}
             colCount={col}
@@ -164,7 +180,7 @@ KeyboardComponent.defaultProps = {
 KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
   keywords: PropTypes.array,
-  show: PropTypes.bool
+  show: PropTypes.bool,
 }
 
 export default KeyboardComponent

@@ -8,7 +8,7 @@ const Math = {
     [Keys.EXP_2, 'x', '1', '2', '3', Keys.MINUS],
     ['(', ')', '.', '0', Keys.EQUAL, Keys.PLUS],
   ],
-  downValue: [
+  down: [
     [Keys.LOG_2, '<=', '>=', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.COS, '7', '8', '9', Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
@@ -32,7 +32,7 @@ const Alphabet = {
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
     [Keys.NUMBER, '', ' ', '', '', '', 'y', 'z'],
   ],
-  downValue: [
+  down: [
     [Keys.ALPHA, Keys.BETA, 'C', 'd', Keys.EPSILON, 'f(x)', 'g(x)', 'h(x)'],
     ['i', 'j', 'k', 'l', Keys.MU, 'n', Keys.THETA, 'p'],
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],

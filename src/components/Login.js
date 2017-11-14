@@ -36,9 +36,9 @@ class Login extends Component {
     {
       auth: {
         responseType: 'id_token',
-        params: {scope: 'openid email'}
-      }
-    }
+        params: { scope: 'openid email' },
+      },
+    },
   );
 
   onSubmit = () => {
@@ -56,15 +56,15 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
-    this.lock.on('authenticated', authResult => {
+    // console.log(this.props)
+    this.lock.on('authenticated', (authResult) => {
       window.localStorage.setItem('auth0IdToken', authResult.idToken);
       console.log('authen done', authResult)
       console.log(this.props)
       const variables = {
         idToken: authResult.idToken,
         email: authResult.idTokenPayload.email,
-        name: 'NewUser'
+        name: 'NewUser',
       }
       // const queryVar = {
       //   auth0UserId: authResult.idTokenPayload.sub,
@@ -79,13 +79,13 @@ class Login extends Component {
       //   })
       // console.log(this.props.data)
       this.props.createUser({ variables })
-        .then(res => {
+        .then((res) => {
           console.log(res)
           this.props.data.refetch()
           // window.localStorage.setItem('id', res.)
           // this.props.history.replace('/');
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           this.props.data.refetch()
           // this.props.history.replace('/');
@@ -116,7 +116,7 @@ class Login extends Component {
           />
           <Button positive onClick={this.login}>Login</Button>
           {/* <Button onClick={() => this.props.changePage(null, 'register')}>Sign Up</Button> */}
-          
+
         </Form>
       </div>
     )
@@ -151,6 +151,4 @@ query {
 //   null,
 //   mapDispatchToProps,
 // )(graphql(createUser)(graphql(userQuery)(Login)))
-export default graphql(createUser, {name: 'createUser'})(
-  graphql(userQuery, { options: { fetchPolicy: 'network-only' }})(withRouter(Login))
-)
+export default graphql(createUser, { name: 'createUser' })(graphql(userQuery, { options: { fetchPolicy: 'network-only' } })(withRouter(Login)),)

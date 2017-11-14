@@ -32,100 +32,100 @@ class Home extends Component {
         {
           title: 'Calculus',
           subtitle: 'Basic',
-          id: 1
+          id: 1,
         },
         {
           title: 'Trigonometry',
           subtitle: 'Basic',
-          id: 2
+          id: 2,
         },
         {
           title: 'Set',
           subtitle: 'Basic',
-          id: 3
+          id: 3,
         },
         {
-          title: 'Probability',
+          title: 'Matrix',
           subtitle: 'Basic',
-          id: 4
+          id: 4,
         },
         {
           title: 'Algebra',
           subtitle: 'Basic',
-          id: 5
+          id: 5,
         },
         {
-          title: 'Function',
+          title: 'Exponential',
           subtitle: 'Basic',
-          id: 6
-        }
+          id: 6,
+        },
       ],
       Physics: [
         {
           title: 'Newton',
           subtitle: 'Basic',
-          id: 1
+          id: 1,
         },
         {
-          title: 'Trigonometry',
+          title: 'Static',
           subtitle: 'Basic',
-          id: 2
+          id: 2,
         },
         {
-          title: 'Set',
+          title: 'Force',
           subtitle: 'Basic',
-          id: 3
+          id: 3,
         },
         {
-          title: 'Probability',
+          title: 'Electric',
           subtitle: 'Basic',
-          id: 4
+          id: 4,
         },
         {
-          title: 'Algebra',
+          title: 'Momentum',
           subtitle: 'Basic',
-          id: 5
+          id: 5,
         },
         {
-          title: 'Function',
+          title: 'Work',
           subtitle: 'Basic',
-          id: 6
-        }
+          id: 6,
+        },
       ],
       Sciences: [
         {
           title: 'Newton',
           subtitle: 'Basic',
-          id: 1
+          id: 1,
         },
         {
           title: 'Trigonometry',
           subtitle: 'Basic',
-          id: 2
+          id: 2,
         },
         {
           title: 'Set',
           subtitle: 'Basic',
-          id: 3
+          id: 3,
         },
         {
           title: 'Probability',
           subtitle: 'Basic',
-          id: 4
+          id: 4,
         },
         {
           title: 'Algebra',
           subtitle: 'Basic',
-          id: 5
+          id: 5,
         },
         {
           title: 'Function',
           subtitle: 'Basic',
-          id: 6
-        }
-      ]
+          id: 6,
+        },
+      ],
     },
-    currentSubject: 'Mathematics'
+    currentSubject: 'Mathematics',
   }
 
   componentDidMount() {
@@ -136,7 +136,7 @@ class Home extends Component {
       return;
     }
     if (this.props.location.state.data.username)
-      console.log('login as ' + this.props.location.state.data.username)
+      {console.log('login as ' + this.props.location.state.data.username)}
     else {
       console.log('guest')
     }
@@ -147,26 +147,26 @@ class Home extends Component {
   }
 
   render() {
-    let addButton = <div></div>
+    let addButton = <div />
     let loginButton = <LoginButton onClick={() => this.props.history.push('./login')} />
     if (!this.props.data.loading) {
-      let user = this.props.data.user
+      const { user } = this.props.data
       if (user) {
         addButton = <AddButton onClick={() => this.props.history.push('/post')} />
-        loginButton = <div></div>
+        loginButton = <div />
       }
     }
     const titles = this.state.tags[this.state.currentSubject]
-    console.log(titles)
-    const firstRow = titles.slice(0, 3).map((subject) => (
-      <Course 
+    console.log('show', this.state.currentSubject)
+    const firstRow = titles.slice(0, 3).map(subject => (
+      <Course
         key={subject.id}
         title={subject.title}
         subtitle={subject.subtitle}
       />
     ))
-    const secondRow = titles.slice(3, 6).map((subject) => (
-      <Course 
+    const secondRow = titles.slice(3, 6).map(subject => (
+      <Course
         key={subject.id}
         title={subject.title}
         subtitle={subject.subtitle}
@@ -175,7 +175,7 @@ class Home extends Component {
     return (
       <Background>
         <Logo />
-        <Search value='' />
+        <Search value="" />
         <Menu onClick={this.onSubjectChange} />
         <CourseContainer>
           <CourseRow>
@@ -200,6 +200,4 @@ query {
 }
 `
 
-export default graphql(userQuery)(
-  withRouter(Home)
-)
+export default graphql(userQuery)(withRouter(Home),)

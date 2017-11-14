@@ -31,7 +31,7 @@ class Catalog extends Component {
     // this.props.changePage(this.state.problems[index], 'Paper')
     this.props.history.push('/paper', {
       post: post,
-      done: status === 'Done' || status === 'Edit',
+      done: status === 'Done',
       tag: this.props.data.Tag.name
     })
   }
@@ -43,14 +43,13 @@ class Catalog extends Component {
     
     let done = false
       
-    if (problem.author.id === user.id) {
-      return 'Edit'
-    }
+    // if (problem.author.id === user.id) {
+    //   return 'Edit'
+    // }
 
     problem.solutions.forEach((solution) => {
       if (solution.author.id === user.id) {
         done = 'Done'
-        return;
       }
     })
 

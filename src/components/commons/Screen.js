@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Icon, Dimmer, Loader } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
-import LaTeX from './LaTeX'
+import LaTeX from './LaTexContainer'
+// import LaTeX from './LaTeX'
 
 const Screen = styled.div`
   display: flex;

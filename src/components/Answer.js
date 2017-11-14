@@ -142,7 +142,11 @@ class Answer extends Component {
     if (this.props.data.loading) {
       return <Error message="Loading..." />
     }
-    // const methods = this.state.methods
+    const { error } = this.props.data
+    if (error) {
+      return <Error message={error.message} />
+    }
+
     const solutions = this.props.data.Post.solutions
     return solutions.map((solution, index) => {
       const genuiusButton = (solution.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)

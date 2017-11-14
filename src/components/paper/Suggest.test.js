@@ -1,4 +1,5 @@
 import suggest from './Suggest'
+
 const { getKeywords, checkValid } = suggest
 
 test('find keywords', () => {
