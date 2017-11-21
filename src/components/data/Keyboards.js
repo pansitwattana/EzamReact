@@ -30,13 +30,13 @@ const Alphabet = {
     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
     ['i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'],
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
-    [Keys.NUMBER, '', ' ', '', '', '', 'y', 'z'],
+    [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
   ],
   down: [
     [Keys.ALPHA, Keys.BETA, 'C', 'd', Keys.EPSILON, 'f(x)', 'g(x)', 'h(x)'],
     ['i', 'j', 'k', 'l', Keys.MU, 'n', Keys.THETA, 'p'],
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
-    [Keys.NUMBER, '', ' ', '', '', '', 'y', Keys.ZETA],
+    [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
   ],
   symbol: [
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],

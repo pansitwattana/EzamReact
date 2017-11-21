@@ -43,6 +43,10 @@ test('Solver y=5x^2+7 -> can not do error detection', () => {
   expect(answer).toBe(false)
 })
 
+test('y=2x', () => {
+  expect(solver('y=2x')).toBe(false)
+})
+
 test('Solver should return False when Variable is wrong', () => {
   expect(solver('5y=3', 'x')).toBe("Variables (x) not found")
 })

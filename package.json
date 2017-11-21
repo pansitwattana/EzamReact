@@ -32,6 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && workbox-cli generate:sw",
+    "build-nopwa": "react-scripts build",
     "build-production": "npm run build && node delete-map.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
