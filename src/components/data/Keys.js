@@ -1,10 +1,23 @@
 const Keys = {
+  // greek letter
   ALPHABET: 'ABC',
   ALPHA: '\\alpha',
   BETA: '\\beta',
+  DELTA: '\\delta',
+  ETA: '\\eta',
   MU: '\\mu',
   EPSILON: '\\epsilon',
+  IOTA: '\\iota',
+  KAPTA: '\\kappa',
+  PI: '\\pi',
+  LAMBDA: '\\lambda',
+  THETA: '\\theta',
+  SIGMA: '\\sigma',
+  XI: '\\xi',
+  OMEGA: '\\omega',
   ZETA: '\\zeta',
+
+  // operator
   PLUS: '+',
   MINUS: '-',
   PLUSMINUS: '\\pm',
@@ -29,7 +42,22 @@ const Keys = {
   ENTER: 'Enter',
   EXP: '^',
   EXP_2: '\\^2',
-  EXP_3: 'EXP_3',
+  EXP_3: '\\^3',
+  EXP_4: '\\^4',
+  EXP_5: '\\^5',
+  EXP_6: '\\^6',
+  EXP_7: '\\^7',
+  EXP_8: '\\^8',
+  EXP_9: '\\^9',
+  SUB_2: '\\_2',
+  SUB_3: '\\_3',
+  SUB_4: '\\_4',
+  SUB_5: '\\_5',
+  SUB_6: '\\_6',
+  SUB_7: '\\_7',
+  SUB_8: '\\_8',
+  SUB_9: '\\_9',
+
   SQRT: '\\sqrt',
   CUBE_ROOT: 'CUBE_ROOT',
   RADICAL: 'RADICAL',
@@ -43,8 +71,7 @@ const Keys = {
   COS: '\\cos',
   TAN: 'TAN',
   // TODO(charlie): Add in additional Greek letters.
-  PI: 'PI',
-  THETA: 'THETA',
+  
 
   UP: 'UP',
   RIGHT: 'Right',
@@ -95,8 +122,11 @@ const KeyAction = (key) => {
     return Actions.COMMAND
   } else if (key === Keys.SIN || key === Keys.COS || key === Keys.TAN) {
     return Actions.COMMANDOPEN
-  } else if (key === Keys.LOG || key === Keys.LOG_2 || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.EXP_3 || key === Keys.PLUSMINUS ||
-            key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA || key === Keys.NOTEQUAL) {
+  } else if (key === Keys.LOG || key === Keys.LOG_2 || key === Keys.INT || key === Keys.DIFF || key === Keys.EXP_2 || key === Keys.EXP_3 ||
+            key === Keys.PLUSMINUS || key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA ||
+            key === Keys.NOTEQUAL || key === Keys.SUB_2 || key === Keys.SUB_3 || key === Keys.SUB_4 || key === Keys.SUB_5 || key === Keys.SUB_6 ||
+            key === Keys.SUB_7 || key === Keys.SUB_8 || key === Keys.SUB_9 || key === Keys.EXP_4 || key === Keys.EXP_5 || key === Keys.EXP_6 ||
+            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

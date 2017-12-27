@@ -1,4 +1,5 @@
 import { Keys } from './Keys'
+import Key from '../commons/Key';
 
 const Math = {
   value: [
@@ -9,18 +10,18 @@ const Math = {
     ['(', ')', '.', '0', Keys.EQUAL, Keys.PLUS],
   ],
   down: [
-    [Keys.LOG_2, '<=', '>=', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
-    [null, Keys.COS, '7', '8', '9', Keys.DIVIDE],
-    [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
-    [Keys.EXP_3, 'y', '1', 'Keys.EXP_2', 'Keys.EXP_3', Keys.MINUS],
+    [Keys.LOG_2, '<=', '>=', null, Keys.EXP, Keys.BACKSPACE],
+    [null, Keys.COS, Keys.SUB_7, Keys.SUB_8, Keys.SUB_9, Keys.DIVIDE],
+    [Keys.DIFF, Keys.SQRT, Keys.SUB_4, Keys.SUB_5, Keys.SUB_6, Keys.TIMES],
+    [Keys.EXP_3, 'y', null, Keys.SUB_2, Keys.SUB_3, Keys.MINUS],
     ['[', ']', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   up: [
-    [Keys.LOG_2, '<=', '>=', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
-    [Keys.INT, Keys.COS, '7', '8', '9', Keys.DIVIDE],
-    [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
-    [Keys.EXP_3, 'y', '1', 'Keys.EXP_2', 'Keys.EXP_3', Keys.MINUS],
-    ['[', ']', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
+    [Keys.LOG_3, null, null, null, Keys.EXP, Keys.BACKSPACE],
+    [Keys.INT, Keys.COS, Keys.EXP_7, Keys.EXP_8, Keys.EXP_9, Keys.DIVIDE],
+    [Keys.DIFF, Keys.SQRT, Keys.EXP_4, Keys.EXP_5, Keys.EXP_6, Keys.TIMES],
+    [Keys.EXP_4, 'z', null, Keys.EXP_2, Keys.EXP_3, Keys.MINUS],
+    ['{', '}', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   symbol: [
     ['log', '<', '>', '±', '^', 'DEL'],
@@ -40,10 +41,10 @@ const Alphabet = {
     [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
   ],
   down: [
-    [Keys.ALPHA, Keys.BETA, 'C', 'd', Keys.EPSILON, 'f(', 'g(x)', 'h(x)'],
-    ['i', 'j', 'k', 'l', Keys.MU, 'n', Keys.THETA, 'p'],
-    ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
-    [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
+    [Keys.ALPHA, Keys.BETA, 'C', Keys.DELTA, Keys.EPSILON, 'f(', 'g(x)', 'h'],
+    [Keys.IOTA, 'j', Keys.KAPPA, Keys.LAMBDA, Keys.MU, Keys.ETA, Keys.THETA, Keys.PI],
+    ['q', 'r', Keys.SIGMA, Keys.THETA, 'u', 'v', Keys.OMEGA, Keys.XI],
+    [Keys.NUMBER, '', ' ', '', '', 'y', Keys.ZETA, Keys.BACKSPACE],
   ],
   up: [
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
