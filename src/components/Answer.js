@@ -32,7 +32,7 @@ class Answer extends Component {
     }
 
     return answers.map((answer) => {
-      const latex = answer.latex
+      const { latex } = answer
       const description = answer.text
       let header = ''
       if (latex) {
@@ -58,7 +58,6 @@ class Answer extends Component {
   }
 
   state = {
-    id: 1,
     methods: [
       {
         author: 'Karn Patanukum',
@@ -119,8 +118,20 @@ class Answer extends Component {
     ],
   }
 
+  componentDidMount() {
+    this.props.history.listen((location, action) => {
+      // location is an object like window.location
+      console.log(action, location.pathname, location.state)
+      if (action === 'POP' && location.pathname === '/paper') {
+        const { tag } = this.props.location.state
+        console.log(tag)
+        if (tag) { this.props.history.push(`/catalog/${tag}`) }
+      }
+    })
+  }
+
   onCommentPress = (index) => {
-    const methods = this.state.methods
+    const { methods } = this.state
     const method = methods[index]
     if (method) {
       method.comment = !method.comment
@@ -129,7 +140,7 @@ class Answer extends Component {
   }
 
   onGenuiusPress = (index) => {
-    const methods = this.state.methods
+    const { methods } = this.state
     const method = methods[index]
     if (method) {
       method.rated = !method.rated
@@ -172,19 +183,6 @@ class Answer extends Component {
     })
   }
 
-  componentDidMount() {
-    this.props.history.listen((location, action) => {
-      // location is an object like window.location
-      console.log(action, location.pathname, location.state)
-      if (action === 'POP' && location.pathname === '/paper') {
-        const tag = this.props.location.state.tag
-        console.log(tag)
-        if (tag)
-          this.props.history.push(`/catalog/${tag}`)
-      }
-    })
-  }
-
   render() {
     return (<div>
       <Header text="Answer Sheet" />
@@ -216,6 +214,6 @@ query($id: ID!) {
 
 export default (
   graphql(answerQuery, {
-    options: ownProps => ({ variables: { id: ownProps.location.state.id } })
+    options: ownProps => ({ variables: { id: ownProps.location.state.id } }),
   })(withRouter(Answer))
 )

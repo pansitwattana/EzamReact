@@ -140,7 +140,7 @@ Catalog.defaultProps = {
 }
 
 Catalog.propTypes = {
-  title: PropTypes.string
+  title: PropTypes.string,
 }
 
 // const mapDispatchToProps = dispatch => bindActionCreators({

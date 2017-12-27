@@ -62,7 +62,6 @@ class PaperComponent extends Component {
     if (!location) return
     const data = location.state.post
     const done = location.state.done
-    console.log(data, done)
     const keywords = getKeywords(data.latex)
     const keywordsWitID = keywords.map(keyword => ({ value: keyword, id: uuid() }))
     console.log('keywords: ', keywords)
@@ -70,23 +69,23 @@ class PaperComponent extends Component {
   }
 
   componentDidMount() {
-    const line = this.state.line
-    const methods = this.state.methods
+    const { line } = this.state
+    const { methods } = this.state
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
   }
 
   componentDidUpdate() {
-    const line = this.state.line
-    const methods = this.state.methods
+    const { line } = this.state
+    const { methods } = this.state
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
   }
 
   onInputTouch(line) {
-    const methods = this.state.methods
+    const { methods } = this.state
     const oldMethod = methods[this.state.line]
     oldMethod.focus = false
     const newMethod = methods[line]

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import propTypes from 'prop-types'
 import { Icon } from 'semantic-ui-react'
 
 const Button = styled.div`
@@ -20,9 +21,13 @@ const Text = styled.span`
 
 const AddButton = ({ onClick }) => (
   <Button onClick={onClick}>
-    <Icon name='add circle' size='large' />
+    <Icon name="add circle" size="large" />
     <Text>Add new</Text>
   </Button>
 )
+
+AddButton.propTypes = {
+  onClick: propTypes.func.isRequired,
+}
 
 export default AddButton

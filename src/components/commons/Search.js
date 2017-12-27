@@ -12,7 +12,7 @@ import { gql, graphql } from 'react-apollo'
 class SearchComponent extends Component {
   state = {
     resuls: [],
-    value: ''
+    value: '',
   }
 
   resetComponent = () => this.setState({ results: [], value: '' })
@@ -21,18 +21,18 @@ class SearchComponent extends Component {
 
   handleSearchChange = (e, { value }) => {
     const { allPosts } = this.props.data
-    const posts = allPosts.map(post => ({ key: post.id, title: post.title + ' ' + post.latex }))
+    const posts = allPosts.map(post => ({ key: post.id, title: `${post.title} ${post.latex}` }))
     const newValue = value
     // this.setState({ value })
-    console.log('search value: ',  newValue)
-    console.log('search value: ',  allPosts)
+    // console.log('search value: ', newValue)
+    // console.log('search value: ', allPosts)
     // setTimeout(() => {
-    
+
     const re = new RegExp(_.escapeRegExp(value), 'i')
     const isMatch = result => re.test(result.title)
     this.setState({
       results: _.filter(posts, isMatch),
-      value: newValue
+      value: newValue,
     })
     // if (this.state.value.length < 1) return this.resetComponent()
     // }, 500)
@@ -43,7 +43,7 @@ class SearchComponent extends Component {
     const { results, value } = this.state
     return (
       <Search
-        aligned='center' 
+        aligned="center"
         loading={loading}
         onResultSelect={this.handleResultSelect}
         onSearchChange={this.handleSearchChange}

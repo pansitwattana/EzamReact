@@ -3,10 +3,10 @@ import uuid from 'uuid'
 import { gql, graphql } from 'react-apollo'
 import { Button, Icon, Input } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
+import styled from 'styled-components'
 import { Math } from './data/Keyboards'
 import math from './paper/MathQuill'
 import Keyboard from './commons/Keyboard'
-import styled from 'styled-components'
 import MathInput from './commons/Input'
 import Options from './commons/Options'
 import Header from './commons/Header'
@@ -46,8 +46,8 @@ class Problem extends Component {
     this.titleInput.focus()
   }
 
-  handleKeyboard(key) {
-    math.typed(key, this.state.problemId)
+  onTagAdded = (selectedTags) => {
+    this.setState({ selectedTags })
   }
 
   submit = () => {
@@ -55,13 +55,12 @@ class Problem extends Component {
     if (!latex || latex === '') {
       alert('Please Input Problem')
       return;
-    } 
-    const user = this.props.data.user
+    }
+    const { user } = this.props.data
     if (!user) {
       alert('user not login')
       return;
     }
-    
     const tags = this.state.selectedTags
     const tagIds = []
     this.props.tagQuery.allTags.forEach((tag) => {
@@ -76,14 +75,14 @@ class Problem extends Component {
       latex,
       description: '',
       difficulty: 'Easy',
-      tagIds: tagIds
+      tagIds,
     }
     console.log('submit', variables)
     this.props.createPost({ variables })
       .then((res) => {
         const post = res.data.createPost
         this.props.history.push('./paper', {
-          post: post,
+          post,
           done: false,
         })
       })
@@ -92,26 +91,28 @@ class Problem extends Component {
       })
   }
 
-  onTagAdded = (selectedTags) => {
-    this.setState({ selectedTags })
+  handleKeyboard(key) {
+    math.typed(key, this.state.problemId)
   }
 
   render() {
     const { symbol, value, action } = Math
     const { selectedTags, problemId, showKeyboard } = this.state
     const { loading, allTags } = this.props.tagQuery
-    const tags = loading | !allTags ? [{ key: '0', text: 'Loading', value: '' }] : 
+    const isLoading = loading || !allTags;
+    const tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
       <div>
         <Header text="Post" />
         <Input
-         style={{ margin: '10px', width: '100%' }} 
-         placeholder='Question Title' 
-         onChange={(e) => this.setState({ title: e.target.value})} 
-         onFocus={() => this.setState({ showKeyboard: false })} 
-         onBlur={() => this.setState({ showKeyboard: true })}
-         ref={(input) => { this.titleInput = input; }} />
+          style={{ margin: '10px', width: '100%' }}
+          placeholder="Question Title"
+          onChange={e => this.setState({ title: e.target.value })}
+          onFocus={() => this.setState({ showKeyboard: false })}
+          onBlur={() => this.setState({ showKeyboard: true })}
+          ref={(input) => { this.titleInput = input; }}
+        />
         <Question>
           <MathInput id={problemId} />
         </Question>
@@ -120,11 +121,17 @@ class Problem extends Component {
           <Input id={this.state.solutionId} />
         </Question> */}
         <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
+
           <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
-          
+
+          <br />
+          <Button style={{ margin: '10px' }}>
+            <Icon name="camera" />
+            Add a picture
+          </Button>
           <br />
           <Button style={{ padding: 10 }} icon onClick={this.submit}>
-            <Icon name='send' />
+            <Icon name="send" />
             Submit
           </Button>
         </Form>
@@ -133,7 +140,7 @@ class Problem extends Component {
     )
   }
 }
-//SolutionanswersAnswer
+// SolutionanswersAnswer
 const createPost = gql`
 mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty){
   createPost (
@@ -170,10 +177,4 @@ query {
 }
 `
 
-export default graphql(createPost, { name: 'createPost' })(
-  graphql(userQuery, { options: { fetchPolicy: 'network-only' }} )(
-    graphql(tagQuery, { name: 'tagQuery' })(
-      withRouter(Problem)
-    )
-  )
-)
+export default graphql(createPost, { name: 'createPost' })(graphql(userQuery, { options: { fetchPolicy: 'network-only' } })(graphql(tagQuery, { name: 'tagQuery' })(withRouter(Problem))))

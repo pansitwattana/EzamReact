@@ -33,7 +33,7 @@ const Alphabet = {
     [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
   ],
   down: [
-    [Keys.ALPHA, Keys.BETA, 'C', 'd', Keys.EPSILON, 'f(x)', 'g(x)', 'h(x)'],
+    [Keys.ALPHA, Keys.BETA, 'C', 'd', Keys.EPSILON, 'f(', 'g(x)', 'h(x)'],
     ['i', 'j', 'k', 'l', Keys.MU, 'n', Keys.THETA, 'p'],
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
     [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],

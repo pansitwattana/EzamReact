@@ -4,7 +4,7 @@ import algebra, { Equation } from 'algebra.js'
 export default (equation, variable = 'x') => {
   const algebraObj = new AlgebraLatex(equation)
   const mathAnswer = algebraObj.toMath()
-  console.log(mathAnswer)
+  // console.log(mathAnswer)
   if (mathAnswer === '') {
     return false
   }
@@ -15,7 +15,7 @@ export default (equation, variable = 'x') => {
   try {
     eq = algebra.parse(mathAnswer)
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return false
   }
   if (eq instanceof Equation) {

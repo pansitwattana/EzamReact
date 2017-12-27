@@ -12,7 +12,7 @@ const Screen = styled.div`
   align-items: center;
   background-color: #68cef2;
   color: #190d08;
-  font-size: 30px;
+  font-size: 12px;
   padding: 5px 10px;
   text-align: left;
   font-weight: lighter;

@@ -157,7 +157,6 @@ class Home extends Component {
       }
     }
     const titles = this.state.tags[this.state.currentSubject]
-    console.log('show', this.state.currentSubject)
     const firstRow = titles.slice(0, 3).map(subject => (
       <Course
         key={subject.id}

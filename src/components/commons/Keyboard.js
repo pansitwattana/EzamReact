@@ -34,10 +34,9 @@ class KeyboardComponent extends Component {
   state = {
     type: Math,
   }
-  
   onKeywordPress = (e) => {
     const mathfield = e.target.firstChild
-    console.log(mathfield)
+    // console.log(mathfield)
     if (mathfield) {
       const latex = mathfield.id
       if (latex) {
@@ -56,7 +55,6 @@ class KeyboardComponent extends Component {
       this.props.onPress(value)
     }
   }
-  
   renderKeywords(keywords, height) {
     return keywords.map(keyword => (
       <Button key={keyword.id} onClick={this.onKeywordPress} style={{ height }}>

@@ -21,16 +21,11 @@ const Text = styled.div`
   align-self: center;
 `
 
-const Header = (props) => {
-  return (
-    <View>
-      {/* <Button icon style={{ flex: 1 }}>
-        <Icon name="left arrow" />
-      </Button> */}
-      <Text>{props.text}</Text>
-    </View>
-  )
-}
+const Header = props => (
+  <View>
+    <Text>{props.text}</Text>
+  </View>
+)
 
 Header.defaultProps = {
   text: 'Course',

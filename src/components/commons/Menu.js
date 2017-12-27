@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import propTypes from 'prop-types'
 
 const items = ['Mathematics', 'Physics', 'Sciences']
 
@@ -26,6 +27,10 @@ const Item = styled.span`
 `
 
 export default class MenuExampleColoredInverted extends Component {
+  static propTypes = {
+    onClick: propTypes.func.isRequired,
+  }
+
   state = { activeItem: items[0] }
 
   handleClick = (item) => {

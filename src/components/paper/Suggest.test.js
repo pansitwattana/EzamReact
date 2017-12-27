@@ -32,5 +32,7 @@ test('Long Story Problem', () => {
 })
 
 test('checkValid Test', () => {
-  expect(checkValid('Find x where y=x^2+4')).toBe(false)
+  const problem = 'Find x where y=x^2+4'
+  expect(getKeywords(problem)).toBe('')
+  expect(checkValid(problem)).toBe(false)
 })

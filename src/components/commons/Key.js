@@ -67,7 +67,7 @@ class KeyComponent extends Component {
 
   onTouchStart = (event) => {
     // console.log('start event')
-    const touches = event.touches
+    const { touches } = event
     if (touches.length > 0) {
       this.setState({
         pos: {
@@ -81,10 +81,10 @@ class KeyComponent extends Component {
   }
 
   onTouchMove = (event) => {
-    const touches = event.touches
-    const status = this.state.status
+    const { touches } = event
+    const { status } = this.state
     if (touches.length > 0 && status !== 'swipe') {
-      const height = this.state.height
+      const { height } = this.state
       const y = event.touches[0].clientY
       if (y - this.state.pos.y > height) {
         this.setState({ status: 'swipe' })
@@ -92,8 +92,8 @@ class KeyComponent extends Component {
     }
   }
 
-  onTouchEnd = (event) => {
-    const status = this.state.status
+  onTouchEnd = () => {
+    const { status } = this.state
     // console.log(status)
     this.eventFire(status)
 
@@ -114,7 +114,9 @@ class KeyComponent extends Component {
   }
 
   render() {
-    const { keyType, keySymbol = '', keyValue, highlight, colCount } = this.props
+    const {
+      keyType, keySymbol = '', keyValue, highlight, colCount,
+    } = this.props
     const align = this.state.status === 'swipe' ? 'bottom' : 'middle'
     let operator = false
     let number = false
