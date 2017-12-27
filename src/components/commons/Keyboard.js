@@ -84,18 +84,20 @@ class KeyboardComponent extends Component {
     }
 
     const {
-      value, symbol, down, action,
+      value, symbol, down, up, action,
     } = this.state.type
     const rowCount = symbol.length
     const height = (9 * value.length)
     const keyboardRows = value.map((values, row) => {
       const symbolRow = symbol[row]
       const downRow = down[row]
+      const upRow = up[row]
       const col = symbolRow.length
       let key = ''
       const keys = values.map((keyValue, index) => {
         const symbolValue = symbolRow[index]
         const downValue = downRow[index]
+        const upValue = upRow[index]
         key += symbolValue
         return (
           <Key
@@ -104,6 +106,7 @@ class KeyboardComponent extends Component {
             keyValue={keyValue}
             keySymbol={symbolValue}
             swipeDown={downValue}
+            swipeUp={upValue}
             onPress={this.handleKeyPress}
             colCount={col}
           />)

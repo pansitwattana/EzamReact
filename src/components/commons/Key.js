@@ -61,7 +61,6 @@ class KeyComponent extends Component {
       x: 0,
       y: 0,
     },
-    height: 0,
     status: 'none',
   }
 
@@ -74,7 +73,6 @@ class KeyComponent extends Component {
           x: touches[0].clientX,
           y: touches[0].clientY,
         },
-        height: touches[0].target.clientHeight,
         status: 'touch',
       })
     }
@@ -83,11 +81,16 @@ class KeyComponent extends Component {
   onTouchMove = (event) => {
     const { touches } = event
     const { status } = this.state
-    if (touches.length > 0 && status !== 'swipe') {
-      const { height } = this.state
+    const { swipeDown, swipeUp } = this.props
+    if (touches.length > 0) {
+      const height = 0
       const y = event.touches[0].clientY
-      if (y - this.state.pos.y > height) {
-        this.setState({ status: 'swipe' })
+      const deltaY = y - this.state.pos.y
+      console.log(deltaY)
+      if (deltaY > 0 && swipeDown) {
+        this.setState({ status: 'swipedown' })
+      } else if (deltaY < 0 && swipeUp) {
+        this.setState({ status: 'swipeup' })
       }
     }
   }
@@ -99,17 +102,20 @@ class KeyComponent extends Component {
 
     this.setState({
       pos: { x: 0, y: 0 },
-      height: 0,
       status: 'none',
     })
   }
 
   eventFire(status) {
-    const { onPress, keyValue, swipeDown } = this.props
+    const {
+      onPress, keyValue, swipeDown, swipeUp,
+    } = this.props
     if (status === 'touch') {
       onPress(keyValue)
-    } else if (status === 'swipe') {
+    } else if (status === 'swipedown') {
       onPress(swipeDown)
+    } else if (status === 'swipeup') {
+      onPress(swipeUp)
     }
   }
 
@@ -117,7 +123,12 @@ class KeyComponent extends Component {
     const {
       keyType, keySymbol = '', keyValue, highlight, colCount,
     } = this.props
-    const align = this.state.status === 'swipe' ? 'bottom' : 'middle'
+    let align = 'middle'
+    if (this.state.status === 'swipedown') {
+      align = 'bottom'
+    } else if (this.state.status === 'swipeup') {
+      align = 'top'
+    }
     let operator = false
     let number = false
     let action = false
@@ -193,6 +204,8 @@ KeyComponent.defaultProps = {
   keyValue: '',
   highlight: false,
   colCount: 5,
+  swipeDown: '',
+  swipeUp: '',
 }
 
 KeyComponent.propTypes = {
@@ -201,7 +214,8 @@ KeyComponent.propTypes = {
   keyValue: PropTypes.string,
   highlight: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
-  swipeDown: PropTypes.string.isRequired,
+  swipeDown: PropTypes.string,
+  swipeUp: PropTypes.string,
   colCount: PropTypes.number,
 }
 

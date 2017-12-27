@@ -10,6 +10,13 @@ const Math = {
   ],
   down: [
     [Keys.LOG_2, '<=', '>=', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
+    [null, Keys.COS, '7', '8', '9', Keys.DIVIDE],
+    [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
+    [Keys.EXP_3, 'y', '1', 'Keys.EXP_2', 'Keys.EXP_3', Keys.MINUS],
+    ['[', ']', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
+  ],
+  up: [
+    [Keys.LOG_2, '<=', '>=', Keys.PLUSMINUS, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.COS, '7', '8', '9', Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, '4', '5', '6', Keys.TIMES],
     [Keys.EXP_3, 'y', '1', 'Keys.EXP_2', 'Keys.EXP_3', Keys.MINUS],
@@ -37,6 +44,12 @@ const Alphabet = {
     ['i', 'j', 'k', 'l', Keys.MU, 'n', Keys.THETA, 'p'],
     ['q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
     [Keys.NUMBER, '', ' ', '', '', 'y', 'z', Keys.BACKSPACE],
+  ],
+  up: [
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'],
+    ['Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'],
+    [Keys.NUMBER, '', ' ', '', '', 'Y', 'Z', Keys.BACKSPACE],
   ],
   symbol: [
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
