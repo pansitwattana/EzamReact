@@ -118,17 +118,17 @@ class Answer extends Component {
     ],
   }
 
-  componentDidMount() {
-    this.props.history.listen((location, action) => {
-      // location is an object like window.location
-      console.log(action, location.pathname, location.state)
-      if (action === 'POP' && location.pathname === '/paper') {
-        const { tag } = this.props.location.state
-        console.log(tag)
-        if (tag) { this.props.history.push(`/catalog/${tag}`) }
-      }
-    })
-  }
+  // componentDidMount() {
+  //   this.props.history.listen((location, action) => {
+  //     // location is an object like window.location
+  //     console.log(action, location.pathname, location.state)
+  //     if (action === 'POP' && location.pathname === '/paper') {
+  //       const { tag } = this.props.location.state
+  //       console.log(tag)
+  //       if (tag) { this.props.history.push(`/catalog/${tag}`) }
+  //     }
+  //   })
+  // }
 
   onCommentPress = (index) => {
     const { methods } = this.state

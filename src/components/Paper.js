@@ -97,7 +97,6 @@ class PaperComponent extends Component {
   onShowAnswers(id) {
     this.props.history.push('/answer', {
       id,
-      tag: this.props.location.state.tag,
     })
   }
 

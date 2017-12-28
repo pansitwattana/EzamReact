@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import propTypes from 'prop-types'
 import { Sidebar, Segment, Button, Menu, Image, Icon, Header } from 'semantic-ui-react'
 import logo from '../../icon.png'
 
@@ -49,6 +50,10 @@ class SidebarMenu extends Component {
             <Icon name="compose" />
             New Post
           </Menu.Item>
+          <Menu.Item onClick={() => this.props.history.push('/posts')} name="book">
+            <Icon name="book" />
+            My posts
+          </Menu.Item>
           <Menu.Item onClick={() => this.props.history.push('/profile')} name="user circle">
             <Icon name="user circle" />
             Profile
@@ -69,6 +74,11 @@ class SidebarMenu extends Component {
       </Sidebar.Pushable>
     )
   }
+}
+
+SidebarMenu.propTypes = {
+  history: propTypes.object.isRequired,
+  children: propTypes.object.isRequired,
 }
 
 export default withRouter(SidebarMenu)

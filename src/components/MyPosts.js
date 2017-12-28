@@ -7,21 +7,21 @@ import Search from './commons/Search'
 import PostContainer from './commons/PostContainer'
 import Error from './commons/Error'
 
-class Catalog extends Component {
+class MyPosts extends Component {
   renderPost(title) {
-    if (this.props.data.loading) {
+    if (this.props.userQuery.loading) {
       return <Error message="Loading..." />
-    } else if (!this.props.data || !this.props.data.Tag) {
-      if (this.props.data.error) {
+    } else if (!this.props.userQuery || !this.props.userQuery.user) {
+      if (this.props.userQuery.error) {
         return <Error message="No Internet Connection. Please refresh this page." />
       }
       return <Error message={`0 Problems in ${title}`} />
     }
-    return <PostContainer posts={this.props.data.Tag.posts} user={this.props.userQuery.user} />
+    return <PostContainer posts={this.props.userQuery.user.posts} user={this.props.userQuery.user} />
   }
 
   render() {
-    const { title } = this.props.match.params
+    const title = 'All Posts'
 
     return (
       <div>
@@ -37,38 +37,28 @@ class Catalog extends Component {
   }
 }
 
-const postQuery = gql`
-  query($title: String!) {
-    Tag(name: $title) {
-      name
-      posts {
-        id
-        title
-        latex
-        difficulty
-        description
-        solutions {
-          author {
-            id
-          }
-        }
-        author {
-          name
-          id
-        }
-      }
-    }
-  }
-`
-
 const userQuery = gql`
 query {
   user {
     id
+    posts {
+      id
+      title
+      latex
+      difficulty
+      description
+      solutions {
+        author {
+          id
+        }
+      }
+      author {
+        name
+        id
+      }
+    }
   }
 }
 `
 
-export default withRouter(graphql(postQuery, {
-  options: ownProps => ({ variables: { title: ownProps.match.params.title } }),
-})(graphql(userQuery, { name: 'userQuery' })(Catalog)))
+export default withRouter(graphql(userQuery, { name: 'userQuery' })(MyPosts))
