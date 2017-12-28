@@ -72,7 +72,7 @@ const Keys = {
   TAN: 'TAN',
   // TODO(charlie): Add in additional Greek letters.
   
-
+  // control key
   UP: 'UP',
   RIGHT: 'Right',
   DOWN: 'DOWN',
@@ -89,15 +89,6 @@ const Keys = {
 
   DIFF: '\\frac{dy}{dx}',
   INT: '\\int',
-
-  NOOP: 'NOOP',
-
-  // Multi-functional keys.
-  FRAC_MULTI: 'FRAC_MULTI',
-
-  // A custom key that captures an arbitrary number of symbols but has no
-  // 'default' symbol or action.
-  MANY: 'MANY',
 }
 
 const Actions = {

@@ -10,11 +10,11 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 const networkInterface = createNetworkInterface({
-  uri: 'https://api.graph.cool/simple/v1/cj8xys6y80cqz0169yu1nn3ql'
+  uri: 'https://api.graph.cool/simple/v1/cj8xys6y80cqz0169yu1nn3ql',
 });
 
 networkInterface.use([{
-  applyMiddleware (req, next) {
+  applyMiddleware(req, next) {
     if (!req.options.headers) {
       req.options.headers = {}
     }
@@ -29,7 +29,7 @@ networkInterface.use([{
 }])
 
 const client = new ApolloClient({
-  networkInterface
+  networkInterface,
 });
 
 render(

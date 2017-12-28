@@ -27,22 +27,16 @@ const KeyboardRow = styled.div`
 `
 
 const Suggestion = styled.div`
-  height: 15px
-  width: 100%
+  height: 10%;
+  width: 95%;
 `
 class KeyboardComponent extends Component {
   state = {
     type: Math,
   }
-  onKeywordPress = (e) => {
-    const mathfield = e.target.firstChild
-    // console.log(mathfield)
-    if (mathfield) {
-      const latex = mathfield.id
-      if (latex) {
-        this.props.onPress(latex)
-      }
-    }
+  onKeywordPress = (keyword) => {
+    console.log(keyword)
+    this.props.onPress(`\\${keyword}`)
   }
 
   handleKeyPress = (value) => {
@@ -57,7 +51,7 @@ class KeyboardComponent extends Component {
   }
   renderKeywords(keywords, height) {
     return keywords.map(keyword => (
-      <Button key={keyword.id} onClick={this.onKeywordPress} style={{ height }}>
+      <Button key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)} style={{ height }}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
   }
