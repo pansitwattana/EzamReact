@@ -13,7 +13,7 @@ import Register from './components/Register'
 import Problem from './components/Problem'
 
 const App = () => (
-  <TransitionGroup>
+  <TransitionGroup style={{ height: '100%' }}>
     <Route exact path="/" component={Home} />
     <Route path="/paper" component={Paper} />
     <Route path="/catalog/:title" component={Catalog} />

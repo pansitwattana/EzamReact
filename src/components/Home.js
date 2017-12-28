@@ -11,6 +11,7 @@ import LoginButton from './commons/LoginButton'
 
 const Background = styled.div`
   text-align: center; 
+  height: 100%;
 `
 
 const CourseContainer = styled.div`
@@ -172,21 +173,22 @@ class Home extends Component {
       />
     ))
     return (
-      <Background>
-        <Logo />
-        <Search value="" />
-        <Menu onClick={this.onSubjectChange} />
-        <CourseContainer>
-          <CourseRow>
-            {firstRow}
-          </CourseRow>
-          <CourseRow>
-            {secondRow}
-          </CourseRow>
-        </CourseContainer>
-        {addButton}
-        {loginButton}
-      </Background>
+      <Logo>
+        <Background>
+          <Search value="" />
+          <Menu onClick={this.onSubjectChange} />
+          <CourseContainer>
+            <CourseRow>
+              {firstRow}
+            </CourseRow>
+            <CourseRow>
+              {secondRow}
+            </CourseRow>
+          </CourseContainer>
+          {addButton}
+          {loginButton}
+        </Background>
+      </Logo>
     )
   }
 }
@@ -199,4 +201,4 @@ query {
 }
 `
 
-export default graphql(userQuery)(withRouter(Home),)
+export default graphql(userQuery)(withRouter(Home))
