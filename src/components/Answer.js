@@ -162,7 +162,7 @@ class Answer extends Component {
       return <Error message={userError.message} />
     }
 
-    const solutions = this.props.data.Post.solutions
+    const { solutions } = this.props.data.Post
     return solutions.map((solution, index) => {
       const isAuthor = solution.author.id === this.props.userQuery.user.id
       console.log(isAuthor)
@@ -192,10 +192,12 @@ class Answer extends Component {
   }
 
   render() {
-    return (<div>
-      <Header text="Answer Sheet" />
-      {this.generateAnswers()}
-    </div>)
+    return (
+      <div>
+        <Header text="Answer Sheet" />
+        {this.generateAnswers()}
+      </div>
+    )
   }
 }
 

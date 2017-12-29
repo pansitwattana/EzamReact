@@ -40,6 +40,7 @@ class Problem extends Component {
     title: '',
     selectedTags: [],
     showKeyboard: false,
+    imgSrc: null,
   }
 
   componentDidMount() {
@@ -48,6 +49,20 @@ class Problem extends Component {
 
   onTagAdded = (selectedTags) => {
     this.setState({ selectedTags })
+  }
+
+  onFileChange = () => {
+    const file = this.refs.file.files[0];
+    const reader = new FileReader();
+    const url = reader.readAsDataURL(file);
+
+    reader.onloadend = (e) => {
+      this.setState({
+        imgSrc: [reader.result],
+      })
+    }
+    console.log(url) // Would see a path?
+    // TODO: concat files
   }
 
   submit = () => {
@@ -125,10 +140,18 @@ class Problem extends Component {
           <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
 
           <br />
-          <Button style={{ margin: '10px' }}>
+          <input
+            ref="file"
+            type="file"
+            name="user[image]"
+            multiple="true"
+            onChange={this.onFileChange}
+          />
+          <img src={this.state.imgSrc} alt="Problem Pictures" />
+          {/* <Button style={{ margin: '10px' }}>
             <Icon name="camera" />
             Add a picture
-          </Button>
+          </Button> */}
           <br />
           <Button style={{ padding: 10 }} icon onClick={this.submit}>
             <Icon name="send" />

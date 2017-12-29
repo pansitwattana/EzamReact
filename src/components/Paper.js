@@ -234,7 +234,7 @@ class PaperComponent extends Component {
     const itemSize = 40
     if (this.state.problem) {
       const { submiting, problem, keywords } = this.state
-      const { latex, id } = problem
+      const { latex, imageurl, id } = problem
       const isDone = this.state.done
       return (
         <div>
@@ -243,6 +243,7 @@ class PaperComponent extends Component {
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen
                 displayText={latex}
+                imageUrl={imageurl}
                 id={id}
                 done={isDone}
                 loading={submiting}

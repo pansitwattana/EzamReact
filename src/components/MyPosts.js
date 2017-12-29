@@ -45,6 +45,7 @@ query {
       id
       title
       latex
+      imageurl
       difficulty
       description
       solutions {

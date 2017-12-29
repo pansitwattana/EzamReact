@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Icon, Dimmer, Loader } from 'semantic-ui-react'
+import { Image, Icon, Dimmer, Loader } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import LaTeX from './LaTexContainer'
 // import LaTeX from './LaTeX'
@@ -53,25 +53,29 @@ const Text = styled.span`
 const ScreenComponent = ({
   displayText,
   id,
+  imageUrl,
   done,
   loading,
   onSubmit,
   onShowAnswers
-}) => (
-  <Screen>
-    <LaTeX text={displayText} id={id} />
-    <LeftContainer onClick={done ? onShowAnswers : onSubmit}>
-      {loading ? (
-        <Dimmer active>
-          <Loader content="Loading" />
-        </Dimmer>
-      ) : (
-        <Icon inverted color="teal" name="check" />
-      )}
-      <Text done={done}>{done ? 'Show Answers' : 'Submit'}</Text>
-    </LeftContainer>
-  </Screen>
-)
+}) => {
+  const display = imageUrl ? <Image src={imageUrl} /> : <LaTeX text={displayText} id={id} />
+  return (
+    <Screen>
+      {display}
+      <LeftContainer onClick={done ? onShowAnswers : onSubmit}>
+        {loading ? (
+          <Dimmer active>
+            <Loader content="Loading" />
+          </Dimmer>
+        ) : (
+          <Icon inverted color="teal" name="check" />
+        )}
+        <Text done={done}>{done ? 'Show Answers' : 'Submit'}</Text>
+      </LeftContainer>
+    </Screen>
+  )
+}
 
 ScreenComponent.propTypes = {
   displayText: PropTypes.string.isRequired,
