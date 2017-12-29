@@ -150,34 +150,42 @@ class Answer extends Component {
   }
 
   generateAnswers() {
-    if (this.props.data.loading) {
+    if (this.props.data.loading || this.props.userQuery.loading) {
       return <Error message="Loading..." />
     }
     const { error } = this.props.data
     if (error) {
       return <Error message={error.message} />
     }
+    const userError = this.props.userQuery.error
+    if (userError) {
+      return <Error message={userError.message} />
+    }
 
     const solutions = this.props.data.Post.solutions
     return solutions.map((solution, index) => {
+      const isAuthor = solution.author.id === this.props.userQuery.user.id
+      console.log(isAuthor)
+      const coverText = isAuthor ? 'Your Solution' : `Solved by ${solution.author.name}`
       const genuiusButton = (solution.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
       const commentButton = (solution.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
       const commentForm = (solution.comment ? (<Form style={{ padding: '10px 0 0 0' }}>
         <TextArea autoHeight placeholder="Any Suggestions ?" />
         <Form.Button floated="right">Submit</Form.Button>
       </Form>) : <div />)
+      const commentGroup = isAuthor ? <div /> : (<Button.Group labeled style={{ width: '100%' }}>
+        {genuiusButton}
+        <Button.Or />
+        {commentButton}
+      </Button.Group>)
       return (
         <Container key={solution.id}>
           <Cover>
-            <Author>Solved by {solution.author.name}</Author>
+            <Author>{coverText}</Author>
             <Rate>{solution.rate} Upvote</Rate>
           </Cover>
           {Answer.renderMethods(solution.answers)}
-          <Button.Group labeled style={{ width: '100%' }}>
-            {genuiusButton}
-            <Button.Or />
-            {commentButton}
-          </Button.Group>
+          {commentGroup}
           {commentForm}
         </Container>)
     })
@@ -198,6 +206,7 @@ query($id: ID!) {
       id
       rate
       author {
+        id
         name
       }
       answers {
@@ -210,10 +219,21 @@ query($id: ID!) {
 }
 `
 
+const userQuery = gql`
+  query {
+    user {
+      id
+    }
+  }
+`
 // export default withRouter(Answer)
+const AnswerWithUser = graphql(userQuery, {
+  name: 'userQuery',
+  options: { fetchPolicy: 'network-only' },
+})(Answer)
 
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ variables: { id: ownProps.location.state.id } }),
-  })(withRouter(Answer))
+  })(withRouter(AnswerWithUser))
 )
