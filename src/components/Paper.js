@@ -111,6 +111,13 @@ class PaperComponent extends Component {
       return
     }
 
+    if (methods.length === 1) {
+      if (methods[0].text === '') {
+        this.setState({ submiting: false })
+        return
+      }
+    }
+
     const answer = solver(problem.latex)
     const equations = []
     let isError = false
@@ -132,7 +139,6 @@ class PaperComponent extends Component {
       equations.push(equation)
       return newMethod
     })
-    console.log(methods)
     this.setState({ methods })
 
     if (!isError) {

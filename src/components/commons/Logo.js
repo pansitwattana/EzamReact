@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import auth from 'auth0-lock'
 import propTypes from 'prop-types'
 import { Sidebar, Segment, Button, Menu, Image, Icon, Header } from 'semantic-ui-react'
 import logo from '../../icon.png'
@@ -36,6 +37,10 @@ class SidebarMenu extends Component {
 
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
+  logout = () => {
+    auth.logout()
+  }
+
   render() {
     const { visible } = this.state
     const { onMouseDown } = this.props
@@ -57,6 +62,10 @@ class SidebarMenu extends Component {
           <Menu.Item onClick={() => this.props.history.push('/profile')} name="user circle">
             <Icon name="user circle" />
             Profile
+          </Menu.Item>
+          <Menu.Item onClick={this.logout} name="log out">
+            <Icon name="log otu" />
+            Log out
           </Menu.Item>
         </Sidebar>
         <Sidebar.Pusher>

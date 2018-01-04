@@ -35,8 +35,7 @@ class KeyboardComponent extends Component {
     type: Math,
   }
   onKeywordPress = (keyword) => {
-    console.log(keyword)
-    this.props.onPress(`\\${keyword}`)
+    this.props.onPress(keyword)
   }
 
   handleKeyPress = (value) => {
@@ -49,9 +48,9 @@ class KeyboardComponent extends Component {
       this.props.onPress(value)
     }
   }
-  renderKeywords(keywords, height) {
+  renderKeywords(keywords) {
     return keywords.map(keyword => (
-      <Button key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)} style={{ height }}>
+      <Button style={{ height: '100%' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
   }
@@ -67,11 +66,10 @@ class KeyboardComponent extends Component {
     let suggestionComponent = <div />
     let keyHeight = 75
     let keyActionHeight = 15
-    const keySuggestionHeight = '10%'
     if (keywords && keywords.length > 0) {
       keyHeight = 75
       keyActionHeight = 15
-      suggestionComponent = (<Suggestion>{this.renderKeywords(keywords, keySuggestionHeight)}</Suggestion>)
+      suggestionComponent = (<Suggestion>{this.renderKeywords(keywords)}</Suggestion>)
     } else {
       keyHeight = 85
       keyActionHeight = 15

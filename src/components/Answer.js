@@ -166,22 +166,30 @@ class Answer extends Component {
     return solutions.map((solution, index) => {
       const isAuthor = solution.author.id === this.props.userQuery.user.id
       console.log(isAuthor)
-      const coverText = isAuthor ? 'Your Solution' : `Solved by ${solution.author.name}`
+      const answerHeader = isAuthor ? (
+        <div>
+          <Author>Your Solution</Author>
+          <Button onClick={() => this.props.history.push('/paper')}>Edit</Button>
+        </div>
+      ) : <Author>{`Solved by ${solution.author.name}`}</Author>
+
       const genuiusButton = (solution.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
       const commentButton = (solution.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
-      const commentForm = (solution.comment ? (<Form style={{ padding: '10px 0 0 0' }}>
-        <TextArea autoHeight placeholder="Any Suggestions ?" />
-        <Form.Button floated="right">Submit</Form.Button>
-      </Form>) : <div />)
-      const commentGroup = isAuthor ? <div /> : (<Button.Group labeled style={{ width: '100%' }}>
-        {genuiusButton}
-        <Button.Or />
-        {commentButton}
-      </Button.Group>)
+      const commentForm = (solution.comment ? (
+        <Form style={{ padding: '10px 0 0 0' }}>
+          <TextArea autoHeight placeholder="Any Suggestions ?" />
+          <Form.Button floated="right">Submit</Form.Button>
+        </Form>) : <div />)
+      const commentGroup = isAuthor ? <div /> : (
+        <Button.Group labeled style={{ width: '100%' }}>
+          {genuiusButton}
+          <Button.Or />
+          {commentButton}
+        </Button.Group>)
       return (
         <Container key={solution.id}>
           <Cover>
-            <Author>{coverText}</Author>
+            {answerHeader}
             <Rate>{solution.rate} Upvote</Rate>
           </Cover>
           {Answer.renderMethods(solution.answers)}

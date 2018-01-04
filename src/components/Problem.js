@@ -10,6 +10,7 @@ import Keyboard from './commons/Keyboard'
 import MathInput from './commons/Input'
 import Options from './commons/Options'
 import Header from './commons/Header'
+import TitleSelect from './problem/TitleSelect'
 
 const Question = styled.div`
   margin: 10px;
@@ -56,7 +57,7 @@ class Problem extends Component {
     const reader = new FileReader();
     const url = reader.readAsDataURL(file);
 
-    reader.onloadend = (e) => {
+    reader.onloadend = () => {
       this.setState({
         imgSrc: [reader.result],
       })
@@ -118,8 +119,9 @@ class Problem extends Component {
     const tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Header text="Post" />
+        <TitleSelect />
         <Input
           style={{ margin: '10px', width: '100%' }}
           placeholder="Question Title"
