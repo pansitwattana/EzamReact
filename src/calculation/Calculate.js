@@ -10,5 +10,5 @@ export default (expression) => {
     return `Can not parse ${expression}`
   }
 
-  return algebraObj.toString()
+  return algebraObj
 }

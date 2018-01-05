@@ -23,5 +23,5 @@ export default (expression, variables) => {
 
   const answer = expr.eval(valToReplace)
 
-  return answer.toString()
+  return answer
 }

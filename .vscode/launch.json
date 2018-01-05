@@ -17,18 +17,23 @@
       "webRoot": "${workspaceRoot}"
     },
     {
+      "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",
-      "name": "Jest Tests",
-      "program": "${workspaceRoot}\\node_modules\\jest\\bin\\jest.js",
-      "args": [
-          "-i"
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "test"
       ],
-      "preLaunchTask": "build",
-      "internalConsoleOptions": "openOnSessionStart",
-      "outFiles": [
-          "${workspaceRoot}/dist/**/*"
-      ]
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--env=jsdom"
+      ],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
