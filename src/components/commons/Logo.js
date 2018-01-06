@@ -45,7 +45,7 @@ class SidebarMenu extends Component {
     const { visible } = this.state
     const { onMouseDown } = this.props
     return (
-      <Sidebar.Pushable style={{ borderWidth: '0px 0px 0px 0px', '-webkit-box-shadow': '0 0 0 0', 'border-radius': '0' }} as={Segment}>
+      <Sidebar.Pushable style={{ borderWidth: '0px 0px 0px 0px', WebkitBoxShadow: '0 0 0 0', borderRadius: '0' }} as={Segment}>
         <Sidebar as={Menu} animation="push" width="thin" visible={visible} icon="labeled" vertical inverted>
           <Menu.Item onClick={() => this.props.history.push('/')} name="home">
             <Icon name="home" />
@@ -64,7 +64,7 @@ class SidebarMenu extends Component {
             Profile
           </Menu.Item>
           <Menu.Item onClick={this.logout} name="log out">
-            <Icon name="log otu" />
+            <Icon name="log out" />
             Log out
           </Menu.Item>
         </Sidebar>

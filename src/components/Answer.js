@@ -163,9 +163,9 @@ class Answer extends Component {
     }
 
     const { solutions } = this.props.data.Post
+    console.log(this.props.data.Post)
     return solutions.map((solution, index) => {
       const isAuthor = solution.author.id === this.props.userQuery.user.id
-      console.log(isAuthor)
       const answerHeader = isAuthor ? (
         <div>
           <Author>Your Solution</Author>
@@ -212,6 +212,7 @@ class Answer extends Component {
 const answerQuery = gql`
 query($id: ID!) {
   Post(id: $id) {
+    id
     solutions {
       id
       rate

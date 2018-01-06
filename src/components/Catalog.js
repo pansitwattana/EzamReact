@@ -56,6 +56,9 @@ const postQuery = gql`
           name
           id
         }
+        tags {
+          name
+        }
       }
     }
   }

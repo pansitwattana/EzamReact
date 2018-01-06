@@ -34,7 +34,6 @@ const checkValid = (math) => {
   } catch (e) {
     return false
   }
-  console.log(eq)
   return true
 }
 

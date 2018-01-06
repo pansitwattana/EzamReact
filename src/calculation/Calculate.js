@@ -3,17 +3,20 @@ import parser from './Parser'
 
 export default (expression) => {
   if (!expression) {
-    return 'No expression pass through parameter'
+    console.error('No expression pass through parameter')
+    return null
   }
   const expr = parser(expression)
   if (!expr) {
-    return `Can not parse ${expression}`
+    console.error(`Can not parse ${expression}`)
+    return null
   }
   let algebraObj 
   try{
     algebraObj = algebra.parse(expr)
   } catch (e) {
-    return `Can not parse ${expr}`
+    console.error(`Can not parse ${expr}`)
+    return null
   }
 
   return algebraObj

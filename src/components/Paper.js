@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
+import ErrorManager from './paper/ErrorManager'
 import suggest from './paper/Suggest'
 import solver from './paper/Solver'
 import math from './paper/MathQuill'
@@ -16,7 +17,7 @@ import Input from './commons/Input'
 import Error from './commons/Error'
 
 const { getKeywords } = suggest
-
+let errorManager = null
 const Wrapper = styled.div`
   background: white;
   height: 100%;
@@ -54,6 +55,7 @@ class PaperComponent extends Component {
     line: 0,
     submiting: false,
     keywords: [],
+    hasChecker: false,
   }
 
   componentWillMount() {
@@ -64,7 +66,7 @@ class PaperComponent extends Component {
     const done = location.state.done
     const keywords = getKeywords(data.latex)
     const keywordsWitID = keywords.map(keyword => ({ value: keyword, id: uuid() }))
-    console.log('problem: ', data.latex)
+    console.log('problem: ', data)
     console.log('keywords: ', keywords)
     if (data) this.setState({ problem: data, done, keywords: keywordsWitID })
   }
@@ -75,6 +77,10 @@ class PaperComponent extends Component {
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
+    errorManager = new ErrorManager(this.state.problem)
+    if (errorManager.hasChecker()) {
+      this.setState({ hasChecker: true })
+    }
   }
 
   componentDidUpdate() {
@@ -103,44 +109,70 @@ class PaperComponent extends Component {
 
   submitAnswer() {
     this.setState({ submiting: true })
-    const { problem } = this.state
+    const { problem, hasChecker } = this.state
     let { methods } = this.state
 
-    if (methods.length === 0) {
-      console.log('no solution added')
+    methods = methods.map(method => {
+      let newMethod = method
+      newMethod.text = math.getLaTeX(method.id)
+      return newMethod
+    })
+
+    const solutions = methods.map((method) => {
+      return method.text
+    })
+    if (solutions.length === 0) {
+      alert('no solution added')
       this.setState({ submiting: false })
       return
     }
-
-    if (methods.length === 1) {
+    
+    if (solutions.length === 1) {
       if (methods[0].text === '') {
         this.setState({ submiting: false })
+        alert('no solution added')
         return
       }
     }
 
-    const answer = solver(problem.latex)
-    const equations = []
     let isError = false
-    let alreadyCheck = false
-    methods = methods.map((method) => {
-      const newMethod = method
-      const equation = math.getLaTeX(method.id)
-      newMethod.text = equation
-      const x = solver(equation)
-      if (answer !== false && alreadyCheck === false && x !== answer) {
-        newMethod.error = true
-        isError = true
-        alreadyCheck = true
-        console.log(equation, ' not correct')
-        console.log(x, ' is not equal ', answer)
-      } else {
-        newMethod.error = false
+    if (hasChecker) {
+      const corrects = errorManager.check(solutions)
+      if (corrects) {
+        console.log(corrects)
+        methods = methods.map((method, i) => {
+          let newMethod = method
+          if (!corrects[i]) {
+            newMethod.error = true
+            isError = true
+            console.log(`get error at ${method.text}`)
+          }
+          return newMethod
+        })
       }
-      equations.push(equation)
-      return newMethod
-    })
-    this.setState({ methods })
+    }
+    // const answer = solver(problem.latex)
+    // const equations = []
+    // let isError = false
+    // let alreadyCheck = false
+    // methods = methods.map((method) => {
+    //   const newMethod = method
+    //   const equation = math.getLaTeX(method.id)
+    //   newMethod.text = equation
+    //   const x = solver(equation)
+    //   if (answer !== false && alreadyCheck === false && x !== answer) {
+    //     newMethod.error = true
+    //     isError = true
+    //     alreadyCheck = true
+    //     console.log(equation, ' not correct')
+    //     console.log(x, ' is not equal ', answer)
+    //   } else {
+    //     newMethod.error = false
+    //   }
+    //   equations.push(equation)
+    //   return newMethod
+    // })
+    // this.setState({ methods })
 
     if (!isError) {
       const answers = methods.map(method => ({ latex: method.text, text: '' }))
@@ -179,7 +211,7 @@ class PaperComponent extends Component {
       // console.log(equations[equations.length - 1] === ans)
       // console.log(equations)
     } else {
-      this.setState({ submiting: false })
+      this.setState({ methods, submiting: false })
     }
   }
 

@@ -1,4 +1,4 @@
-import Calculate from './Calculate'
+import { Calculate } from './index'
 
 test('Cal 13616807201/200000000 - 68 -> answer = 16807201/200000000', () => {
   const answer = Calculate('13616807201/200000000-68').toString()

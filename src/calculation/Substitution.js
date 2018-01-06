@@ -24,6 +24,10 @@ export default (expression, variables) => {
   for (const variable in variables) {
     const val = variables[variable]
     if (!expression.includes(variable)) {
+      const answer = algebraObj.eval()
+      if (answer) {
+        return answer
+      }
       return `Variables ${variable}=${val} not found`;
     }
     const valExpr = parser(val)

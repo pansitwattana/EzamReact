@@ -1,4 +1,5 @@
 import Substitution from './Substitution'
+import { Subsitute } from './index';
 
 test('Eval 2x^2 + y + 1/3 -> x=2, y=3/4', () => {
   const answer = Substitution('2x^2+y+1/3', {
@@ -21,6 +22,10 @@ test('Eval 2x^2 + y + 1/3 -> x=2, y=3/4', () => {
   expect(answer2.toString()).toBe('109/12')
   expect(answer3.toString()).toBe('109/12')
   expect(answer4.toString()).toBe('109/12')
+})
+
+test('Eval without variable', () => {
+  expect(Subsitute('2', { x: '4' }).toString()).toBe('2')
 })
 
 test('Eval 5x^2+4x+x+x/3 -> x=4', () => {
