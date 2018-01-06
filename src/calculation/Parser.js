@@ -1,5 +1,4 @@
 import AlgebraLatex from 'algebra-latex'
-import algebraJS from 'algebra.js'
 
 export default (expression) => {
   if (!expression) {
@@ -10,13 +9,13 @@ export default (expression) => {
   // const mathAnswer = algebraObj.toMath()
   // console.log(mathAnswer)
 
-  let result
+  let mathExpression
   try {
-    result = algebraObj.toAlgebra(algebraJS)
+    mathExpression = algebraObj.toMath()
   } catch (e) {
     console.error(e)
     return null
   }
 
-  return result
+  return mathExpression
 }

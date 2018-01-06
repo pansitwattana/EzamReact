@@ -64,6 +64,7 @@ class PaperComponent extends Component {
     const done = location.state.done
     const keywords = getKeywords(data.latex)
     const keywordsWitID = keywords.map(keyword => ({ value: keyword, id: uuid() }))
+    console.log('problem: ', data.latex)
     console.log('keywords: ', keywords)
     if (data) this.setState({ problem: data, done, keywords: keywordsWitID })
   }

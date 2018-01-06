@@ -1,7 +1,7 @@
-import ErrorChecker from './ErrorChecker'
+import DifferentialChecker from './DifferentialChecker'
 
 test('error', () => {
-  const checker = new ErrorChecker('5x^3+6x^2+4')
+  const checker = new DifferentialChecker('5x^3+6x^2+4')
   const solution1 = '15x^2+12x'
   const solution2 = '15x^2+6x'
   // f(2+0.001)-f(1)
@@ -14,7 +14,7 @@ test('error', () => {
 test('error', () => {
   // f(2+0.001)-f(1)
   // 0.5*2.001^2-0.5*2^2
-  const checker = new ErrorChecker('0.5x^2')
+  const checker = new DifferentialChecker('0.5x^2')
   const solution1 = 'x'
   const solution2 = '1.3x'
   const solution3 = '1.2x'
@@ -46,4 +46,16 @@ test('error', () => {
   // expect(checker.error).toBe(1.0005)
   expect(checker.isCorrect(solution10)).toBe(false)
   // expect(checker.error).toBe(1.0005)
+})
+
+test('checkAll method from super', () => {
+  const checker = new DifferentialChecker('x^5+3x^7+7x+3x')
+  expect(checker.isCorrect('5x^4+21x^6+7+3')).toBe(true)
+  const solutions = [
+    '5x^4+21x^6+7+3',
+    '5x^4+21x^6+10',
+    '5x^4+21x^5+10',
+  ]
+  const results = checker.checkAll(solutions)
+  expect(results).toEqual([true, true, false])
 })

@@ -34,6 +34,7 @@ test('Cal 0.5*2.001^2-0.5*2^2=4', () => {
   expect(Calculate('0.5*2.001^2-0.5*2^2').toString()).toBe('4001/2000000')
   expect(Calculate('0.5*2.001^2-0.5*2^2').constant().valueOf()).toBe(0.0020005)
 })
+
 // test('Cal sin(30)=0.5', () => {
 //   expect(Calculate('\\sin (30)').toString()).toBe('0.5')
 // })
