@@ -1,62 +1,64 @@
 import AlgebraLatex from 'algebra-latex'
-import { parse } from 'algebra.js'
+import { Parser }from '../../calculation'
 
 const getTerms = (equation) => {
   // const equationNoMulti = equation.replace('*', '')
   // console.log(equationNoMulti)
-  const terms = equation.match(/(\+|-)?[a-z0-9.^*]+/gi)
-  const withoutPlusTerm = terms.map((term) => {
+  const filterUnneccesary = equation.replace(/[()]/gi, '')
+const terms = filterUnneccesary.match(/(\+|-)?[a-z0-9.^*/]+/gi)
+  const filterOperator = terms.map(term => {
     if (term === '') {
       return term
     }
-    if (term[0] === '+') {
+    const firstChar = term[0]
+    if (firstChar === '+' || firstChar === '-') {
       return term.slice(1)
     }
     return term
   })
-  const withoutANumber = withoutPlusTerm.filter((term) => {
+  const removeSingleNumber = filterOperator.filter(term => {
     return !term.match(/^\d+$/)
   })
-  return withoutANumber
-}
 
-const parseToMath = (latex) => {
-  const algebraObj = new AlgebraLatex(latex)
-  const mathEquation = algebraObj.toMath()
-  return mathEquation
+  const filterConstant = removeSingleNumber.map(term => {
+    const subTerms = term.split('*')
+    
+    if (subTerms.length >= 2) {
+      return subTerms[1]
+    }
+    else {
+      return term
+    }
+  })
+  
+  const results = removeSingleNumber.concat(filterConstant)
+  
+  const uniqueResults = results.filter(function(item, pos) {
+    return results.indexOf(item) == pos && item !== "x";
+  })
+
+  return uniqueResults
 }
 
 const checkValid = (math) => {
-  
-  let eq
-  try {
-    eq = parse(math)
-  } catch (e) {
-    return false
-  }
-  return true
+  return Parser(math) !== null
 }
 
 export default {
   getKeywords: (text) => {
-    const keywords = []
-    if (text.indexOf('x') !== -1) {
-      keywords.push('x')
-    }
-    if (text.indexOf('y') !== -1) {
-      keywords.push('y')
-    }
-    const math = parseToMath(text)
-    
-    if (math !== '') {
-      if (checkValid(text)) {
-        const terms = getTerms(math)
-        console.log(terms)
-        return terms
-      }
+    let terms = []
+    const math = Parser(text)
+    if (math === null) {
+      return []
     }
     
-    return keywords
+    terms = getTerms(math)
+    
+    if (terms.length === 0 && math.indexOf('y') !== -1) {
+      terms.push('y')
+    }
+
+    return terms
   },
   checkValid,
 }
