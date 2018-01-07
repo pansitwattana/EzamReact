@@ -1,4 +1,4 @@
-import algebra from 'algebra.js'
+import math from 'mathjs'
 import parser from './Parser'
 
 export default (expression) => {
@@ -11,13 +11,8 @@ export default (expression) => {
     console.error(`Can not parse ${expression}`)
     return null
   }
-  let algebraObj 
-  try{
-    algebraObj = algebra.parse(expr)
-  } catch (e) {
-    console.error(`Can not parse ${expr}`)
-    return null
-  }
+  
+  const result = math.eval(expr)
 
-  return algebraObj
+  return math.format(result, { precision: 13 });
 }

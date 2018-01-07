@@ -75,7 +75,6 @@ test('checkAll method from super', () => {
 
 test('check diff y=2x', () => {
   const checker = new DifferentialChecker('y=2x')
-  expect(checker.dy / checker.dx).toBe(2)
   expect(checker.isCorrect('2')).toBe(true)
   const solutions = [
     'dy/dx=2',

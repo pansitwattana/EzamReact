@@ -17,18 +17,13 @@ class DifferentialChecker extends ErrorChecker {
     })
     const minus = `${fxplusdx}-${fx}`
     const dyObject = Calculate(minus)
-    const constant = dyObject.constant()
-    if (!constant) {
+    if (!dyObject) {
       this.status = status.FAIL
       return
     }
-    const valueOfDy = constant.valueOf()
-    if (!valueOfDy) {
-      this.status = status.FAIL
-      return
-    }
+
     this.status = status.OK
-    this.dy = valueOfDy
+    this.dy = dyObject
   }
 
   isCorrect(solution) {
@@ -44,7 +39,7 @@ class DifferentialChecker extends ErrorChecker {
     if (!error) {
       return false
     }
-    const value = Math.abs(error.constant().valueOf())
+    const value = Math.abs(error)
     this.error = value
     return value <= this.x * this.dy
   }
