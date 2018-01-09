@@ -63,7 +63,7 @@ class Home extends Component {
       ],
       Physics: [
         {
-          title: 'Newton',
+          title: 'Kinetics',
           subtitle: 'Basic',
           id: 1,
         },
