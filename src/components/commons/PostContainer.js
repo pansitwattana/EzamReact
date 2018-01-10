@@ -20,17 +20,17 @@ class PostContainer extends Component {
     // console.log(this.state.problems[index])
     const post = this.props.posts[index]
     // this.props.changePage(this.state.problems[index], 'Paper')
-    if (status === 'Done') {
-      this.props.history.push('/answer', {
-        id: post.id,
-      })
-    }
-    else {
+    // if (status === 'Done') {
+    //   this.props.history.push('/answer', {
+    //     id: post.id,
+    //   })
+    // }
+    // else {
       this.props.history.push('/paper', {
         post,
         done: status === 'Done',
       })
-    }
+    // }
   }
 
   getUserStatus(problem, user) {

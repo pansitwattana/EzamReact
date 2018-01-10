@@ -1,6 +1,6 @@
 import EquationChecker from './EquationChecker'
 import DiffentialChecker from './DifferentialChecker'
-import { debug } from 'util';
+import { status } from './ErrorChecker'
 
 class ErrorManager {
   constructor(problem) {
@@ -19,7 +19,12 @@ class ErrorManager {
     else if (isDifferential) this.checker = new DiffentialChecker(problem.latex)
 
     if (this.checker) {
-      console.log(`error checker enabled ${this.checker.type}`)
+      if (this.checker.status === status.FAIL) {
+        console.log(`error disable`)
+      }
+      else {
+        console.log(`error checker enabled ${this.checker.type}`)
+      }
     }
     else {
       console.log('error checker disabled')

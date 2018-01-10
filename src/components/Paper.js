@@ -9,7 +9,6 @@ import 'mathquill/build/mathquill.css'
 import { KeyAction, Actions } from './data/Keys'
 import ErrorManager from './paper/ErrorManager'
 import suggest from './paper/Suggest'
-import solver from './paper/Solver'
 import math from './paper/MathQuill'
 import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
@@ -258,7 +257,7 @@ class PaperComponent extends Component {
   }
 
   handleKeyPress = (event) => {
-    console.log(event.key)
+    console.log(event)
     // if (event.key === 'Enter') {
     //   console.log('enter press here! ')
     //   this.state.methods.forEach((value) => {
@@ -276,8 +275,8 @@ class PaperComponent extends Component {
       const { latex, imageurl, id } = problem
       const isDone = this.state.done
       return (
-        <div>
-          <Wrapper onKeyDown={this.handleKeyPress} tabIndex="0">
+        <div onKeyPress={this.handleKeyPress} tabIndex="0">
+          <Wrapper>
             <Paper>
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen

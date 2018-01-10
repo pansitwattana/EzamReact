@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import auth from 'auth0-lock'
+// import auth from 'auth0-lock'
 import propTypes from 'prop-types'
-import { Sidebar, Segment, Button, Menu, Image, Icon, Header } from 'semantic-ui-react'
+import { Sidebar, Segment, Menu, Icon } from 'semantic-ui-react'
 import logo from '../../icon.png'
 
 const NavBar = styled.div`
@@ -38,7 +38,7 @@ class SidebarMenu extends Component {
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
   logout = () => {
-    auth.logout()
+    // auth.logout()
   }
 
   render() {

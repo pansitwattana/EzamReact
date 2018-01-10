@@ -6,13 +6,14 @@ import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { Math } from './data/Keyboards'
 import math from './paper/MathQuill'
+import TeX from './commons/TeX'
 import Keyboard from './commons/Keyboard'
-import MathInput from './commons/Input'
+// import MathInput from './commons/Input'
 import Options from './commons/Options'
 import Header from './commons/Header'
 import TitleSelect from './problem/TitleSelect'
 
-const Question = styled.div`
+const TextArea = styled.div`
   margin: 10px;
   height: 70px;
   background: #FFF;
@@ -42,6 +43,7 @@ class Problem extends Component {
     selectedTags: [],
     showKeyboard: false,
     imgSrc: null,
+    latex: '',
   }
 
   componentDidMount() {
@@ -108,18 +110,25 @@ class Problem extends Component {
   }
 
   handleKeyboard(key) {
-    math.typed(key, this.state.problemId)
+    // math.typed(key, this.state.problemId)
+    this.setState({ latex: this.state.latex + key })
+  }
+
+  handleKeyPress = (event) => {
+    console.log(event)
+    if (this.state.showKeyboard)
+    this.setState({ latex: this.state.latex + event.key })
   }
 
   render() {
     const { symbol, value, action } = Math
-    const { selectedTags, problemId, showKeyboard } = this.state
+    const { selectedTags, showKeyboard } = this.state
     const { loading, allTags } = this.props.tagQuery
     const isLoading = loading || !allTags;
     const tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
         <Header text="Post" />
         <TitleSelect />
         <Input
@@ -130,9 +139,9 @@ class Problem extends Component {
           onBlur={() => this.setState({ showKeyboard: true })}
           ref={(input) => { this.titleInput = input; }}
         />
-        <Question>
-          <MathInput id={problemId} />
-        </Question>
+        <TextArea>
+          <TeX value={this.state.latex} />
+        </TextArea>
         {/* <Header text="Add Solution" />
         <Question>
           <Input id={this.state.solutionId} />

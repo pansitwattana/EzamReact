@@ -1,5 +1,4 @@
 import { Keys } from './Keys'
-import Key from '../commons/Key';
 
 const Math = {
   value: [

@@ -36,12 +36,12 @@ class Home extends Component {
           id: 1,
         },
         {
-          title: 'Trigonometry',
+          title: 'Equation',
           subtitle: 'Basic',
           id: 2,
         },
         {
-          title: 'Set',
+          title: 'Differential',
           subtitle: 'Basic',
           id: 3,
         },

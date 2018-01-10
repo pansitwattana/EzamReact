@@ -1,5 +1,3 @@
-import parser from './Parser'
-
 export default (equation) => {
   const equations = equation.split('=')
   if (equations.length === 2) {

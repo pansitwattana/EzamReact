@@ -12,7 +12,12 @@ export default (expression) => {
     return null
   }
   
-  const result = math.eval(expr)
+  try {
+    const result = math.eval(expr)
+    return math.format(result, { precision: 13 });
+  } catch (e) {
+    console.error(e)
+    return null
+  }
 
-  return math.format(result, { precision: 13 });
 }

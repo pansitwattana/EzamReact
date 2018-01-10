@@ -80,10 +80,10 @@ class KeyComponent extends Component {
 
   onTouchMove = (event) => {
     const { touches } = event
-    const { status } = this.state
+    // const { status } = this.state
     const { swipeDown, swipeUp } = this.props
     if (touches.length > 0) {
-      const height = 0
+      // const height = 0
       const y = event.touches[0].clientY
       const deltaY = y - this.state.pos.y
       console.log(deltaY)

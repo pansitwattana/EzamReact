@@ -48,6 +48,7 @@ class KeyboardComponent extends Component {
       this.props.onPress(value)
     }
   }
+  
   renderKeywords(keywords) {
     return keywords.map(keyword => (
       <Button style={{ height: '100%' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>

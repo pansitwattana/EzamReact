@@ -1,4 +1,3 @@
-import AlgebraLatex from 'algebra-latex'
 import { Parser }from '../../calculation'
 
 const getTerms = (equation) => {
@@ -34,7 +33,7 @@ const terms = filterUnneccesary.match(/(\+|-)?[a-z0-9.^*/]+/gi)
   const results = removeSingleNumber.concat(filterConstant)
   
   const uniqueResults = results.filter(function(item, pos) {
-    return results.indexOf(item) == pos && item !== "x";
+    return results.indexOf(item) === pos && item !== "x";
   })
 
   return uniqueResults
