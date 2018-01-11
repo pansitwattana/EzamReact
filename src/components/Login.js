@@ -49,7 +49,11 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.data.user) {
+    const { error, user } = this.props.data
+    if (this.props.data.error) {
+      console.log(error)
+    }
+    if (user) {
       // console.log(this.props.data)
       this.props.history.replace('/');
     }

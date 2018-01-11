@@ -38,7 +38,7 @@ class SidebarMenu extends Component {
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
   logout = () => {
-    // auth.logout()
+    window.localStorage.removeItem('auth0IdToken')
   }
 
   render() {

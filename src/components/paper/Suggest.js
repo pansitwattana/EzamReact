@@ -33,7 +33,7 @@ const terms = filterUnneccesary.match(/(\+|-)?[a-z0-9.^*/]+/gi)
   const results = removeSingleNumber.concat(filterConstant)
   
   const uniqueResults = results.filter(function(item, pos) {
-    return results.indexOf(item) === pos && item !== "x";
+    return results.indexOf(item) === pos && item !== "x" && item.length < 6;
   })
 
   return uniqueResults
