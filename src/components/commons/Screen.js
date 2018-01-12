@@ -40,7 +40,7 @@ const LeftContainer = styled.div`
 // `
 
 const Text = styled.span`
-  font-size: 10px;
+  font-size: 12px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #ffffff;
   ${props =>

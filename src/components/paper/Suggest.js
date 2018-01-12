@@ -1,3 +1,4 @@
+import uuid from 'uuid'
 import { Parser }from '../../calculation'
 
 const getTerms = (equation) => {
@@ -57,7 +58,8 @@ export default {
       terms.push('y')
     }
 
-    return terms
+    const keywords = terms
+    return keywords.map(keyword => ({ value: keyword, id: uuid() }))
   },
   checkValid,
 }

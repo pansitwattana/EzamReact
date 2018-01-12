@@ -46,7 +46,6 @@ const postQuery = gql`
         title
         latex
         difficulty
-        description
         solutions {
           author {
             id
@@ -55,9 +54,6 @@ const postQuery = gql`
         author {
           name
           id
-        }
-        tags {
-          name
         }
       }
     }

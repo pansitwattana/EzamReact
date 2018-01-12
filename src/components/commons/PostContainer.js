@@ -18,19 +18,13 @@ const Status = styled.span`
 class PostContainer extends Component {
   onClick(index, status) {
     // console.log(this.state.problems[index])
-    const post = this.props.posts[index]
-    // this.props.changePage(this.state.problems[index], 'Paper')
-    // if (status === 'Done') {
-    //   this.props.history.push('/answer', {
-    //     id: post.id,
-    //   })
-    // }
-    // else {
-      this.props.history.push('/paper', {
-        post,
-        done: status === 'Done',
-      })
-    // }
+    const { id } = this.props.posts[index]
+    if (status === 'Done') {
+      this.props.history.push('/answer', { id })
+    }
+    else {
+      this.props.history.push(`/paper/${id}`)
+    }
   }
 
   getUserStatus(problem, user) {

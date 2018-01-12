@@ -16,7 +16,7 @@ import Problem from './components/Problem'
 const App = () => (
   <TransitionGroup style={{ height: '100%' }}>
     <Route exact path="/" component={Home} />
-    <Route path="/paper" component={Paper} />
+    <Route path="/paper/:id" component={Paper} />
     <Route path="/catalog/:title" component={Catalog} />
     <Route path="/answer" component={Answer} />
     <Route path="/profile" component={Profile} />

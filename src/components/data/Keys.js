@@ -63,7 +63,7 @@ const Keys = {
   RADICAL: 'RADICAL',
   LEFT_PAREN: 'LEFT_PAREN',
   RIGHT_PAREN: 'RIGHT_PAREN',
-  LN: 'LN',
+  LN: '\\ln',
   LOG: '\\log_{10}',
   LOG_N: 'LOG_N',
   LOG_2: '\\log_{2}',
@@ -117,7 +117,8 @@ const KeyAction = (key) => {
             key === Keys.PLUSMINUS || key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA ||
             key === Keys.NOTEQUAL || key === Keys.SUB_2 || key === Keys.SUB_3 || key === Keys.SUB_4 || key === Keys.SUB_5 || key === Keys.SUB_6 ||
             key === Keys.SUB_7 || key === Keys.SUB_8 || key === Keys.SUB_9 || key === Keys.EXP_4 || key === Keys.EXP_5 || key === Keys.EXP_6 ||
-            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9) {
+            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 ||
+            key === Keys.LN) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

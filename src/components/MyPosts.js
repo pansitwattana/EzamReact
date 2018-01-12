@@ -48,6 +48,9 @@ query {
       imageurl
       difficulty
       description
+      tags {
+        name
+      }
       solutions {
         author {
           id

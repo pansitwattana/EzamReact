@@ -41,8 +41,6 @@ class PaperComponent extends Component {
   }
 
   state = {
-    problem: null,
-    done: false,
     methods: [
       {
         text: '',
@@ -57,17 +55,19 @@ class PaperComponent extends Component {
     hasChecker: false,
   }
 
-  componentWillMount() {
-    // console.log(this.props.location)
-    const { location } = this.props
-    if (!location) return
-    const data = location.state.post
-    const done = location.state.done
-    const keywords = getKeywords(data.latex)
-    const keywordsWitID = keywords.map(keyword => ({ value: keyword, id: uuid() }))
-    console.log('problem: ', data)
-    console.log('keywords: ', keywords)
-    if (data) this.setState({ problem: data, done, keywords: keywordsWitID })
+  // when done loading
+  componentWillReceiveProps(nextProps){
+    if (!nextProps.postQuery.loading && this.props.postQuery.loading) {
+      const problem = nextProps.postQuery.Post
+      if (problem) {
+        console.log('called')
+        errorManager = new ErrorManager(problem)
+        const keywords = getKeywords(problem.latex)
+        if (errorManager.hasChecker()) {
+          this.setState({ hasChecker: true, keywords })
+        }
+      }
+    }
   }
 
   componentDidMount() {
@@ -76,10 +76,6 @@ class PaperComponent extends Component {
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
-    errorManager = new ErrorManager(this.state.problem)
-    if (errorManager.hasChecker()) {
-      this.setState({ hasChecker: true })
-    }
   }
 
   componentDidUpdate() {
@@ -106,7 +102,7 @@ class PaperComponent extends Component {
     })
   }
 
-  submitAnswer() {
+  submitAnswer(id) {
     this.setState({ submiting: true })
     const { problem, hasChecker } = this.state
     let { methods } = this.state
@@ -179,7 +175,7 @@ class PaperComponent extends Component {
       const { user } = this.props.data
       if (user) {
         const variables = {
-          postId: problem.id,
+          postId: id,
           userId: user.id,
           answers,
         }
@@ -189,9 +185,8 @@ class PaperComponent extends Component {
           .then((res) => {
             console.log(res)
             this.setState({ submiting: false })
-            const { id } = problem
             if (id) {
-              this.props.history.push('/answer', { id: problem.id })
+              this.props.history.replace('/answer', { id })
             } else {
               console.error('id is null')
             }
@@ -268,12 +263,19 @@ class PaperComponent extends Component {
   }
 
   render() {
+    const data = this.props.postQuery
+    if (data.loading) {
+      return <Error message="Loading..." />
+    }
+    else if (data.error) {
+      return <Error message={data.error} />
+    }
+    const problem = data.Post
     const { length } = this.state.methods
     const itemSize = 40
-    if (this.state.problem) {
-      const { submiting, problem, keywords } = this.state
+    if (problem) {
+      const { submiting, keywords } = this.state
       const { latex, imageurl, id } = problem
-      const isDone = this.state.done
       return (
         <div onKeyPress={this.handleKeyPress} tabIndex="0">
           <Wrapper>
@@ -283,9 +285,9 @@ class PaperComponent extends Component {
                 displayText={latex}
                 imageUrl={imageurl}
                 id={id}
-                done={isDone}
+                done={false}
                 loading={submiting}
-                onSubmit={() => this.submitAnswer()}
+                onSubmit={() => this.submitAnswer(id)}
                 onShowAnswers={() => this.onShowAnswers(id)}
               />
               <VirtualList
@@ -340,10 +342,28 @@ const userQuery = gql`
   }
 `
 
+const postQuery = gql`
+  query($id: ID!) {
+    Post(id: $id) {
+      id
+      latex
+      imageurl
+      tags {
+        name
+      }
+    }
+  }
+`
+
 const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperComponent)
 
 const PaperWithData = graphql(userQuery, {
   options: { fetchPolicy: 'network-only' },
 })(PaperWithMutation)
 
-export default withRouter(PaperWithData)
+const PaperWithPost = graphql(postQuery, { 
+  name: 'postQuery',
+  options: ownProps => ({ variables: { id: ownProps.match.params.id } })
+})(PaperWithData)
+
+export default withRouter(PaperWithPost)

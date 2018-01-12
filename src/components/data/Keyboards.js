@@ -16,7 +16,7 @@ const Math = {
     ['[', ']', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   up: [
-    [Keys.LOG_3, null, null, null, Keys.EXP, Keys.BACKSPACE],
+    [Keys.LN, null, null, null, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.COS, Keys.EXP_7, Keys.EXP_8, Keys.EXP_9, Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, Keys.EXP_4, Keys.EXP_5, Keys.EXP_6, Keys.TIMES],
     [Keys.EXP_4, 'z', null, Keys.EXP_2, Keys.EXP_3, Keys.MINUS],
