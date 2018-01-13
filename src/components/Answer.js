@@ -9,6 +9,7 @@ import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
 import Error from './commons/Error'
 import { read } from 'fs';
+import { debug } from 'util';
 
 const Container = styled.div`
   margin: 10px 10px 50px 10px;
@@ -61,6 +62,9 @@ class Answer extends Component {
     })
   }
 
+  state = {
+    solutions: []
+  }
   // state = {
   //   methods: [
   //     {
@@ -134,23 +138,56 @@ class Answer extends Component {
   //   })
   // }
 
-  onCommentPress = (index) => {
-    const { methods } = this.state
-    const method = methods[index]
-    if (method) {
-      method.comment = !method.comment
+  componentWillReceiveProps(nextProps){
+    if (!nextProps.data.loading && this.props.data.loading) {
+      const solutions = nextProps.data.Post.solutions
+      if (solutions) {
+        let solutionsToState = solutions.map(solution => { 
+          return { id: solution.id, comment: false, rate: false }
+        })
+        this.setState({ solutions: solutionsToState })
+      }
     }
-    this.setState({ methods })
+  }
+
+  onCommentPress = (index) => {
+    const { solutions } = this.state
+    const solution = solutions[index]
+    if (solution) {
+      solution.comment = !solution.comment
+    }
+    this.setState({ solutions })
   }
 
   onGenuiusPress = (index) => {
-    const { methods } = this.state
-    const method = methods[index]
-    if (method) {
-      method.rated = !method.rated
-      method.rate += method.rated ? 1 : -1
+    const { solutions } = this.state
+    const solution = solutions[index]
+    if (solution) {
+      solution.rate = !solution.rate
+      // solution.rate += solution.rated ? 1 : -1
     }
-    this.setState({ methods })
+    this.setState({ solutions })
+  }
+
+  submitComment = (event, solutionId) => {
+    if (event.target) {
+      const textArea = event.target.firstChild
+      if (!textArea) { return }
+
+      const text = textArea.value
+      if (!text) { return }
+
+      const { user } = this.props.userQuery
+      if (!user) { return }
+
+      const authorId = user.id
+
+      const variables = { text, solutionId, authorId }
+
+      this.props.postComment({ variables })
+        .then(res => textArea.value = "")
+        .catch(error => console.error(error))
+    }
   }
 
   // deleteAnswer(answers) {
@@ -215,8 +252,9 @@ class Answer extends Component {
     if (solutions.length === 0) {
       return <Error message="No Answer Found" />
     }
-
+    const states = this.state.solutions
     return solutions.map((solution, index) => {
+      const state = states[index]
       const isAuthor = solution.author.id === this.props.userQuery.user.id
       const { id } = solution
       const answerHeader = isAuthor ? (
@@ -226,11 +264,11 @@ class Answer extends Component {
         </div>
       ) : <Author>{`Solved by ${solution.author.name}`}</Author>
 
-      const genuiusButton = (solution.rated ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
-      const commentButton = (solution.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
-      const commentForm = (solution.comment ? (
-        <Form style={{ padding: '10px 0 0 0' }}>
-          <TextArea autoHeight placeholder="Any Suggestions ?" />
+      const genuiusButton = (state.rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
+      const commentButton = (state.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const commentForm = (state.comment ? (
+        <Form style={{ padding: '10px 0 0 0' }} onSubmit={(event) => this.submitComment(event, id)}>
+          <TextArea autoHeight placeholder="Any Suggestions ?"  />
           <Form.Button floated="right">Submit</Form.Button>
         </Form>) : <div />)
       const commentGroup = isAuthor ? <div /> : (
@@ -245,7 +283,7 @@ class Answer extends Component {
             {answerHeader}
             <Option>
               <div>
-                {solution.rate} Upvote
+                {solution.rateCount} Vote
               </div>
               <Popup
                 trigger={<Icon name='ellipsis horizontal' />}
@@ -273,40 +311,40 @@ class Answer extends Component {
 }
 
 const answerQuery = gql`
-query($id: ID!) {
-  Post(id: $id) {
-    id
-    solutions {
+  query($id: ID!) {
+    Post(id: $id) {
       id
-      rate
-      author {
+      solutions {
         id
-        name
-      }
-      answers {
-        id
-        latex
-        text
+        rateCount
+        author {
+          id
+          name
+        }
+        answers {
+          id
+          latex
+          text
+        }
       }
     }
   }
-}
 `
 
 const deleteSolution = gql`
-mutation($id: ID!) {
-  deleteSolution(id: $id) {
-    id
+  mutation($id: ID!) {
+    deleteSolution(id: $id) {
+      id
+    }
   }
-}
 `
 
 const deleteAnswer = gql`
-mutation($id: ID!) {
-  deleteAnswer(id: $id) {
-    id
+  mutation($id: ID!) {
+    deleteAnswer(id: $id) {
+      id
+    }
   }
-}
 `
 
 const userQuery = gql`
@@ -316,6 +354,19 @@ const userQuery = gql`
     }
   }
 `
+
+const postComment = gql`
+  mutation($solutionId: ID!, $text: String!, $authorId: ID!) {
+    createComment(
+      text: $text
+      authorId: $authorId
+      solutionId: $solutionId
+    ) {
+      id
+    }
+  }
+`
+
 // export default withRouter(Answer)
 const AnswerWithUser = graphql(userQuery, {
   name: 'userQuery',
@@ -326,11 +377,13 @@ const AnswerWithDeleteSolution = graphql(deleteSolution, { name: 'deleteSolution
 
 const AnswerWithAnswerSolution = graphql(deleteAnswer, { name: 'deleteAnswer' })(AnswerWithDeleteSolution)
 
+const AnswerWithPostComment = graphql(postComment, { name: 'postComment' })(AnswerWithAnswerSolution)
+
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ 
       variables: { id: ownProps.location.state.id },
       fetchPolicy: 'network-only',
     })
-  })(withRouter(AnswerWithAnswerSolution))
+  })(withRouter(AnswerWithPostComment))
 )
