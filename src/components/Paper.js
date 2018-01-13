@@ -73,6 +73,10 @@ class PaperComponent extends Component {
     }
   }
 
+  componentWillUnmount() {
+    math.reset()
+  }
+
   componentDidMount() {
     const { line } = this.state
     const { methods } = this.state

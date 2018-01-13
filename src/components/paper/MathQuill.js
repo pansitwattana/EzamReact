@@ -1,6 +1,6 @@
 import { KeyAction, Actions, Keys } from '../data/Keys'
 
-const mathFields = []
+let mathFields = []
 let MathQuill
 let MQ
 const typed = (str, id) => {
@@ -62,6 +62,10 @@ const blur = (id) => {
   }
 }
 
+const reset = () => {
+  mathFields = []
+}
+
 const getLaTeX = (id) => {
   if (!MQ) {
     return null;
@@ -75,4 +79,4 @@ const getLaTeX = (id) => {
   return mathField.latex()
 }
 
-export default { typed, getLaTeX, blur, focus }
+export default { typed, getLaTeX, blur, focus, reset }
