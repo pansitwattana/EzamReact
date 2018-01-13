@@ -327,6 +327,9 @@ const AnswerWithAnswerSolution = graphql(deleteAnswer, { name: 'deleteAnswer' })
 
 export default (
   graphql(answerQuery, {
-    options: ownProps => ({ variables: { id: ownProps.location.state.id } }),
+    options: ownProps => ({ 
+      variables: { id: ownProps.location.state.id },
+      fetchPolicy: 'network-only',
+    })
   })(withRouter(AnswerWithAnswerSolution))
 )

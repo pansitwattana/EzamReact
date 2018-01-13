@@ -57,13 +57,13 @@ const ScreenComponent = ({
   done,
   loading,
   onSubmit,
-  onShowAnswers
+  onEditSubmit
 }) => {
   const display = imageUrl ? <Image src={imageUrl} /> : <LaTeX text={displayText} id={id} />
   return (
     <Screen>
       {display}
-      <LeftContainer onClick={done ? onShowAnswers : onSubmit}>
+      <LeftContainer onClick={done ? onEditSubmit : onSubmit}>
         {loading ? (
           <Dimmer active>
             <Loader content="Loading" />
@@ -71,7 +71,7 @@ const ScreenComponent = ({
         ) : (
           <Icon inverted color="teal" name="check" />
         )}
-        <Text done={done}>{done ? 'Show Answers' : 'Submit'}</Text>
+        <Text done={done}>{done ? 'Edit' : 'Submit'}</Text>
       </LeftContainer>
     </Screen>
   )

@@ -43,6 +43,7 @@ class PaperComponent extends Component {
     match: PropTypes.object.isRequired,
   }
   static loadMethod = false
+  static submiting = false
   state = {
     methods: [
       {
@@ -56,6 +57,7 @@ class PaperComponent extends Component {
     submiting: false,
     keywords: [],
     hasChecker: false,
+    isDone: false,
   }
 
   // when done loading
@@ -129,7 +131,7 @@ class PaperComponent extends Component {
       })
     })
     this.loadMethod = true
-    this.setState({ methods, line: length - 1 })
+    this.setState({ methods, line: length - 1, isDone: true })
   }
 
   onInputTouch(line) {
@@ -141,19 +143,15 @@ class PaperComponent extends Component {
     this.setState({ methods, line })
     math.blur(oldMethod.id)
   }
+  
+  validatation(methods, problem, hasChecker) {
+    let error = null
+    if (this.submiting) {
+      return null
+    }
 
-  onShowAnswers(id) {
-    this.props.history.push('/answer', {
-      id,
-    })
-  }
-
-  submitAnswer(id) {
-    this.setState({ submiting: true })
-    const { problem, hasChecker } = this.state
-    let { methods } = this.state
-
-    methods = methods.map(method => {
+    this.submiting = true
+    let latexMethod = methods.map(method => {
       let newMethod = method
       newMethod.text = math.getLaTeX(method.id)
       return newMethod
@@ -162,17 +160,18 @@ class PaperComponent extends Component {
     const solutions = methods.map((method) => {
       return method.text
     })
+
     if (solutions.length === 0) {
-      alert('no solution added')
-      this.setState({ submiting: false })
-      return
+      error = 'no solution added'
+      this.submiting = false
+      return null
     }
-    
+
     if (solutions.length === 1) {
       if (methods[0].text === '') {
-        this.setState({ submiting: false })
-        alert('no solution added')
-        return
+        this.submiting = false
+        error = 'no solution added'
+        return null
       }
     }
 
@@ -180,18 +179,84 @@ class PaperComponent extends Component {
     if (hasChecker) {
       const corrects = errorManager.check(solutions)
       if (corrects) {
-        console.log(corrects)
-        methods = methods.map((method, i) => {
+        latexMethod = methods.map((method, i) => {
           let newMethod = method
           if (!corrects[i]) {
             newMethod.error = true
             isError = true
-            console.log(`get error at ${method.text}`)
+            error = `get error at ${method.text}`
           }
           return newMethod
         })
       }
     }
+
+    this.submiting = false
+    return {
+      latexMethod,
+      error
+    }
+  }
+
+  submitEdit(id) {
+    // this.props.history.push('/answer', {
+    //   id,
+    // })
+  }
+
+  submitAnswer(id) {
+    this.setState({ submiting: true })
+    const { methods, problem, hasChecker } = this.state
+    let result = this.validatation(methods, problem, hasChecker)
+    
+    if (!result) {
+      console.log('error')
+      return
+    }
+    
+    const { latexMethod, error } = result
+
+    // let { methods } = this.state
+
+    // methods = methods.map(method => {
+    //   let newMethod = method
+    //   newMethod.text = math.getLaTeX(method.id)
+    //   return newMethod
+    // })
+
+    // const solutions = methods.map((method) => {
+    //   return method.text
+    // })
+    // if (solutions.length === 0) {
+    //   alert('no solution added')
+    //   this.setState({ submiting: false })
+    //   return
+    // }
+    
+    // if (solutions.length === 1) {
+    //   if (methods[0].text === '') {
+    //     this.setState({ submiting: false })
+    //     alert('no solution added')
+    //     return
+    //   }
+    // }
+
+    // let isError = false
+    // if (hasChecker) {
+    //   const corrects = errorManager.check(solutions)
+    //   if (corrects) {
+    //     console.log(corrects)
+    //     methods = methods.map((method, i) => {
+    //       let newMethod = method
+    //       if (!corrects[i]) {
+    //         newMethod.error = true
+    //         isError = true
+    //         console.log(`get error at ${method.text}`)
+    //       }
+    //       return newMethod
+    //     })
+    //   }
+    // }
     // const answer = solver(problem.latex)
     // const equations = []
     // let isError = false
@@ -214,44 +279,39 @@ class PaperComponent extends Component {
     //   return newMethod
     // })
     // this.setState({ methods })
-
-    if (!isError) {
-      const answers = methods.map(method => ({ latex: method.text, text: '' }))
-      console.log(answers)
-      const { user } = this.props.data
-      if (user) {
-        const variables = {
-          postId: id,
-          userId: user.id,
-          answers,
-        }
-
-        this.props
-          .submitSolutions({ variables })
-          .then((res) => {
-            console.log(res)
-            this.setState({ submiting: false })
-            if (id) {
-              this.props.history.replace('/answer', { id })
-            } else {
-              console.error('id is null')
-            }
-          })
-          .catch((error) => {
-            this.setState({ submiting: false })
-            console.error(error)
-            alert(error)
-          })
-      } else {
-        this.setState({ submiting: false })
-        const error = 'please log in before submit solution'
-        alert(error)
+    if (error) {
+      this.setState({ methods: latexMethod, submiting: false })
+      console.log(error)
+      return
+    }
+    const answers = latexMethod.map(method => ({ latex: method.text, text: '' }))
+    console.log(answers)
+    const { user } = this.props.data
+    if (user) {
+      const variables = {
+        postId: id,
+        userId: user.id,
+        answers,
       }
 
-      // console.log(equations[equations.length - 1] === ans)
-      // console.log(equations)
-    } else {
-      this.setState({ methods, submiting: false })
+      this.props
+        .submitSolutions({ variables })
+        .then((res) => {
+          console.log(res)
+          this.setState({ submiting: false })
+          if (id) {
+            setTimeout(() => {
+              this.props.history.replace('/answer', { id })
+            }, 500)
+          } else {
+            console.error('id is null')
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          this.setState({ submiting: false })
+          alert(error)
+        })
     }
   }
 
@@ -320,7 +380,7 @@ class PaperComponent extends Component {
     const { length } = this.state.methods
     const itemSize = 40
     if (problem) {
-      const { submiting, keywords } = this.state
+      const { submiting, keywords, isDone } = this.state
       const { latex, imageurl, id } = problem
       return (
         <div onKeyPress={this.handleKeyPress} tabIndex="0">
@@ -331,10 +391,10 @@ class PaperComponent extends Component {
                 displayText={latex}
                 imageUrl={imageurl}
                 id={id}
-                done={false}
+                done={isDone}
                 loading={submiting}
                 onSubmit={() => this.submitAnswer(id)}
-                onShowAnswers={() => this.onShowAnswers(id)}
+                onEditSubmit={() => this.submitEdit(id)}
               />
               <VirtualList
                 width="100%"
