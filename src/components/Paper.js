@@ -38,8 +38,11 @@ class PaperComponent extends Component {
   static propTypes = {
     submitSolutions: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
   }
-
+  static loadMethod = false
   state = {
     methods: [
       {
@@ -76,14 +79,53 @@ class PaperComponent extends Component {
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
+    this.loadMethod()
   }
 
   componentDidUpdate() {
-    const { line } = this.state
-    const { methods } = this.state
+    const { line, methods, loadMethod } = this.state
+    if (this.loadMethod) {
+      let isLoad = true
+      methods.forEach(method => {
+        isLoad = isLoad & math.typed(method.text, method.id)
+      })
+      if (isLoad)
+        this.loadMethod = false
+    }
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
+  }
+
+  loadMethod() {
+    const { location } = this.props
+    if (!location) { return }
+    
+    const { state } = location
+    if (!state) { return }
+
+    const { solution } = state
+    if (!solution) { return }
+    
+    const { answers } = solution
+    if (!answers) { return }
+
+    console.log('Edit method enabled')
+
+    const methods = []
+    const length = answers.length
+    answers.forEach((answer, index) => {
+      const { id, latex } = answer
+      // math.typed(latex, this.state.methods[this.state.line].id)
+      methods.push({
+        text: latex,
+        id,
+        focus: length - 1 === index,
+        error: false,
+      })
+    })
+    this.loadMethod = true
+    this.setState({ methods, line: length - 1 })
   }
 
   onInputTouch(line) {

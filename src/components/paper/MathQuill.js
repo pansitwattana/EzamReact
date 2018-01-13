@@ -28,7 +28,7 @@ const typed = (str, id) => {
   } else {
     const mathFieldSpan = document.getElementById(id)
     if (!mathFieldSpan) {
-      return;
+      return false;
     }
 
     if (!MathQuill) {
@@ -39,13 +39,15 @@ const typed = (str, id) => {
         MQ = window.MathQuill.getInterface(2)
       }
       mathField = MQ.MathField(mathFieldSpan, {
+        spaceBehavesLikeTab: true, // configurable
         substituteTextarea: () => document.createElement('span'),
       })
-      mathField.typedText(str)
+      mathField.latex(str)
       mathField.focus()
       mathFields[id] = mathField
     }
   }
+  return true
 }
 
 const focus = (id) => {

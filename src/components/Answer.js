@@ -183,6 +183,11 @@ class Answer extends Component {
       .catch(err => console.error(err))
   }
   
+  editAnswer(solution, postId) {
+    if (postId && solution)
+      this.props.history.push(`/paper/${postId}`, { solution })
+  }
+
   submitDelete = (solution) => {
     this.deleteAnswer(solution.answers)
       .then(res => {
@@ -204,8 +209,8 @@ class Answer extends Component {
       return <Error message={userError.message} />
     }
 
-    const { solutions } = this.props.data.Post
-
+    const { solutions, id } = this.props.data.Post
+    const postId = id
     if (solutions.length === 0) {
       return <Error message="No Answer Found" />
     }
@@ -216,7 +221,7 @@ class Answer extends Component {
       const answerHeader = isAuthor ? (
         <div>
           <Author>Your Solution</Author>
-          <Button onClick={() => this.props.history.push('/paper')}>Edit</Button>
+          <Button onClick={() => this.editAnswer(solution, postId)}>Edit</Button>
         </div>
       ) : <Author>{`Solved by ${solution.author.name}`}</Author>
 
