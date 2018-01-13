@@ -41,7 +41,7 @@ class ErrorManager {
   }
 
   hasChecker() {
-    if (this.checker) {
+    if (this.checker && this.checker.status !== status.FAIL) {
       return true
     }
     return false

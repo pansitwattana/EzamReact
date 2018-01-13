@@ -14,6 +14,7 @@ import Screen from './commons/Screen'
 import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
+import deleteAnswerMutation from '../graph/deleteAnswer'
 
 const { getKeywords } = suggest
 let errorManager = null
@@ -58,6 +59,7 @@ class PaperComponent extends Component {
     keywords: [],
     hasChecker: false,
     isDone: false,
+    solutionId: null,
   }
 
   // when done loading
@@ -113,7 +115,7 @@ class PaperComponent extends Component {
     const { solution } = state
     if (!solution) { return }
     
-    const { answers } = solution
+    const { answers, id } = solution
     if (!answers) { return }
 
     console.log('Edit method enabled')
@@ -131,7 +133,7 @@ class PaperComponent extends Component {
       })
     })
     this.loadMethod = true
-    this.setState({ methods, line: length - 1, isDone: true })
+    this.setState({ solutionId: id, methods, line: length - 1, isDone: true })
   }
 
   onInputTouch(line) {
@@ -199,9 +201,55 @@ class PaperComponent extends Component {
   }
 
   submitEdit(id) {
-    // this.props.history.push('/answer', {
-    //   id,
-    // })
+    this.setState({ submiting: true })
+    const { methods, problem, hasChecker, solutionId } = this.state
+    let result = this.validatation(methods, problem, hasChecker)
+    
+    if (!result) {
+      console.log('error')
+      return
+    }
+
+    const { latexMethod, error } = result
+
+    if (error) {
+      this.setState({ methods: latexMethod, submiting: false })
+      console.log(error)
+      return
+    }
+    const answers = latexMethod.map(method => ({ latex: method.text, text: '' }))
+    
+    console.log(answers)
+    if (solutionId) {
+      const variables = {
+        solutionId,
+        answers,
+      }
+      deleteAnswerMutation(latexMethod, this.props.deleteAnswer)
+        .then(res => {
+          this.props
+            .updateSolution({ variables })
+            .then((res) => {
+              console.log(res)
+              this.setState({ submiting: false })
+              if (id) {
+                this.props.history.replace('/answer', { id })
+              } else {
+                console.error('id is null')
+              }
+            })
+            .catch((error) => {
+              console.error(error)
+              this.setState({ submiting: false })
+              alert(error)
+            })
+        })
+        .catch(error => {
+          this.setState({ submiting: false })
+          console.error(error)
+        })
+      
+    }
   }
 
   submitAnswer(id) {
@@ -216,69 +264,6 @@ class PaperComponent extends Component {
     
     const { latexMethod, error } = result
 
-    // let { methods } = this.state
-
-    // methods = methods.map(method => {
-    //   let newMethod = method
-    //   newMethod.text = math.getLaTeX(method.id)
-    //   return newMethod
-    // })
-
-    // const solutions = methods.map((method) => {
-    //   return method.text
-    // })
-    // if (solutions.length === 0) {
-    //   alert('no solution added')
-    //   this.setState({ submiting: false })
-    //   return
-    // }
-    
-    // if (solutions.length === 1) {
-    //   if (methods[0].text === '') {
-    //     this.setState({ submiting: false })
-    //     alert('no solution added')
-    //     return
-    //   }
-    // }
-
-    // let isError = false
-    // if (hasChecker) {
-    //   const corrects = errorManager.check(solutions)
-    //   if (corrects) {
-    //     console.log(corrects)
-    //     methods = methods.map((method, i) => {
-    //       let newMethod = method
-    //       if (!corrects[i]) {
-    //         newMethod.error = true
-    //         isError = true
-    //         console.log(`get error at ${method.text}`)
-    //       }
-    //       return newMethod
-    //     })
-    //   }
-    // }
-    // const answer = solver(problem.latex)
-    // const equations = []
-    // let isError = false
-    // let alreadyCheck = false
-    // methods = methods.map((method) => {
-    //   const newMethod = method
-    //   const equation = math.getLaTeX(method.id)
-    //   newMethod.text = equation
-    //   const x = solver(equation)
-    //   if (answer !== false && alreadyCheck === false && x !== answer) {
-    //     newMethod.error = true
-    //     isError = true
-    //     alreadyCheck = true
-    //     console.log(equation, ' not correct')
-    //     console.log(x, ' is not equal ', answer)
-    //   } else {
-    //     newMethod.error = false
-    //   }
-    //   equations.push(equation)
-    //   return newMethod
-    // })
-    // this.setState({ methods })
     if (error) {
       this.setState({ methods: latexMethod, submiting: false })
       console.log(error)
@@ -300,9 +285,7 @@ class PaperComponent extends Component {
           console.log(res)
           this.setState({ submiting: false })
           if (id) {
-            setTimeout(() => {
-              this.props.history.replace('/answer', { id })
-            }, 500)
+            this.props.history.replace('/answer', { id })
           } else {
             console.error('id is null')
           }
@@ -440,6 +423,18 @@ const submitSolutions = gql`
     }
   }
 `
+
+const updateSolution = gql`
+  mutation($answers: [SolutionanswersAnswer!]!, $solutionId: ID!) {
+    updateSolution(
+      id: $solutionId
+      answers: $answers
+    ) {
+      id
+    }
+  }
+`
+
 const userQuery = gql`
   query {
     user {
@@ -461,6 +456,14 @@ const postQuery = gql`
   }
 `
 
+const deleteAnswer = gql`
+mutation($id: ID!) {
+  deleteAnswer(id: $id) {
+    id
+  }
+}
+`
+
 const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperComponent)
 
 const PaperWithData = graphql(userQuery, {
@@ -472,4 +475,8 @@ const PaperWithPost = graphql(postQuery, {
   options: ownProps => ({ variables: { id: ownProps.match.params.id } })
 })(PaperWithData)
 
-export default withRouter(PaperWithPost)
+const PaperWithDeleteAnswer = graphql(deleteAnswer, { name: 'deleteAnswer' })(PaperWithPost)
+
+const PaperWithUpdateSolution = graphql(updateSolution, { name: 'updateSolution' })(PaperWithDeleteAnswer)
+
+export default withRouter(PaperWithUpdateSolution)

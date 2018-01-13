@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { Card, Button, Icon, Popup, Form, TextArea } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
+import deleteAnswerMutation from '../graph/deleteAnswer'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
 import Error from './commons/Error'
@@ -152,29 +153,29 @@ class Answer extends Component {
     this.setState({ methods })
   }
 
-  deleteAnswer(answers) {
-    return new Promise((resolve, reject) => {
-      let reqCount = 0
-      const length = answers.length
-      if (length === 0) {
-        resolve()
-      }
-      answers.forEach(answer => {
-        const variables = { id: answer.id }
-        this.props.deleteAnswer({ variables })
-          .then(res => {
-            reqCount++
-            console.log(reqCount)
-            if (reqCount === length) {
-              resolve(res)
-            }
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
-    })
-  }
+  // deleteAnswer(answers) {
+  //   return new Promise((resolve, reject) => {
+  //     let reqCount = 0
+  //     const length = answers.length
+  //     if (length === 0) {
+  //       resolve()
+  //     }
+  //     answers.forEach(answer => {
+  //       const variables = { id: answer.id }
+  //       this.props.deleteAnswer({ variables })
+  //         .then(res => {
+  //           reqCount++
+  //           console.log(reqCount)
+  //           if (reqCount === length) {
+  //             resolve(res)
+  //           }
+  //         })
+  //         .catch(error => {
+  //           reject(error)
+  //         })
+  //     })
+  //   })
+  // }
 
   deleteSolution(solution) {
     const variables = { id: solution.id }
@@ -189,7 +190,7 @@ class Answer extends Component {
   }
 
   submitDelete = (solution) => {
-    this.deleteAnswer(solution.answers)
+    deleteAnswerMutation(solution.answers, this.props.deleteAnswer)
       .then(res => {
         this.deleteSolution(solution)
       })
