@@ -159,6 +159,7 @@ class Answer extends Component {
         })
         this.dataLoaded = false
         this.userLoaded = false
+        solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount)
         this.setState({ solutions: solutionsToState })
       }
     }
@@ -297,7 +298,9 @@ class Answer extends Component {
       return <Error message="No Answer Found" />
     }
     const states = this.state.solutions
-    return solutions.map((solution, index) => {
+    let sortedSolution = [...solutions]
+    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count)
+    return sortedSolution.map((solution, index) => {
       const state = states[index]
       const userId = this.props.userQuery.user.id
       const isAuthor = solution.author.id === userId
