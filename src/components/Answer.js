@@ -63,6 +63,9 @@ class Answer extends Component {
     })
   }
 
+  static dataLoaded = false
+  static userLoaded = false
+
   state = {
     solutions: []
   }
@@ -141,11 +144,21 @@ class Answer extends Component {
 
   componentWillReceiveProps(nextProps){
     if (!nextProps.data.loading && this.props.data.loading) {
-      const solutions = nextProps.data.Post.solutions
+      this.dataLoaded = true  
+    } else if (!nextProps.userQuery.loading && this.props.userQuery.loading) {
+      this.userLoaded = true
+    }
+    if (this.dataLoaded && this.userLoaded) {
+      const { solutions } = nextProps.data.Post
+      const { user } = nextProps.userQuery
       if (solutions) {
-        let solutionsToState = solutions.map(solution => { 
-          return { id: solution.id, comment: false, rate: false }
+        let solutionsToState = solutions.map(solution => {
+          const { id, _votedMeta } = solution
+          const rate = user.votes.reduce((prev, curr) => curr.id === id || prev, false)
+          return { id, comment: false, rate, rateCount: _votedMeta.count }
         })
+        this.dataLoaded = false
+        this.userLoaded = false
         this.setState({ solutions: solutionsToState })
       }
     }
@@ -163,11 +176,30 @@ class Answer extends Component {
   onGenuiusPress = (index) => {
     const { solutions } = this.state
     const solution = solutions[index]
-    if (solution) {
-      solution.rate = !solution.rate
-      // solution.rate += solution.rated ? 1 : -1
-    }
+    if (!solution) { return }
+
+    const { user } = this.props.userQuery
+    if (!user) { return }
+
+    const { id, rateCount } = solution
+    const userVotes = user.votes.map(vote => vote.id)
+
+    solution.rate = !solution.rate
+    solution.rateCount += solution.rate ? 1 : -1
     this.setState({ solutions })
+
+    let votes
+    if (solution.rate) {
+      votes = [...userVotes, id]
+    } 
+    else {
+      votes = userVotes.filter(sid => sid !== id)
+    }
+    console.log(votes)
+    const variables = { userId: user.id, solutionIds: votes }
+    this.props.voteSolution({ variables })
+        .then(res => console.log(res))
+        .catch(error => console.error(error))
   }
 
   onCommentDelete = (id) => {
@@ -269,28 +301,30 @@ class Answer extends Component {
       const state = states[index]
       const userId = this.props.userQuery.user.id
       const isAuthor = solution.author.id === userId
-      const { id, comments } = solution
+      const { id, comments, _votedMeta, author, answers } = solution
+      const { rateCount, rate, comment } = state
       const answerHeader = isAuthor ? (
         <div>
           <Author>Your Solution</Author>
           <Button onClick={() => this.editAnswer(solution, postId)}>Edit</Button>
         </div>
-      ) : <Author>{`Solved by ${solution.author.name}`}</Author>
+      ) : <Author>{`Solved by ${author.name}`}</Author>
 
-      const genuiusButton = (state.rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
-      const commentButton = (state.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
-      const commentList = (state.comment ? <CommentList comments={comments} userId={userId} onDelete={this.onCommentDelete} /> : <div />)
-      const commentForm = (state.comment ? (
+      const genuiusButton = (rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
+      const commentButton = (comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const commentList = (comment ? <CommentList comments={comments} userId={userId} onDelete={this.onCommentDelete} /> : <div />)
+      const commentForm = (comment ? (
         <Form style={{ padding: '10px 0 0 0' }} onSubmit={(event) => this.submitComment(event, id)}>
           <TextArea autoHeight placeholder="Any Suggestions ?"  />
           <Form.Button floated="right">Submit</Form.Button>
         </Form>) : <div />)
-      const commentGroup = isAuthor ? <div /> : (
-        <Button.Group labeled style={{ width: '100%' }}>
-          {genuiusButton}
-          <Button.Or />
-          {commentButton}
-        </Button.Group>)
+      const commentGroup = (
+          <Button.Group labeled style={{ width: '100%' }}>
+            {genuiusButton}
+            <Button.Or />
+            {commentButton}
+          </Button.Group>
+        )
       const threeDot = isAuthor ? (
         <Popup
           trigger={<Icon name='ellipsis horizontal' />}
@@ -300,17 +334,17 @@ class Answer extends Component {
         />
       ) : <div />
       return (
-        <Container key={solution.id}>
+        <Container key={id}>
           <Cover>
             {answerHeader}
             <Option>
               <div>
-                {solution.rateCount} Vote
+                {rateCount} Vote
               </div>
               {threeDot}
             </Option>
           </Cover>
-          {Answer.renderMethods(solution.answers)}
+          {Answer.renderMethods(answers)}
           {commentGroup}
           {commentList}
           {commentForm}
@@ -335,6 +369,9 @@ const answerQuery = gql`
       solutions {
         id
         rateCount
+        _votedMeta {
+          count
+        }
         comments {
           id
           text
@@ -378,6 +415,9 @@ const userQuery = gql`
   query {
     user {
       id
+      votes {
+        id
+      }
     }
   }
 `
@@ -402,6 +442,20 @@ const deleteComment = gql`
   }
 `
 
+const voteSolution = gql`
+  mutation($userId: ID!, $solutionIds: [ID!]!) {
+    updateUser (
+      id: $userId
+      votesIds: $solutionIds
+    ) {
+      id
+      votes {
+        id
+      }
+    }
+  }
+`
+
 // export default withRouter(Answer)
 const AnswerWithUser = graphql(userQuery, {
   name: 'userQuery',
@@ -416,11 +470,13 @@ const AnswerWithPostComment = graphql(postComment, { name: 'postComment' })(Answ
 
 const AnswerWithDeleteComment = graphql(deleteComment, { name: 'deleteComment' })(AnswerWithPostComment)
 
+const AnswerWithVoteSolution = graphql(voteSolution, { name: 'voteSolution' })(AnswerWithDeleteComment)
+
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ 
       variables: { id: ownProps.location.state.id },
       fetchPolicy: 'network-only',
     })
-  })(withRouter(AnswerWithDeleteComment))
+  })(withRouter(AnswerWithVoteSolution))
 )
