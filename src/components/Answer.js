@@ -8,6 +8,7 @@ import deleteAnswerMutation from '../graph/deleteAnswer'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
 import Error from './commons/Error'
+import CommentList from './commons/CommentList'
 import { read } from 'fs';
 import { debug } from 'util';
 
@@ -183,9 +184,11 @@ class Answer extends Component {
       const authorId = user.id
 
       const variables = { text, solutionId, authorId }
+      
+      textArea.value = ""
 
       this.props.postComment({ variables })
-        .then(res => textArea.value = "")
+        .then(res => this.props.data.refetch())
         .catch(error => console.error(error))
     }
   }
@@ -256,7 +259,7 @@ class Answer extends Component {
     return solutions.map((solution, index) => {
       const state = states[index]
       const isAuthor = solution.author.id === this.props.userQuery.user.id
-      const { id } = solution
+      const { id, comments } = solution
       const answerHeader = isAuthor ? (
         <div>
           <Author>Your Solution</Author>
@@ -266,6 +269,7 @@ class Answer extends Component {
 
       const genuiusButton = (state.rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
       const commentButton = (state.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const commentList = (state.comment ? <CommentList comments={comments} /> : <div />)
       const commentForm = (state.comment ? (
         <Form style={{ padding: '10px 0 0 0' }} onSubmit={(event) => this.submitComment(event, id)}>
           <TextArea autoHeight placeholder="Any Suggestions ?"  />
@@ -295,6 +299,7 @@ class Answer extends Component {
           </Cover>
           {Answer.renderMethods(solution.answers)}
           {commentGroup}
+          {commentList}
           {commentForm}
         </Container>)
     })
@@ -317,6 +322,15 @@ const answerQuery = gql`
       solutions {
         id
         rateCount
+        comments {
+          id
+          text
+          createdAt
+          author {
+            id
+            name
+          }
+        }
         author {
           id
           name
