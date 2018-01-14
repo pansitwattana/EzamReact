@@ -1,15 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Popup, Icon, Button } from 'semantic-ui-react'
 
 const Comment = styled.div`
-  display: flex;
+  /* display: flex;
   padding: 10px;
   flex-direction: column;
+  background-color: #00FFFF;
+  margin: 5px; */
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+  padding: 20px;
+  margin: .5rem 0 1rem 0;
+  border-radius: 2px;
+  background-color: #fff;
 `
 
 const CommentDate = styled.div`
   font-weight: normal;
   padding-left: 5px;
+`
+
+const CommentHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `
 
 const UserInfo = styled.div`
@@ -58,15 +73,26 @@ const diffTime = (dt1, dt2) => {
   return `${diff}h`
 }
 
-const CommentList = ({ comments }) => (
+const CommentList = ({ comments, userId, onDelete }) => (
   comments.map(comment => {
     const { id, author, text, createdAt } = comment
+    const threeDot = userId === author.id ? (
+      <Popup
+        trigger={<Icon name='ellipsis horizontal' />}
+        content={<Button onClick={() => onDelete(id)} color='red' content='Delete' />}
+        on='click'
+        position='top right'
+      />
+    ) : <div />
     return (
       <Comment key={id}>
-        <UserInfo>
-          {author.name}
-          <CommentDate>{diffTime(Date.now(), Date.parse(createdAt))}</CommentDate>
-        </UserInfo>
+        <CommentHeader>
+          <UserInfo>
+            {author.name}
+            <CommentDate>{diffTime(Date.now(), Date.parse(createdAt))}</CommentDate>
+          </UserInfo>
+          {threeDot}
+        </CommentHeader>
         {text}
       </Comment>
     )

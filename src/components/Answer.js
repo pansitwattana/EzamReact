@@ -170,6 +170,15 @@ class Answer extends Component {
     this.setState({ solutions })
   }
 
+  onCommentDelete = (id) => {
+    if (id) {
+      const variables = { id }
+      this.props.deleteComment({ variables })
+        .then(res => this.props.data.refetch())
+        .catch(error => console.log(error))
+    }
+  }
+
   submitComment = (event, solutionId) => {
     if (event.target) {
       const textArea = event.target.firstChild
@@ -258,7 +267,8 @@ class Answer extends Component {
     const states = this.state.solutions
     return solutions.map((solution, index) => {
       const state = states[index]
-      const isAuthor = solution.author.id === this.props.userQuery.user.id
+      const userId = this.props.userQuery.user.id
+      const isAuthor = solution.author.id === userId
       const { id, comments } = solution
       const answerHeader = isAuthor ? (
         <div>
@@ -269,7 +279,7 @@ class Answer extends Component {
 
       const genuiusButton = (state.rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
       const commentButton = (state.comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
-      const commentList = (state.comment ? <CommentList comments={comments} /> : <div />)
+      const commentList = (state.comment ? <CommentList comments={comments} userId={userId} onDelete={this.onCommentDelete} /> : <div />)
       const commentForm = (state.comment ? (
         <Form style={{ padding: '10px 0 0 0' }} onSubmit={(event) => this.submitComment(event, id)}>
           <TextArea autoHeight placeholder="Any Suggestions ?"  />
@@ -281,6 +291,14 @@ class Answer extends Component {
           <Button.Or />
           {commentButton}
         </Button.Group>)
+      const threeDot = isAuthor ? (
+        <Popup
+          trigger={<Icon name='ellipsis horizontal' />}
+          content={<Button onClick={() => this.submitDelete(solution)} color='red' content='Delete' />}
+          on='click'
+          position='top right'
+        />
+      ) : <div />
       return (
         <Container key={solution.id}>
           <Cover>
@@ -289,12 +307,7 @@ class Answer extends Component {
               <div>
                 {solution.rateCount} Vote
               </div>
-              <Popup
-                trigger={<Icon name='ellipsis horizontal' />}
-                content={<Button onClick={() => this.submitDelete(solution)} color='red' content='Delete' />}
-                on='click'
-                position='top right'
-              />
+              {threeDot}
             </Option>
           </Cover>
           {Answer.renderMethods(solution.answers)}
@@ -381,6 +394,14 @@ const postComment = gql`
   }
 `
 
+const deleteComment = gql`
+  mutation($id: ID!) {
+    deleteComment(id: $id) {
+      id
+    }
+  }
+`
+
 // export default withRouter(Answer)
 const AnswerWithUser = graphql(userQuery, {
   name: 'userQuery',
@@ -393,11 +414,13 @@ const AnswerWithAnswerSolution = graphql(deleteAnswer, { name: 'deleteAnswer' })
 
 const AnswerWithPostComment = graphql(postComment, { name: 'postComment' })(AnswerWithAnswerSolution)
 
+const AnswerWithDeleteComment = graphql(deleteComment, { name: 'deleteComment' })(AnswerWithPostComment)
+
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ 
       variables: { id: ownProps.location.state.id },
       fetchPolicy: 'network-only',
     })
-  })(withRouter(AnswerWithPostComment))
+  })(withRouter(AnswerWithDeleteComment))
 )
