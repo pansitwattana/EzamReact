@@ -86,7 +86,6 @@ class KeyComponent extends Component {
       // const height = 0
       const y = event.touches[0].clientY
       const deltaY = y - this.state.pos.y
-      console.log(deltaY)
       if (deltaY > 0 && swipeDown) {
         this.setState({ status: 'swipedown' })
       } else if (deltaY < 0 && swipeUp) {

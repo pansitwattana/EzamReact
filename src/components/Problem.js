@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import uuid from 'uuid'
 import { gql, graphql } from 'react-apollo'
-import { Button, Icon, Input } from 'semantic-ui-react'
+import { Button, Icon, Input, Image } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
-import { Math } from './data/Keyboards'
+// import { Math } from './data/Keyboards'
 import math from './paper/MathQuill'
+import { KeyAction, Actions } from './data/MathJaxKeys'
 import TeX from './commons/TeX'
 import Keyboard from './commons/Keyboard'
 // import MathInput from './commons/Input'
@@ -31,12 +32,25 @@ const Form = styled.div`
   margin: 10px;
 `
 
+const Footer = styled.div`
+  background-color: #4c66a4;
+  color: #fff;
+  position: absolute;
+  right: 20px;
+  bottom: 50%;
+  padding: 15px;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 2px 2px 10px #ccc;
+`
 // const InputContainer = styled.div`
 //   display: flex;
 //   align-items: center;
 // `
 
 class Problem extends Component {
+  latexs = ['']
+
   state = {
     problemId: uuid(),
     title: '',
@@ -44,6 +58,7 @@ class Problem extends Component {
     showKeyboard: false,
     imgSrc: null,
     latex: '',
+    prevLatex: '',
   }
 
   componentDidMount() {
@@ -55,13 +70,26 @@ class Problem extends Component {
   }
 
   onFileChange = () => {
-    const file = this.refs.file.files[0];
+    const { file } = this.refs
+    if (!file) {
+      this.setState({ imgSrc: null, showKeyboard: false })
+      return
+    }
+
+    const { files } = file
+    if (!files || files.length === 0) {
+      this.setState({ imgSrc: null, showKeyboard: false })
+      return
+    }
+
+    const imageFile = files[0];
     const reader = new FileReader();
-    const url = reader.readAsDataURL(file);
+    const url = reader.readAsDataURL(imageFile);
 
     reader.onloadend = () => {
       this.setState({
         imgSrc: [reader.result],
+        showKeyboard: false
       })
     }
     console.log(url) // Would see a path?
@@ -111,23 +139,39 @@ class Problem extends Component {
 
   handleKeyboard(key) {
     // math.typed(key, this.state.problemId)
-    this.setState({ latex: this.state.latex + key })
+    const action = KeyAction(key)
+    switch (action) {
+      case Actions.DELETE:
+        const prevLatex = this.latexs.pop() || ''
+        this.setState({ latex: prevLatex })
+        break
+      default:
+        const latex = this.state.latex
+        this.latexs.push(latex)
+        this.setState({ latex: latex + key })
+        break
+    }
   }
 
   handleKeyPress = (event) => {
     console.log(event)
-    if (this.state.showKeyboard)
+    
+    if (!this.state.showKeyboard) {
+      return
+    }
+
     this.setState({ latex: this.state.latex + event.key })
   }
 
   render() {
-    const { symbol, value, action } = Math
-    const { selectedTags, showKeyboard } = this.state
+    // const { symbol, value, action } = Math
+    const { selectedTags, showKeyboard, imgSrc } = this.state
     const { loading, allTags } = this.props.tagQuery
     const isLoading = loading || !allTags;
     const tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
+      <div>
       <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
         <Header text="Post" />
         <TitleSelect />
@@ -151,14 +195,24 @@ class Problem extends Component {
           <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
 
           <br />
+          <label for="file-upload" style={{
+            border: '1px solid #ccc',
+            display: 'inline-block',
+            padding: '6px 12px',
+            cursor: 'pointer'
+          }}>
+              <Icon name="camera" /> Custom Upload
+          </label>
           <input
+            id="file-upload"
             ref="file"
             type="file"
             name="user[image]"
             multiple="true"
             onChange={this.onFileChange}
+            style={{ display: 'none' }}
           />
-          <img src={this.state.imgSrc} alt="Problem Pictures" />
+          <Image src={imgSrc} size='medium' hidden={imgSrc === null} />
           {/* <Button style={{ margin: '10px' }}>
             <Icon name="camera" />
             Add a picture
@@ -169,8 +223,10 @@ class Problem extends Component {
             Submit
           </Button>
         </Form>
-        <Keyboard show={showKeyboard} keySymbols={symbol} keyValues={value} action={action} onPress={key => this.handleKeyboard(key)} />
+        <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
       </div>
+        <Footer>X</Footer>
+        </div>
     )
   }
 }

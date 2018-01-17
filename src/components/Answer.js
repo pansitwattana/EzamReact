@@ -5,12 +5,11 @@ import { Card, Button, Icon, Popup, Form, TextArea } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
 import deleteAnswerMutation from '../graph/deleteAnswer'
+import deleteCommentMutation from '../graph/deleteComment'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
 import Error from './commons/Error'
 import CommentList from './commons/CommentList'
-import { read } from 'fs';
-import { debug } from 'util';
 
 const Container = styled.div`
   margin: 10px 10px 50px 10px;
@@ -151,17 +150,22 @@ class Answer extends Component {
     if (this.dataLoaded && this.userLoaded) {
       const { solutions } = nextProps.data.Post
       const { user } = nextProps.userQuery
-      if (solutions) {
-        let solutionsToState = solutions.map(solution => {
-          const { id, _votedMeta } = solution
-          const rate = user.votes.reduce((prev, curr) => curr.id === id || prev, false)
-          return { id, comment: false, rate, rateCount: _votedMeta.count }
-        })
-        this.dataLoaded = false
-        this.userLoaded = false
-        solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount)
-        this.setState({ solutions: solutionsToState })
-      }
+      this.reload(solutions, user)
+      this.dataLoaded = false
+      this.userLoaded = false
+    }
+  }
+
+  reload(solutions, user) {
+    if (solutions && user) {
+      let solutionsToState = solutions.map(solution => {
+        const { id, _votedMeta } = solution
+        const rate = user.votes.reduce((prev, curr) => curr.id === id || prev, false)
+        return { id, comment: false, rate, rateCount: _votedMeta.count }
+      })
+      
+      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount)
+      this.setState({ solutions: solutionsToState })
     }
   }
 
@@ -274,7 +278,9 @@ class Answer extends Component {
   submitDelete = (solution) => {
     deleteAnswerMutation(solution.answers, this.props.deleteAnswer)
       .then(res => {
-        this.deleteSolution(solution)
+        deleteCommentMutation(solution.comments, this.props.deleteComment)
+          .then(result => this.deleteSolution(solution))
+          .catch(error => console.error(error))
       })
       .catch(error => console.error(error))
   }

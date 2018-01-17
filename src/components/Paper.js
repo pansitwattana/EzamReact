@@ -6,7 +6,7 @@ import VirtualList from 'react-tiny-virtual-list'
 import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import 'mathquill/build/mathquill.css'
-import { KeyAction, Actions } from './data/Keys'
+import { KeyAction, Actions, Keys } from './data/Keys'
 import ErrorManager from './paper/ErrorManager'
 import suggest from './paper/Suggest'
 import math from './paper/MathQuill'
@@ -43,7 +43,8 @@ class PaperComponent extends Component {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
   }
-  static loadMethod = false
+  static loadedMethod = false
+  static loadedMath = false
   static submiting = false
   state = {
     methods: [
@@ -62,18 +63,19 @@ class PaperComponent extends Component {
     solutionId: null,
   }
 
+  initial(problem) {
+    if (problem) {
+      errorManager = new ErrorManager(problem)
+      const keywords = getKeywords(problem.latex)
+      console.log('called', { keywords, problem })
+      this.setState({ hasChecker: errorManager.hasChecker(), keywords })
+    }
+  }
+
   // when done loading
   componentWillReceiveProps(nextProps){
     if (!nextProps.postQuery.loading && this.props.postQuery.loading) {
-      const problem = nextProps.postQuery.Post
-      if (problem) {
-        console.log('called')
-        errorManager = new ErrorManager(problem)
-        const keywords = getKeywords(problem.latex)
-        if (errorManager.hasChecker()) {
-          this.setState({ hasChecker: true, keywords })
-        }
-      }
+      this.initial(nextProps.postQuery.Post)
     }
   }
 
@@ -82,27 +84,36 @@ class PaperComponent extends Component {
   }
 
   componentDidMount() {
+    this.loadMethod()
+    this.initial(this.props.postQuery.Post)
     const { line } = this.state
     const { methods } = this.state
     const method = methods[line]
     method.focus = true
     math.focus(method.id)
-    this.loadMethod()
   }
 
   componentDidUpdate() {
     const { line, methods, loadMethod } = this.state
-    if (this.loadMethod) {
+    if (this.loadedMethod) {
       let isLoad = true
       methods.forEach(method => {
         isLoad = isLoad & math.typed(method.text, method.id)
       })
       if (isLoad)
-        this.loadMethod = false
+        this.loadedMethod = false
     }
-    const method = methods[line]
-    method.focus = true
-    math.focus(method.id)
+
+    if (!this.loadedMath) {
+      const method = methods[line]
+      if (!method) {
+        return
+      }
+  
+      method.focus = true
+
+      math.focus(method.id)
+    }
   }
 
   loadMethod() {
@@ -132,18 +143,20 @@ class PaperComponent extends Component {
         error: false,
       })
     })
-    this.loadMethod = true
+    this.loadedMethod = true
     this.setState({ solutionId: id, methods, line: length - 1, isDone: true })
   }
 
-  onInputTouch(line) {
-    const { methods } = this.state
-    const oldMethod = methods[this.state.line]
-    oldMethod.focus = false
-    const newMethod = methods[line]
-    newMethod.focus = true
-    this.setState({ methods, line })
-    math.blur(oldMethod.id)
+  onInputTouch(i) {
+    const { methods, line } = this.state
+    if (i !== line) {
+      const oldMethod = methods[line]
+      oldMethod.focus = false
+      const newMethod = methods[i]
+      newMethod.focus = true
+      this.setState({ methods, line: i })
+      math.blur(oldMethod.id)
+    }
   }
   
   validatation(methods, problem, hasChecker) {
@@ -298,7 +311,14 @@ class PaperComponent extends Component {
     }
   }
 
+  handleSuggestion(value) {
+    const id = this.state.methods[this.state.line].id
+    math.typed(value, id)
+    math.typed(Keys.RIGHT, id)
+  }
+
   handleKeyboard(value) {
+    this.loadedMath = true
     math.typed(value, this.state.methods[this.state.line].id)
     const action = KeyAction(value)
     if (action === Actions.NEWLINE) {
@@ -317,6 +337,7 @@ class PaperComponent extends Component {
         const { line } = this.state
         methods[line].focus = false
         methods.splice(line + 1, 0, method)
+        this.loadedMath = false
         this.setState({ methods, line: line + 1 })
       }
     } else if (action === Actions.CLEAR) {
@@ -401,6 +422,7 @@ class PaperComponent extends Component {
           </Wrapper>
           <Keyboard
             onPress={key => this.handleKeyboard(key)}
+            onSuggestionPress={key => this.handleSuggestion(key)}
             keywords={keywords}
           />
         </div>

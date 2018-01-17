@@ -6,7 +6,6 @@ let MQ
 const typed = (str, id) => {
   let mathField = mathFields[id]
   if (mathField) {
-    mathField.focus()
     const action = KeyAction(str)
     if (action === Actions.TYPE) {
       mathField.typedText(str)
@@ -25,6 +24,7 @@ const typed = (str, id) => {
     } else if (action === Actions.CLEAR) {
       mathField.latex('')
     }
+    mathField.focus()
   } else {
     const mathFieldSpan = document.getElementById(id)
     if (!mathFieldSpan) {

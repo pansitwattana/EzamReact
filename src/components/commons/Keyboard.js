@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Button } from 'semantic-ui-react'
 import LaTeX from './LaTeX'
 import Key from './Key'
-import { Math, Alphabet } from '../data/Keyboards'
+import { Math, Alphabet, MathJax, MathJaxAlphabet } from '../data/Keyboards'
 import { Keys, KeyAction, Actions } from '../data/Keys'
 
 const Keyboard = styled.div`
@@ -34,16 +34,22 @@ class KeyboardComponent extends Component {
   state = {
     type: Math,
   }
+
   onKeywordPress = (keyword) => {
-    this.props.onPress(keyword)
+    this.props.onSuggestionPress(keyword)
   }
 
   handleKeyPress = (value) => {
     const action = KeyAction(value)
-    if (action === Actions.ALPHABET) {
+    const { type } = this.state
+    if (action === Actions.ALPHABET && type === Math) {
       this.setState({ type: Alphabet })
-    } else if (action === Actions.NUMBER) {
+    } else if (action === Actions.NUMBER && type === Math) {
       this.setState({ type: Math })
+    } else if (action === Actions.ALPHABET && type !== Math) {
+      this.setState({ type: MathJaxAlphabet })
+    } else if (action === Actions.NUMBER && type !== Math) {
+      this.setState({ type: MathJax })
     } else {
       this.props.onPress(value)
     }
@@ -54,6 +60,13 @@ class KeyboardComponent extends Component {
       <Button style={{ height: '100%' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
+  }
+
+  componentWillMount() {
+    const { isMathJax } = this.props
+    if (isMathJax) {
+      this.setState({ type: MathJax })
+    }
   }
 
   render() {
@@ -169,12 +182,15 @@ const KeyboardType = {
 KeyboardComponent.defaultProps = {
   show: true,
   keywords: [],
+  isMathJax: false,
 }
 
 KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
+  onSuggestionPress: PropTypes.func,
   keywords: PropTypes.array,
   show: PropTypes.bool,
+  isMathJax: PropTypes.bool,
 }
 
 export default KeyboardComponent
