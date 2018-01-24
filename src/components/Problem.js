@@ -57,6 +57,7 @@ class Problem extends Component {
     selectedTags: [],
     showKeyboard: false,
     imgSrc: null,
+    files: null,
     latex: '',
     prevLatex: '',
   }
@@ -69,16 +70,35 @@ class Problem extends Component {
     this.setState({ selectedTags })
   }
 
+  getFilePath(file) {
+    if (!file) {
+      return null
+    }
+
+    const { files } = file
+    if (!files || files.length === 0) {
+      return null
+    }
+
+    const imageFile = files[0];
+    const reader = new FileReader();
+
+    const url = reader.readAsDataURL(imageFile);
+    if (!url) return null
+
+    return url
+  }
+
   onFileChange = () => {
     const { file } = this.refs
     if (!file) {
-      this.setState({ imgSrc: null, showKeyboard: false })
+      this.setState({ imgSrc: null, showKeyboard: false, files: null })
       return
     }
 
     const { files } = file
     if (!files || files.length === 0) {
-      this.setState({ imgSrc: null, showKeyboard: false })
+      this.setState({ imgSrc: null, showKeyboard: false, files: null })
       return
     }
 
@@ -89,15 +109,51 @@ class Problem extends Component {
     reader.onloadend = () => {
       this.setState({
         imgSrc: [reader.result],
-        showKeyboard: false
+        showKeyboard: false,
+        files
       })
+      
+      // console.log(url) // Would see a path?
     }
-    console.log(url) // Would see a path?
     // TODO: concat files
   }
 
+  uploadFile = (files) => {
+    return new Promise((resolve, reject) => {
+      let data = new FormData()
+      data.append('data', files[0])
+      // use the file endpoint
+      fetch('https://api.graph.cool/file/v1/cj8xys6y80cqz0169yu1nn3ql', {
+        method: 'POST',
+        body: data
+      }).then(response => {
+        return response.json()
+      }).then(file => {
+        const fileId = file.id
+        resolve(fileId)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  }
+
+  postProblem = (variables) => {
+    return new Promise((resolve, reject) => {
+      this.props.createPost({ variables })
+        .then((res) => {
+          const post = res.data.createPost
+          resolve(post.id)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
   submit = () => {
-    const latex = math.getLaTeX(this.state.problemId)
+    // const latex = math.getLaTeX(this.state.problemId)
+    const { latex } = this.state
+    
     if (!latex || latex === '') {
       alert('Please Input Problem')
       return;
@@ -114,27 +170,41 @@ class Problem extends Component {
         tagIds.push(tag.id)
       }
     })
-    console.log(tagIds)
-    const variables = {
-      title: this.state.title,
+
+    const { title, files } = this.state
+
+    let variables = {
+      title,
       authorId: user.id,
       latex,
       description: '',
       difficulty: 'Easy',
       tagIds,
+      imageId: null
     }
-    console.log('submit', variables)
-    this.props.createPost({ variables })
-      .then((res) => {
-        const post = res.data.createPost
-        this.props.history.push('./paper', {
-          post,
-          done: false,
+
+    let image = null
+    
+    if (files) {
+      this.uploadFile(files)
+        .then(imageId => {
+          variables.imageId = imageId
+          this.postProblem(variables)
+            .then(id => {
+              this.props.history.push(`/paper/${id}`)
+            })
+        }).catch(error => console.error(error))
+    }
+    else {
+      console.log(tagIds)
+
+      this.postProblem(variables)
+        .then(id => {
+          this.props.history.push(`/paper/${id}`)
         })
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        .catch(error => console.error(error))
+    }
+
   }
 
   handleKeyboard(key) {
@@ -212,7 +282,7 @@ class Problem extends Component {
             onChange={this.onFileChange}
             style={{ display: 'none' }}
           />
-          <Image src={imgSrc} size='medium' hidden={imgSrc === null} />
+          <Image src={[imgSrc]} size='medium' hidden={imgSrc === null} />
           {/* <Button style={{ margin: '10px' }}>
             <Icon name="camera" />
             Add a picture
@@ -232,7 +302,7 @@ class Problem extends Component {
 }
 // SolutionanswersAnswer
 const createPost = gql`
-mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty){
+mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty, , $imageId: ID){
   createPost (
     title: $title
     authorId: $authorId
@@ -240,6 +310,7 @@ mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String
     description: $description
     difficulty: $difficulty
     tagsIds: $tagIds
+    imageId: $imageId
   ) {
     id
     title

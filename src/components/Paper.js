@@ -232,13 +232,25 @@ class PaperComponent extends Component {
     }
     const answers = latexMethod.map(method => ({ latex: method.text, text: '' }))
     
+    const { location } = this.props
+    if (!location) { return }
+    
+    const { state } = location
+    if (!state) { return }
+
+    const { solution } = state
+    if (!solution) { return }
+    
+    const answerToDelete = solution.answers
+    if (!answerToDelete) { return }
+
     console.log(answers)
     if (solutionId) {
       const variables = {
         solutionId,
         answers,
       }
-      deleteAnswerMutation(latexMethod, this.props.deleteAnswer)
+      deleteAnswerMutation(answerToDelete, this.props.deleteAnswer)
         .then(res => {
           this.props
             .updateSolution({ variables })
@@ -435,7 +447,6 @@ class PaperComponent extends Component {
 const submitSolutions = gql`
   mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!) {
     createSolution(
-      rate: 0
       rateCount: 0
       authorId: $userId
       postId: $postId

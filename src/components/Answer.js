@@ -169,24 +169,29 @@ class Answer extends Component {
     }
   }
 
-  onCommentPress = (index) => {
+  onCommentPress = (id) => {
     const { solutions } = this.state
-    const solution = solutions[index]
-    if (solution) {
+    const filterSolution = solutions.filter(solution => solution.id === id)
+    if (filterSolution.length > 0) {
+      const solution  = filterSolution[0]
       solution.comment = !solution.comment
+      this.setState({ solutions })
     }
-    this.setState({ solutions })
   }
 
-  onGenuiusPress = (index) => {
+  onGenuiusPress = (id) => {
     const { solutions } = this.state
-    const solution = solutions[index]
-    if (!solution) { return }
+    const filterSolution = solutions.filter(solution => solution.id === id)
+    if (filterSolution.length === 0) {
+      return
+    }
+
+    const solution  = filterSolution[0]
 
     const { user } = this.props.userQuery
     if (!user) { return }
 
-    const { id, rateCount } = solution
+    const { rateCount } = solution
     const userVotes = user.votes.map(vote => vote.id)
 
     solution.rate = !solution.rate
@@ -266,7 +271,10 @@ class Answer extends Component {
   deleteSolution(solution) {
     const variables = { id: solution.id }
     this.props.deleteSolution({ variables })
-      .then(res => this.props.data.refetch())
+      .then(res => {
+        this.props.data.refetch()
+        this.props.userQuery.refetch()
+      })
       .catch(err => console.error(err))
   }
   
@@ -307,7 +315,11 @@ class Answer extends Component {
     let sortedSolution = [...solutions]
     sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count)
     return sortedSolution.map((solution, index) => {
-      const state = states[index]
+      const filterStates = states.filter(state => state.id === solution.id)
+      if (filterStates.length === 0) {
+        return <Error message="Loading..." />
+      }
+      const state = filterStates[0]
       const userId = this.props.userQuery.user.id
       const isAuthor = solution.author.id === userId
       const { id, comments, _votedMeta, author, answers } = solution
@@ -319,8 +331,8 @@ class Answer extends Component {
         </div>
       ) : <Author>{`Solved by ${author.name}`}</Author>
 
-      const genuiusButton = (rate ? <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(index)} icon="rocket" content="Genuius!" />)
-      const commentButton = (comment ? <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(index)} icon="comment" content="Comment" />)
+      const genuiusButton = (rate ? <Button onClick={() => this.onGenuiusPress(id)} icon="rocket" content="Genuius!" negative /> : <Button onClick={() => this.onGenuiusPress(id  )} icon="rocket" content="Genuius!" />)
+      const commentButton = (comment ? <Button onClick={() => this.onCommentPress(id)} icon="comment" content="Comment" positive /> : <Button onClick={() => this.onCommentPress(id)} icon="comment" content="Comment" />)
       const commentList = (comment ? <CommentList comments={comments} userId={userId} onDelete={this.onCommentDelete} /> : <div />)
       const commentForm = (comment ? (
         <Form style={{ padding: '10px 0 0 0' }} onSubmit={(event) => this.submitComment(event, id)}>
@@ -403,6 +415,15 @@ const answerQuery = gql`
     }
   }
 `
+
+// const uploadImage = gql`
+//   mutation {
+//     createFile(
+//       name: $name
+//       postId:
+//     )
+//   }
+// `
 
 const deleteSolution = gql`
   mutation($id: ID!) {
