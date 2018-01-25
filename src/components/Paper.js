@@ -61,6 +61,7 @@ class PaperComponent extends Component {
     hasChecker: false,
     isDone: false,
     solutionId: null,
+    checked: false,
   }
 
   initial(problem) {
@@ -144,7 +145,7 @@ class PaperComponent extends Component {
       })
     })
     this.loadedMethod = true
-    this.setState({ solutionId: id, methods, line: length - 1, isDone: true })
+    this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true })
   }
 
   onInputTouch(i) {
@@ -158,7 +159,7 @@ class PaperComponent extends Component {
       math.blur(oldMethod.id)
     }
   }
-  
+
   validatation(methods, problem, hasChecker) {
     let error = null
     if (this.submiting) {
@@ -277,6 +278,26 @@ class PaperComponent extends Component {
     }
   }
 
+  onCheck(id) {
+    const { methods, problem, hasChecker } = this.state
+    let result = this.validatation(methods, problem, hasChecker)
+    
+    if (!result) {
+      console.log('error')
+      return
+    }
+
+    const { latexMethod, error } = result
+
+    if (error) {
+      this.setState({ methods: latexMethod, checked: false })
+      console.log(error)
+      return
+    }
+
+    this.setState({ checked: true })
+  }
+
   submitAnswer(id) {
     this.setState({ submiting: true })
     const { methods, problem, hasChecker } = this.state
@@ -350,7 +371,7 @@ class PaperComponent extends Component {
         methods[line].focus = false
         methods.splice(line + 1, 0, method)
         this.loadedMath = false
-        this.setState({ methods, line: line + 1 })
+        this.setState({ methods, line: line + 1, checked: false })
       }
     } else if (action === Actions.CLEAR) {
       let { methods } = this.state
@@ -362,6 +383,7 @@ class PaperComponent extends Component {
       this.setState({
         methods,
         line: line > 0 ? line - 1 : line,
+        checked: false
       })
     } else {
       const methods = this.state.methods.map((method) => {
@@ -369,7 +391,7 @@ class PaperComponent extends Component {
         methodReset.error = false
         return methodReset
       })
-      this.setState({ methods })
+      this.setState({ methods, checked: false })
     }
   }
 
@@ -396,8 +418,10 @@ class PaperComponent extends Component {
     const { length } = this.state.methods
     const itemSize = 40
     if (problem) {
-      const { submiting, keywords, isDone } = this.state
-      const { latex, imageurl, id } = problem
+      const { submiting, keywords, isDone, checked } = this.state
+      const { latex, image, id } = problem
+      let imageUrl = null
+      if (image) { imageUrl = image.url }
       return (
         <div onKeyPress={this.handleKeyPress} tabIndex="0">
           <Wrapper>
@@ -405,12 +429,14 @@ class PaperComponent extends Component {
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen
                 displayText={latex}
-                imageUrl={imageurl}
+                imageUrl={imageUrl}
                 id={id}
                 done={isDone}
                 loading={submiting}
+                checked={checked}
                 onSubmit={() => this.submitAnswer(id)}
                 onEditSubmit={() => this.submitEdit(id)}
+                onCheck={() => this.onCheck(id)}
               />
               <VirtualList
                 width="100%"
@@ -481,7 +507,9 @@ const postQuery = gql`
     Post(id: $id) {
       id
       latex
-      imageurl
+      image {
+        url
+      }
       tags {
         name
       }
