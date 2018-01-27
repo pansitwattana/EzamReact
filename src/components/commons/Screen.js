@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Icon, Dimmer, Loader, Label, Item, Button } from 'semantic-ui-react'
+import { Icon, Dimmer, Loader, Label, Item, Button, Image } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import LaTeX from './LaTexContainer'
 // import LaTeX from './LaTeX'
@@ -50,62 +50,77 @@ const Text = styled.span`
   `};
 `
 
-const ScreenComponent = ({
-  displayText,
-  description,
-  id,
-  imageUrl,
-  done,
-  loading,
-  checked,
-  onSubmit,
-  onEditSubmit,
-  onCheck,
-  tags
-}) => {
-  const imageDisplay = imageUrl ? <Item.Image size='medium' src={imageUrl} /> : undefined
-  const display = <LaTeX text={description + " " + displayText} id={id} />
-  let submitText = 'Check'
-  let onButtonClick = onCheck
-  let highlight = false
-  if (done && checked) { 
-    submitText = 'Edit' 
-    onButtonClick = onEditSubmit
-    highlight = true
+class ScreenComponent extends Component {
+
+  state = {
+    imageOpen: true
   }
-  else if (!done && checked) { 
-    submitText = 'Submit' 
-    onButtonClick = onSubmit
-    highlight = true
+
+  render() {
+    const {
+      displayText,
+      description,
+      id,
+      imageUrl,
+      done,
+      loading,
+      checked,
+      onSubmit,
+      onEditSubmit,
+      onCheck,
+      tags
+    } = this.props
+    const { imageOpen } = this.state
+    const toggleIcon = imageOpen ? 'angle up' : 'angle down'
+    const imageToggle = imageUrl ? <Button onClick={() => this.setState({ imageOpen: !imageOpen })} style={{ width: '30%', alignSelf: 'center' }} basic icon={toggleIcon} /> : undefined
+    const imageDisplay = imageUrl && imageOpen ? (
+      <Item size="tiny" style={{ margin: '0 30px' }}>
+        <Image src={imageUrl} />
+      </Item>) : undefined
+    const display = <LaTeX text={description + " " + displayText} id={id} />
+    let submitText = 'Check'
+    let onButtonClick = onCheck
+    let highlight = false
+    if (done && checked) { 
+      submitText = 'Edit' 
+      onButtonClick = onEditSubmit
+      highlight = true
+    }
+    else if (!done && checked) { 
+      submitText = 'Submit' 
+      onButtonClick = onSubmit
+      highlight = true
+    }
+    const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
+    return (
+      <Screen>
+        {loading ? (
+          <Dimmer active>
+            <Loader content="Loading" />
+          </Dimmer>
+        ) : (
+          <Item.Group style={{ width: '100%', height: '100%' }}>
+            <Item style={{ margin: '0px' }}>
+              {imageDisplay}
+              {imageToggle}
+              <Item.Content style={{ paddingTop: '5px' }}>
+                <Item.Description>
+                  {display}
+                </Item.Description>
+                <Item.Extra>
+                  {labels}
+                  <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                    {submitText}  
+                    <Icon name='right check' />
+                  </Button>
+                </Item.Extra>
+              </Item.Content>
+            </Item>
+          </Item.Group>
+        )}
+      </Screen>
+    )
   }
-  const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
-  return (
-    <Screen>
-      {loading ? (
-        <Dimmer active>
-          <Loader content="Loading" />
-        </Dimmer>
-      ) : (
-        <Item.Group style={{ width: '100%', height: '100%' }}>
-          <Item style={{ margin: '0px' }}>
-            {imageDisplay}
-            <Item.Content>
-              <Item.Description>
-                {display}
-              </Item.Description>
-              <Item.Extra>
-                {labels}
-                <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
-                  {submitText}  
-                  <Icon name='right check' />
-                </Button>
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-        </Item.Group>
-      )}
-    </Screen>
-  )
 }
 // const ScreenComponent = ({
 //   displayText,

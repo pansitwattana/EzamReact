@@ -65,10 +65,11 @@ class Login extends Component {
       window.localStorage.setItem('auth0IdToken', authResult.idToken);
       console.log('authen done', authResult)
       console.log(this.props)
+      const email = authResult.idTokenPayload.email
       const variables = {
         idToken: authResult.idToken,
-        email: authResult.idTokenPayload.email,
-        name: 'NewUser',
+        email,
+        name: email,
       }
       // const queryVar = {
       //   auth0UserId: authResult.idTokenPayload.sub,
