@@ -15,6 +15,7 @@ import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
 import deleteAnswerMutation from '../graph/deleteAnswer'
+import { check } from 'graphql-anywhere/lib/src/utilities';
 
 const { getKeywords } = suggest
 let errorManager = null
@@ -69,7 +70,8 @@ class PaperComponent extends Component {
       errorManager = new ErrorManager(problem)
       const keywords = getKeywords(problem.latex)
       console.log('called', { keywords, problem })
-      this.setState({ hasChecker: errorManager.hasChecker(), keywords })
+      const hasChecker = errorManager.hasChecker()
+      this.setState({ hasChecker, keywords, checked: !hasChecker })
     }
   }
 
@@ -354,6 +356,10 @@ class PaperComponent extends Component {
     this.loadedMath = true
     math.typed(value, this.state.methods[this.state.line].id)
     const action = KeyAction(value)
+    let checked = true
+    if (this.state.hasChecker) {
+      checked = false
+    }
     if (action === Actions.NEWLINE) {
       if (this.state.methods.length > 9) {
         return
@@ -371,7 +377,7 @@ class PaperComponent extends Component {
         methods[line].focus = false
         methods.splice(line + 1, 0, method)
         this.loadedMath = false
-        this.setState({ methods, line: line + 1, checked: false })
+        this.setState({ methods, line: line + 1, checked })
       }
     } else if (action === Actions.CLEAR) {
       let { methods } = this.state
@@ -383,7 +389,7 @@ class PaperComponent extends Component {
       this.setState({
         methods,
         line: line > 0 ? line - 1 : line,
-        checked: false
+        checked
       })
     } else {
       const methods = this.state.methods.map((method) => {
@@ -391,7 +397,7 @@ class PaperComponent extends Component {
         methodReset.error = false
         return methodReset
       })
-      this.setState({ methods, checked: false })
+      this.setState({ methods, checked })
     }
   }
 
@@ -419,7 +425,7 @@ class PaperComponent extends Component {
     const itemSize = 40
     if (problem) {
       const { submiting, keywords, isDone, checked } = this.state
-      const { latex, image, id } = problem
+      const { latex, image, description, id } = problem
       let imageUrl = null
       if (image) { imageUrl = image.url }
       return (
@@ -429,6 +435,7 @@ class PaperComponent extends Component {
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen
                 displayText={latex}
+                description={description}
                 imageUrl={imageUrl}
                 id={id}
                 done={isDone}
@@ -507,6 +514,7 @@ const postQuery = gql`
     Post(id: $id) {
       id
       latex
+      description
       image {
         url
       }

@@ -159,12 +159,12 @@ class Answer extends Component {
   reload(solutions, user) {
     if (solutions && user) {
       let solutionsToState = solutions.map(solution => {
-        const { id, _votedMeta } = solution
+        const { id, _votedMeta, author } = solution
         const rate = user.votes.reduce((prev, curr) => curr.id === id || prev, false)
-        return { id, comment: false, rate, rateCount: _votedMeta.count }
+        return { id, comment: false, rate, rateCount: _votedMeta.count, author }
       })
       
-      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount)
+      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount || a.author.id !== user.id)
       this.setState({ solutions: solutionsToState })
     }
   }
@@ -313,14 +313,14 @@ class Answer extends Component {
     }
     const states = this.state.solutions
     let sortedSolution = [...solutions]
-    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count)
+    const userId = this.props.userQuery.user.id
+    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count || a.author.id !== userId)
     return sortedSolution.map((solution, index) => {
       const filterStates = states.filter(state => state.id === solution.id)
       if (filterStates.length === 0) {
         return <Error message="Loading..." />
       }
       const state = filterStates[0]
-      const userId = this.props.userQuery.user.id
       const isAuthor = solution.author.id === userId
       const { id, comments, _votedMeta, author, answers } = solution
       const { rateCount, rate, comment } = state

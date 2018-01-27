@@ -52,6 +52,7 @@ const Text = styled.span`
 
 const ScreenComponent = ({
   displayText,
+  description,
   id,
   imageUrl,
   done,
@@ -59,10 +60,11 @@ const ScreenComponent = ({
   checked,
   onSubmit,
   onEditSubmit,
-  onCheck
+  onCheck,
+  tags
 }) => {
   const imageDisplay = imageUrl ? <Item.Image size='medium' src={imageUrl} /> : undefined
-  const display = <LaTeX text={displayText} id={id} />
+  const display = <LaTeX text={description + " " + displayText} id={id} />
   let submitText = 'Check'
   let onButtonClick = onCheck
   let highlight = false
@@ -76,7 +78,7 @@ const ScreenComponent = ({
     onButtonClick = onSubmit
     highlight = true
   }
-  
+  const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
   return (
     <Screen>
       {loading ? (
@@ -84,23 +86,24 @@ const ScreenComponent = ({
           <Loader content="Loading" />
         </Dimmer>
       ) : (
-        <Icon inverted color="teal" name="check" />
+        <Item.Group style={{ width: '100%', height: '100%' }}>
+          <Item style={{ margin: '0px' }}>
+            {imageDisplay}
+            <Item.Content>
+              <Item.Description>
+                {display}
+              </Item.Description>
+              <Item.Extra>
+                {labels}
+                <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                  {submitText}  
+                  <Icon name='right check' />
+                </Button>
+              </Item.Extra>
+            </Item.Content>
+          </Item>
+        </Item.Group>
       )}
-      <Item.Group style={{ width: '100%', height: '100%' }}>
-        <Item style={{ margin: '0px' }}>
-          {imageDisplay}
-          <Item.Content>
-            <Item.Description>{display}</Item.Description>
-            <Item.Extra>
-              <Label size="tiny">Calculus</Label>
-              <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
-                {submitText}  
-                <Icon name='right check' />
-              </Button>
-            </Item.Extra>
-          </Item.Content>
-        </Item>
-      </Item.Group>
     </Screen>
   )
 }
@@ -135,9 +138,14 @@ const ScreenComponent = ({
 //   )
 // }
 
+ScreenComponent.defaultProps = {
+  tags: []
+}
+
 ScreenComponent.propTypes = {
   displayText: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  tags: PropTypes.array,
 }
 
 export default ScreenComponent

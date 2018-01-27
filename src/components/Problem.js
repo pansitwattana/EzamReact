@@ -54,6 +54,7 @@ class Problem extends Component {
   state = {
     problemId: uuid(),
     title: '',
+    description: '',
     selectedTags: [],
     showKeyboard: false,
     imgSrc: null,
@@ -171,13 +172,13 @@ class Problem extends Component {
       }
     })
 
-    const { title, files } = this.state
+    const { title, description, files } = this.state
 
     let variables = {
       title,
       authorId: user.id,
       latex,
-      description: '',
+      description,
       difficulty: 'Easy',
       tagIds,
       imageId: null
@@ -261,6 +262,15 @@ class Problem extends Component {
           <Input id={this.state.solutionId} />
         </Question> */}
         <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
+
+          <Input
+            style={{ margin: '10px', width: '100%' }}
+            placeholder="Description"
+            onChange={e => this.setState({ description: e.target.value })}
+            onFocus={() => this.setState({ showKeyboard: false })}
+            onBlur={() => this.setState({ showKeyboard: true })}
+            ref={(input) => { this.descriptionInput = input; }}
+          />
 
           <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
 
