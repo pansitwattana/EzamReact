@@ -14,7 +14,15 @@ import Options from './commons/Options'
 import Header from './commons/Header'
 import TitleSelect from './problem/TitleSelect'
 
-const TextArea = styled.div`
+const TextArea = styled.textarea`
+  margin: 10px;
+  width: 100%;
+  height: 70px;
+  background: #FFF;
+  border-radius: 2px;
+`
+
+const LaTeXShow = styled.div`
   margin: 10px;
   height: 70px;
   background: #FFF;
@@ -61,6 +69,7 @@ class Problem extends Component {
     files: null,
     latex: '',
     prevLatex: '',
+    textCursor: 0,
   }
 
   componentDidMount() {
@@ -217,9 +226,16 @@ class Problem extends Component {
         this.setState({ latex: prevLatex })
         break
       default:
-        const latex = this.state.latex
-        this.latexs.push(latex)
-        this.setState({ latex: latex + key })
+        const { latex } = this.state
+        const textCursor = this.textInput.selectionStart
+        const prev = latex.substr(0, textCursor)
+        
+        let result = prev + key
+        result += latex.substr(textCursor, latex.length)
+
+        this.setState({ latex: result, textCursor: textCursor + key.length })
+
+        this.latexs.push(result)
         break
     }
   }
@@ -231,7 +247,23 @@ class Problem extends Component {
       return
     }
 
-    this.setState({ latex: this.state.latex + event.key })
+    const { latex, textCursor } = this.state
+    const prev = latex.substr(0, textCursor)
+    
+    let result = prev + event.key
+    result += latex.substr(textCursor, latex.length)
+
+    this.setState({ latex: result })
+  }
+
+  onTextChange = (e) => {
+    const textArea = e.target
+    this.setState({ latex: textArea.value, textCursor: textArea.selectionStart })
+  }
+
+  onTextFocus = (e) => {
+    // const textArea = e.target
+    this.setState({ showKeyboard: false })
   }
 
   render() {
@@ -254,14 +286,23 @@ class Problem extends Component {
           onBlur={() => this.setState({ showKeyboard: true })}
           ref={(input) => { this.titleInput = input; }}
         />
-        <TextArea>
+
+        <TextArea
+          readOnly={showKeyboard}
+          onFocus={this.onTextFocus}
+          onChange={this.onTextChange}
+          value={this.state.latex}
+          innerRef={(input) => { this.textInput = input; }}
+        />
+
+        <LaTeXShow>
           <TeX value={this.state.latex} />
-        </TextArea>
+        </LaTeXShow>
         {/* <Header text="Add Solution" />
         <Question>
           <Input id={this.state.solutionId} />
         </Question> */}
-        <Form onFocus={() => this.setState({ showKeyboard: false })} onBlur={() => this.setState({ showKeyboard: true })}>
+        <Form onFocus={() => this.setState({ showKeyboard: false })}>
 
           <Input
             style={{ margin: '10px', width: '100%' }}
@@ -305,7 +346,7 @@ class Problem extends Component {
         </Form>
         <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
       </div>
-        <Footer>X</Footer>
+        <Footer onClick={() => this.setState({ showKeyboard: true })}>X</Footer>
         </div>
     )
   }
