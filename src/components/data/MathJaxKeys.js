@@ -58,17 +58,17 @@ const Keys = {
   SUB_8: '_8',
   SUB_9: '_9',
 
-  SQRT: '\\sqrt',
+  SQRT: '\\sqrt ',
   CUBE_ROOT: 'CUBE_ROOT',
   RADICAL: 'RADICAL',
   LEFT_PAREN: 'LEFT_PAREN',
   RIGHT_PAREN: 'RIGHT_PAREN',
-  LN: '\\ln',
+  LN: '\\ln ',
   LOG: '\\log_{10}',
   LOG_N: 'LOG_N',
   LOG_2: '\\log_{2}',
-  SIN: '\\sin',
-  COS: '\\cos',
+  SIN: '\\sin ',
+  COS: '\\cos ',
   TAN: 'TAN',
   // TODO(charlie): Add in additional Greek letters.
   
@@ -88,7 +88,7 @@ const Keys = {
   JUMP_OUT_DENOMINATOR: 'JUMP_OUT_DENOMINATOR',
 
   DIFF: '\\frac{dy}{dx}',
-  INT: '\\int',
+  INT: '\\int ',
 }
 
 const Actions = {

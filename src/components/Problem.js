@@ -70,6 +70,7 @@ class Problem extends Component {
     latex: '',
     prevLatex: '',
     textCursor: 0,
+    cursorDiff: 0,
   }
 
   componentDidMount() {
@@ -226,22 +227,40 @@ class Problem extends Component {
         this.setState({ latex: prevLatex })
         break
       default:
-        const { latex } = this.state
-        const textCursor = this.textInput.selectionStart
-        const prev = latex.substr(0, textCursor)
+        const { latex, showKeyboard, cursorDiff } = this.state
+        let cursorPosition = this.textInput.selectionStart
+        const prev = latex.substr(0, cursorPosition)
+        const after = latex.substr(cursorPosition, latex.length)
+        let newWord = key
+        // if (showKeyboard && !latex.includes('$')) {
+        //   newWord = `$${newWord}$`
+        // }
+        let diff = 0
+        console.table({prev, after, cursorPosition})
+        if (showKeyboard) {
+          const hasLeftDollar = prev.includes('$')
+          const hasRightDollar = after.includes('$')
+          if (!hasLeftDollar || !hasRightDollar) {
+            newWord = `$${newWord}$`
+            diff = 1
+          }
+          else {
+            diff = 0
+          }
+        }
+        cursorPosition += newWord.length - diff
+        let result = prev + newWord + after
+        this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
+          this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+        })
         
-        let result = prev + key
-        result += latex.substr(textCursor, latex.length)
-
-        this.setState({ latex: result, textCursor: textCursor + key.length })
-
         this.latexs.push(result)
         break
     }
   }
 
   handleKeyPress = (event) => {
-    console.log(event)
+    // console.log(event)
     
     if (!this.state.showKeyboard) {
       return
@@ -258,12 +277,13 @@ class Problem extends Component {
 
   onTextChange = (e) => {
     const textArea = e.target
-    this.setState({ latex: textArea.value, textCursor: textArea.selectionStart })
+    console.table({ cursor: this.textInput.selectionStart })
+    this.setState({ latex: textArea.value, textCursor: textArea.selectionStart, cursorDiff: 0 })
   }
 
   onTextFocus = (e) => {
     // const textArea = e.target
-    this.setState({ showKeyboard: false })
+    this.setState({ showKeyboard: false, cursorDiff: 0 })
   }
 
   render() {
@@ -281,6 +301,7 @@ class Problem extends Component {
         <Input
           style={{ margin: '10px', width: '100%' }}
           placeholder="Question Title"
+          
           onChange={e => this.setState({ title: e.target.value })}
           onFocus={() => this.setState({ showKeyboard: false })}
           onBlur={() => this.setState({ showKeyboard: true })}

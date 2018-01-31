@@ -104,9 +104,9 @@ class ScreenComponent extends Component {
               {imageDisplay}
               {imageToggle}
               <Item.Content style={{ paddingTop: '5px' }}>
-                <Item.Description>
+                {displayText ? (<Item.Description>
                   {display}
-                </Item.Description>
+                </Item.Description>) : undefined}
                 <Item.Extra>
                   {labels}
                   <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        

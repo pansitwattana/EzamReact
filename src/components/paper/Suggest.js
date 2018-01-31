@@ -5,7 +5,11 @@ const getTerms = (equation) => {
   // const equationNoMulti = equation.replace('*', '')
   // console.log(equationNoMulti)
   const filterUnneccesary = equation.replace(/[()]/gi, '')
-const terms = filterUnneccesary.match(/(\+|-)?[a-z0-9.^*/]+/gi)
+  const terms = filterUnneccesary.match(/(\+|-)?[a-z0-9.^*/]+/gi)
+  if (!terms) {
+    return []
+  }
+
   const filterOperator = terms.map(term => {
     if (term === '') {
       return term

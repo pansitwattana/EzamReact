@@ -62,6 +62,13 @@ const blur = (id) => {
   }
 }
 
+const goRight = (id) => {
+  const mathField = mathFields[id]
+  if (mathField) {
+    mathField.moveToRightEnd()
+  }
+}
+
 const reset = () => {
   mathFields = []
 }
@@ -79,4 +86,4 @@ const getLaTeX = (id) => {
   return mathField.latex()
 }
 
-export default { typed, getLaTeX, blur, focus, reset }
+export default { typed, getLaTeX, blur, focus, reset, goRight }

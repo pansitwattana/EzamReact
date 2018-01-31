@@ -15,7 +15,6 @@ import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
 import deleteAnswerMutation from '../graph/deleteAnswer'
-import { check } from 'graphql-anywhere/lib/src/utilities';
 
 const { getKeywords } = suggest
 let errorManager = null
@@ -150,15 +149,20 @@ class PaperComponent extends Component {
     this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true })
   }
 
-  onInputTouch(i) {
+  onInputTouch(i, event) {
     const { methods, line } = this.state
+    const newMethod = methods[i]
     if (i !== line) {
       const oldMethod = methods[line]
       oldMethod.focus = false
-      const newMethod = methods[i]
       newMethod.focus = true
       this.setState({ methods, line: i })
+      math.focus(newMethod.id)
       math.blur(oldMethod.id)
+    }
+    if (event.target.tagName === 'DIV') {
+      math.goRight(newMethod.id)
+      console.log('go right')
     }
   }
 
@@ -174,10 +178,13 @@ class PaperComponent extends Component {
       newMethod.text = math.getLaTeX(method.id)
       return newMethod
     })
-
-    const solutions = methods.map((method) => {
+    
+    const filterMethods = methods.filter(m => m.text != '')
+    
+    const solutions = filterMethods.map((method) => {
       return method.text
     })
+    
 
     if (solutions.length === 0) {
       error = 'no solution added'
@@ -197,7 +204,7 @@ class PaperComponent extends Component {
     if (hasChecker) {
       const corrects = errorManager.check(solutions)
       if (corrects) {
-        latexMethod = methods.map((method, i) => {
+        latexMethod = filterMethods.map((method, i) => {
           let newMethod = method
           if (!corrects[i]) {
             newMethod.error = true
@@ -452,7 +459,7 @@ class PaperComponent extends Component {
                 itemSize={itemSize} // Also supports variable heights (array or function getter)
                 renderItem={({ index }) => (
                   <List
-                    onClick={() => this.onInputTouch(index)}
+                    onClick={(event) => this.onInputTouch(index, event)}
                     key={this.state.methods[index].id}
                   >
                     <Input
