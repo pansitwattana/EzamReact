@@ -12,7 +12,11 @@ import Error from './commons/Error'
 import CommentList from './commons/CommentList'
 
 const Container = styled.div`
-  margin: 10px 10px 50px 10px;
+  margin: 5px 0px 40px 0px;
+  padding: 5px 10px 10px 10px;
+  border: ${prop => prop.highlight ? `solid ${prop.highlightColor}` : 'none'};
+  border-radius: 8px;
+  border-width: 2px;
 `
 
 const Cover = styled.div`
@@ -306,8 +310,9 @@ class Answer extends Component {
       return <Error message={userError.message} />
     }
 
-    const { solutions, id } = this.props.data.Post
+    const { solutions, id, author } = this.props.data.Post
     const postId = id
+    const ownerId = author.id
     if (solutions.length === 0) {
       return <Error message="No Answer Found" />
     }
@@ -321,7 +326,10 @@ class Answer extends Component {
         return <Error message="Loading..." />
       }
       const state = filterStates[0]
-      const isAuthor = solution.author.id === userId
+      const solutionCreatorId = solution.author.id
+      const isAuthor = solutionCreatorId === userId
+      const isOwner = solutionCreatorId === ownerId
+      console.log({ isAuthor, isOwner, index })
       const { id, comments, _votedMeta, author, answers } = solution
       const { rateCount, rate, comment } = state
       const answerHeader = isAuthor ? (
@@ -355,7 +363,7 @@ class Answer extends Component {
         />
       ) : <div />
       return (
-        <Container key={id}>
+        <Container key={id} highlight={isAuthor || isOwner} highlightColor={isOwner ? 'red' : 'green'}>
           <Cover>
             {answerHeader}
             <Option>
@@ -387,6 +395,9 @@ const answerQuery = gql`
   query($id: ID!) {
     Post(id: $id) {
       id
+      author {
+        id
+      }
       solutions {
         id
         rateCount
