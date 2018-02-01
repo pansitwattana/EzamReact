@@ -46,7 +46,7 @@ class Home extends Component {
           id: 3,
         },
         {
-          title: 'Matrix',
+          title: 'Geometry',
           subtitle: 'Basic',
           id: 4,
         },
