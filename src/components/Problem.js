@@ -220,47 +220,66 @@ class Problem extends Component {
 
   handleKeyboard(key) {
     // math.typed(key, this.state.problemId)
+    let cursorPosition = this.textInput.selectionStart
     const action = KeyAction(key)
-    switch (action) {
-      case Actions.DELETE:
-        const prevLatex = this.latexs.pop() || ''
-        this.setState({ latex: prevLatex })
-        break
-      default:
-        const { latex, showKeyboard, cursorDiff, textCursor } = this.state
-        let cursorPosition = this.textInput.selectionStart
-        if (cursorPosition === 0) {
-          cursorPosition = textCursor
-          this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+    if (action === Actions.DELETE) {
+      const prevLatex = this.latexs.pop() || ''
+      const { textCursor } = this.state
+      if (cursorPosition === 0) {
+        cursorPosition = textCursor
+        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+      }
+      let oldLatex = this.state.latex
+
+      let diff = 1
+
+      // if (oldLatex.charAt(cursorPosition) === '$') {
+      //   diff = 2
+      // } 
+
+      let newLatex = oldLatex.substr(0, cursorPosition - diff)
+      const afterLatex = oldLatex.substr(cursorPosition, oldLatex.length)
+      
+      newLatex += afterLatex
+      const newCursorPosition = cursorPosition - diff >= 0 ? cursorPosition - 1 : 0
+      if (newLatex === '$') {
+        newLatex = ''
+      }
+      this.setState({ latex: newLatex, textCursor: newCursorPosition })
+    }
+    else {
+      const { latex, showKeyboard, cursorDiff, textCursor } = this.state
+      if (cursorPosition === 0) {
+        cursorPosition = textCursor
+        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+      }
+      const prev = latex.substr(0, cursorPosition)
+      const after = latex.substr(cursorPosition, latex.length)
+      let newWord = key
+      // if (showKeyboard && !latex.includes('$')) {
+      //   newWord = `$${newWord}$`
+      // }
+      let diff = 0
+      if (showKeyboard) {
+        const hasLeftDollar = prev.includes('$')
+        const hasRightDollar = after.includes('$')
+        if (!hasLeftDollar || !hasRightDollar) {
+          newWord = `$${newWord}$`
+          diff = 1
         }
-        const prev = latex.substr(0, cursorPosition)
-        const after = latex.substr(cursorPosition, latex.length)
-        let newWord = key
-        // if (showKeyboard && !latex.includes('$')) {
-        //   newWord = `$${newWord}$`
-        // }
-        let diff = 0
-        if (showKeyboard) {
-          const hasLeftDollar = prev.includes('$')
-          const hasRightDollar = after.includes('$')
-          if (!hasLeftDollar || !hasRightDollar) {
-            newWord = `$${newWord}$`
-            diff = 1
-          }
-          else {
-            diff = 0
-          }
+        else {
+          diff = 0
         }
-        cursorPosition += newWord.length - diff
-        // console.table({prev, after, cursorPosition})
-        let result = prev + newWord + after
-        this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
-          this.textInput.setSelectionRange(cursorPosition, cursorPosition)
-          console.log(this.textInput.selectionStart, cursorPosition)
-        })
-        
-        this.latexs.push(result)
-        break
+      }
+      cursorPosition += newWord.length - diff
+      // console.table({prev, after, cursorPosition})
+      let result = prev + newWord + after
+      this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
+        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+        console.log(this.textInput.selectionStart, cursorPosition)
+      })
+      
+      this.latexs.push(result)
     }
   }
 
@@ -300,80 +319,80 @@ class Problem extends Component {
       allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
     return (
       <div>
-      <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
-        <Header text="Post" />
-        <TitleSelect />
-        <Input
-          style={{ margin: '10px', width: '100%' }}
-          placeholder="Question Title"
-          onChange={e => this.setState({ title: e.target.value })}
-          onFocus={() => this.setState({ showKeyboard: false })}
-          onBlur={() => this.setState({ showKeyboard: true })}
-          ref={(input) => { this.titleInput = input; }}
-        />
-
-        <TextArea
-          readOnly={showKeyboard}
-          onFocus={this.onTextFocus}
-          onChange={this.onTextChange}
-          value={this.state.latex}
-          innerRef={(input) => { this.textInput = input; }}
-        />
-
-        <LaTeXShow>
-          <TeX value={this.state.latex} />
-        </LaTeXShow>
-        {/* <Header text="Add Solution" />
-        <Question>
-          <Input id={this.state.solutionId} />
-        </Question> */}
-        <Form onFocus={() => this.setState({ showKeyboard: false })}>
-
+        <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
+          <Header text="Post" />
+          <TitleSelect />
           <Input
             style={{ margin: '10px', width: '100%' }}
-            placeholder="Description"
-            onChange={e => this.setState({ description: e.target.value })}
+            placeholder="Question Title"
+            onChange={e => this.setState({ title: e.target.value })}
             onFocus={() => this.setState({ showKeyboard: false })}
-            ref={(input) => { this.descriptionInput = input; }}
+            onBlur={() => this.setState({ showKeyboard: true })}
+            ref={(input) => { this.titleInput = input; }}
           />
 
-          <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
-
-          <br />
-          <label for="file-upload" style={{
-            border: '1px solid #ccc',
-            display: 'inline-block',
-            padding: '6px 12px',
-            cursor: 'pointer'
-          }}>
-              <Icon name="camera" /> Custom Upload
-          </label>
-          <input
-            id="file-upload"
-            ref="file"
-            type="file"
-            name="user[image]"
-            multiple="true"
-            onChange={this.onFileChange}
-            style={{ display: 'none' }}
+          <TextArea
+            readOnly={showKeyboard}
+            onFocus={this.onTextFocus}
+            onChange={this.onTextChange}
+            value={this.state.latex}
+            innerRef={(input) => { this.textInput = input; }}
           />
-          <Image src={[imgSrc]} size='medium' hidden={imgSrc === null} />
-          {/* <Button style={{ margin: '10px' }}>
-            <Icon name="camera" />
-            Add a picture
-          </Button> */}
-          <br />
-          <Button style={{ padding: 10 }} icon onClick={this.submit}>
-            <Icon name="send" />
-            Submit
-          </Button>
-        </Form>
-        <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
-      </div>
+
+          <LaTeXShow>
+            <TeX value={this.state.latex} />
+          </LaTeXShow>
+          {/* <Header text="Add Solution" />
+          <Question>
+            <Input id={this.state.solutionId} />
+          </Question> */}
+          <Form onFocus={() => this.setState({ showKeyboard: false })}>
+
+            <Input
+              style={{ margin: '10px', width: '100%' }}
+              placeholder="Description"
+              onChange={e => this.setState({ description: e.target.value })}
+              onFocus={() => this.setState({ showKeyboard: false })}
+              ref={(input) => { this.descriptionInput = input; }}
+            />
+
+            <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
+
+            <br />
+            <label for="file-upload" style={{
+              border: '1px solid #ccc',
+              display: 'inline-block',
+              padding: '6px 12px',
+              cursor: 'pointer'
+            }}>
+                <Icon name="camera" /> Custom Upload
+            </label>
+            <input
+              id="file-upload"
+              ref="file"
+              type="file"
+              name="user[image]"
+              multiple="true"
+              onChange={this.onFileChange}
+              style={{ display: 'none' }}
+            />
+            <Image src={[imgSrc]} size='medium' hidden={imgSrc === null} />
+            {/* <Button style={{ margin: '10px' }}>
+              <Icon name="camera" />
+              Add a picture
+            </Button> */}
+            <br />
+            <Button style={{ padding: 10 }} icon onClick={this.submit}>
+              <Icon name="send" />
+              Submit
+            </Button>
+          </Form>
+          <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
+        </div>
         <Footer showKeyboard={showKeyboard}>
           <Button style={{ boxShadow: '2px 2px 2px black' }} size='big' circular color='facebook' onClick={() => this.setState({ showKeyboard: !this.state.showKeyboard })} icon='keyboard' />
         </Footer>
-        </div>
+      </div>
     )
   }
 }
