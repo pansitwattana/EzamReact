@@ -41,15 +41,15 @@ const Form = styled.div`
 `
 
 const Footer = styled.div`
-  background-color: #4c66a4;
-  color: #fff;
+  /* background-color: #4c66a4;
+  color: #fff; */
   position: absolute;
-  right: 20px;
-  bottom: 50%;
+  right: 0px;
+  bottom: ${prop => prop.showKeyboard ? 45 : 0}%;
   padding: 15px;
-  border-radius: 30px;
+  /* border-radius: 30px;
   text-align: center;
-  box-shadow: 2px 2px 10px #ccc;
+  box-shadow: 2px 2px 10px #ccc; */
 `
 // const InputContainer = styled.div`
 //   display: flex;
@@ -227,8 +227,12 @@ class Problem extends Component {
         this.setState({ latex: prevLatex })
         break
       default:
-        const { latex, showKeyboard, cursorDiff } = this.state
+        const { latex, showKeyboard, cursorDiff, textCursor } = this.state
         let cursorPosition = this.textInput.selectionStart
+        if (cursorPosition === 0) {
+          cursorPosition = textCursor
+          this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+        }
         const prev = latex.substr(0, cursorPosition)
         const after = latex.substr(cursorPosition, latex.length)
         let newWord = key
@@ -236,7 +240,6 @@ class Problem extends Component {
         //   newWord = `$${newWord}$`
         // }
         let diff = 0
-        console.table({prev, after, cursorPosition})
         if (showKeyboard) {
           const hasLeftDollar = prev.includes('$')
           const hasRightDollar = after.includes('$')
@@ -249,9 +252,11 @@ class Problem extends Component {
           }
         }
         cursorPosition += newWord.length - diff
+        // console.table({prev, after, cursorPosition})
         let result = prev + newWord + after
         this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
           this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+          console.log(this.textInput.selectionStart, cursorPosition)
         })
         
         this.latexs.push(result)
@@ -301,7 +306,6 @@ class Problem extends Component {
         <Input
           style={{ margin: '10px', width: '100%' }}
           placeholder="Question Title"
-          
           onChange={e => this.setState({ title: e.target.value })}
           onFocus={() => this.setState({ showKeyboard: false })}
           onBlur={() => this.setState({ showKeyboard: true })}
@@ -330,7 +334,6 @@ class Problem extends Component {
             placeholder="Description"
             onChange={e => this.setState({ description: e.target.value })}
             onFocus={() => this.setState({ showKeyboard: false })}
-            onBlur={() => this.setState({ showKeyboard: true })}
             ref={(input) => { this.descriptionInput = input; }}
           />
 
@@ -367,7 +370,9 @@ class Problem extends Component {
         </Form>
         <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
       </div>
-        <Footer onClick={() => this.setState({ showKeyboard: true })}>X</Footer>
+        <Footer showKeyboard={showKeyboard}>
+          <Button style={{ boxShadow: '2px 2px 2px black' }} size='big' circular color='facebook' onClick={() => this.setState({ showKeyboard: !this.state.showKeyboard })} icon='keyboard' />
+        </Footer>
         </div>
     )
   }

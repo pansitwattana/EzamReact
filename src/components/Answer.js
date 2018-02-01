@@ -160,7 +160,7 @@ class Answer extends Component {
     }
   }
 
-  reload(solutions, user) {
+  reload(solutions, user, ownerId) {
     if (solutions && user) {
       let solutionsToState = solutions.map(solution => {
         const { id, _votedMeta, author } = solution
@@ -168,7 +168,7 @@ class Answer extends Component {
         return { id, comment: false, rate, rateCount: _votedMeta.count, author }
       })
       
-      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount || a.author.id !== user.id)
+      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount || a.author.id !== ownerId || a.author.id !== user.id)
       this.setState({ solutions: solutionsToState })
     }
   }
@@ -319,7 +319,7 @@ class Answer extends Component {
     const states = this.state.solutions
     let sortedSolution = [...solutions]
     const userId = this.props.userQuery.user.id
-    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count || a.author.id !== userId)
+    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count || a.author.id !== userId || a.author.id !== ownerId )
     return sortedSolution.map((solution, index) => {
       const filterStates = states.filter(state => state.id === solution.id)
       if (filterStates.length === 0) {
