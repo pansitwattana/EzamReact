@@ -28,7 +28,13 @@ class MyPosts extends Component {
         <Header text={title} />
         <Search />
         <Card.Group
-          style={{ display: 'flex', justifyContent: 'center', margin: 0 }}
+          style={{
+            display: 'flex', 
+            justifyContent: 'center', 
+            margin: 0,
+            overflow: 'auto',
+            height: window.innerHeight - 50 - 38,
+          }}
         >
           {this.renderPost(title)}
         </Card.Group>

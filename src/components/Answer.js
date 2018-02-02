@@ -167,8 +167,31 @@ class Answer extends Component {
         const rate = user.votes.reduce((prev, curr) => curr.id === id || prev, false)
         return { id, comment: false, rate, rateCount: _votedMeta.count, author }
       })
-      
-      solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount || a.author.id !== ownerId || a.author.id !== user.id)
+      const userId = user.id
+      solutionsToState = solutionsToState.sort((a, b) => {
+          let aScore = a.rateCount
+          let bScore = b.rateCount
+          const aSolutionAuthorId = a.author.id
+          const bSolutionAuthorId = b.author.id
+          if (aSolutionAuthorId === ownerId) {
+            aScore = 1000000
+          }
+          else if (aSolutionAuthorId === userId) {
+            aScore = 999999
+          }
+          
+          if (bSolutionAuthorId === ownerId) {
+            bScore = 1000000
+          }
+          else if (bSolutionAuthorId === userId) {
+            bScore = 999999
+          }
+    
+          return bScore - aScore
+          // a.author.id !== userId && a.author.id !== ownerId) && a._votedMeta.count < b._votedMeta.count
+        })
+
+      // solutionsToState = solutionsToState.sort((a, b) => a.rateCount < b.rateCount || a.author.id !== ownerId || a.author.id !== user.id)
       this.setState({ solutions: solutionsToState })
     }
   }
@@ -319,7 +342,28 @@ class Answer extends Component {
     const states = this.state.solutions
     let sortedSolution = [...solutions]
     const userId = this.props.userQuery.user.id
-    sortedSolution = sortedSolution.sort((a, b) => a._votedMeta.count < b._votedMeta.count || a.author.id !== userId || a.author.id !== ownerId )
+    sortedSolution = sortedSolution.sort((a, b) => {
+      let aScore = a._votedMeta.count
+      let bScore = b._votedMeta.count
+      const aSolutionAuthorId = a.author.id
+      const bSolutionAuthorId = b.author.id
+      if (aSolutionAuthorId === ownerId) {
+        aScore = 1000000
+      }
+      else if (aSolutionAuthorId === userId) {
+        aScore = 999999
+      }
+      
+      if (bSolutionAuthorId === ownerId) {
+        bScore = 1000000
+      }
+      else if (bSolutionAuthorId === userId) {
+        bScore = 999999
+      }
+
+      return bScore - aScore
+      // a.author.id !== userId && a.author.id !== ownerId) && a._votedMeta.count < b._votedMeta.count
+    })
     return sortedSolution.map((solution, index) => {
       const filterStates = states.filter(state => state.id === solution.id)
       if (filterStates.length === 0) {
@@ -385,7 +429,12 @@ class Answer extends Component {
     return (
       <div>
         <Header text="Answer Sheet" />
-        {this.generateAnswers()}
+        <div style={{
+          overflow: 'auto',
+          height: window.innerHeight - 50,
+        }}>
+          {this.generateAnswers()}
+        </div>
       </div>
     )
   }

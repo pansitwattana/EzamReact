@@ -15,6 +15,7 @@ import Keyboard from './commons/Keyboard'
 import Input from './commons/Input'
 import Error from './commons/Error'
 import deleteAnswerMutation from '../graph/deleteAnswer'
+import Simplifier from '../calculation/Simplifier';
 
 const { getKeywords } = suggest
 let errorManager = null
@@ -98,12 +99,13 @@ class PaperComponent extends Component {
   componentDidUpdate() {
     const { line, methods, loadMethod } = this.state
     if (this.loadedMethod) {
-      let isLoad = true
-      methods.forEach(method => {
-        isLoad = isLoad & math.typed(method.text, method.id)
+      console.log('loaded solution')
+      const length = methods.lastIndexOf
+      methods.forEach((method, index) => {
+        math.setLatex(method.id, method.text)
+        if (index === length - 1)
+          this.loadedMethod = false
       })
-      if (isLoad)
-        this.loadedMethod = false
     }
 
     if (!this.loadedMath) {
@@ -145,8 +147,14 @@ class PaperComponent extends Component {
         error: false,
       })
     })
+
+    
     this.loadedMethod = true
-    this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true })
+    this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true }, () => {
+      // methods.forEach(method => {
+      //   math.setLatex(method.id, method.text)
+      // })
+    })
   }
 
   onInputTouch(i, event) {
@@ -419,6 +427,18 @@ class PaperComponent extends Component {
     this.handleKeyboard(event.key)
   }
 
+  onSimplify = (index) => {
+    const method = this.state.methods[index]
+    const id = method.id
+    const latex = math.getLaTeX(id)
+    const simplified = Simplifier(latex)
+    console.log(latex)
+    if (simplified !== null) {
+      console.log(simplified)
+      math.setLatex(id, simplified)
+    }
+  }
+
   render() {
     const data = this.props.postQuery
     if (data.loading) {
@@ -466,6 +486,8 @@ class PaperComponent extends Component {
                       focus={this.state.methods[index].focus}
                       id={this.state.methods[index].id}
                       error={this.state.methods[index].error}
+                      canSimplify={true}
+                      simplify={() => this.onSimplify(index)}
                     />
                   </List>
                 )}

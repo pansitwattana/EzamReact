@@ -72,6 +72,35 @@ const goRight = (id) => {
   }
 }
 
+const setLatex = (id, latex) => {
+  let mathField = mathFields[id]
+  if (mathField) {
+    mathField.latex(latex)
+    // mathField.typedText(noSpaceLatex)
+  }
+  else {
+    const mathFieldSpan = document.getElementById(id)
+    if (!mathFieldSpan) {
+      console.log('null mathquill')
+      return null;
+    }
+
+    if (!MathQuill) {
+      MathQuill = window.MathQuill
+    }
+    if (MathQuill) {
+      if (!MQ) {
+        MQ = window.MathQuill.getInterface(2)
+      }
+      let mathField = MQ.MathField(mathFieldSpan, {
+        spaceBehavesLikeTab: true, // configurable
+        substituteTextarea: () => document.createElement('span'),
+      })
+      mathField.latex(latex)
+    }
+  }
+}
+
 const reset = () => {
   mathFields = []
 }
@@ -89,4 +118,4 @@ const getLaTeX = (id) => {
   return mathField.latex()
 }
 
-export default { typed, getLaTeX, blur, focus, reset, goRight }
+export default { typed, getLaTeX, blur, focus, reset, goRight, setLatex }

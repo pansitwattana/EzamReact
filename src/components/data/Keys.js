@@ -22,7 +22,7 @@ const Keys = {
   MINUS: '-',
   PLUSMINUS: '\\pm',
   NEGATIVE: 'NEGATIVE',
-  TIMES: '×',
+  TIMES: '\\cdot',
   DIVIDE: '/',
   DECIMAL: 'DECIMAL',
   DOT: '.',
@@ -118,7 +118,7 @@ const KeyAction = (key) => {
             key === Keys.NOTEQUAL || key === Keys.SUB_2 || key === Keys.SUB_3 || key === Keys.SUB_4 || key === Keys.SUB_5 || key === Keys.SUB_6 ||
             key === Keys.SUB_7 || key === Keys.SUB_8 || key === Keys.SUB_9 || key === Keys.EXP_4 || key === Keys.EXP_5 || key === Keys.EXP_6 ||
             key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 ||
-            key === Keys.LN) {
+            key === Keys.LN || key === Keys.TIMES) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE
