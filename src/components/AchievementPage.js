@@ -4,27 +4,17 @@ import styled from 'styled-components'
 import { gql, graphql } from 'react-apollo'
 import Layout from './commons/Logo'
 import Error from './commons/Error'
-
+import Label from './commons/CornerLabel'
 import testImg from '../assets/images/dummy.png'
 
 const Container = styled.div`
   margin: 20px;
 `
 
-const Label = styled.div`
-  position: absolute;
-  left: 0em;
-  top: 0em;
-  width: 0;
-  height: 0;
-  border-top: 40px solid rgba(255, 0, 0, .5);
-  border-right: 40px solid transparent;
-`
-
 const AchievementCard = ({ coverImage, header, meta, count, need, unit, icon }) => (
   <Card>
     <Card.Content>
-      <Label />
+      {count >= need ? <Label text='Clear' show={count>=need} /> : undefined}
       <Card.Header>{header}</Card.Header>
       <Card.Meta>{meta}</Card.Meta>
     </Card.Content>
