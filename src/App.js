@@ -12,6 +12,7 @@ import MyPosts from './components/MyPosts'
 import CreateUser from './components/CreateUser'
 import Register from './components/Register'
 import Problem from './components/Problem'
+import AchievementPage from './components/AchievementPage'
 
 const App = () => (
   <TransitionGroup style={{ height: '100%' }}>
@@ -20,6 +21,7 @@ const App = () => (
     <Route path="/catalog/:title" component={Catalog} />
     <Route path="/answer" component={Answer} />
     <Route path="/profile" component={Profile} />
+    <Route path="/achievement" component={AchievementPage} />
     <Route path="/login" component={Login} />
     <Route path="/posts" component={MyPosts} />
     <Route path="/create" component={CreateUser} />

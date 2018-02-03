@@ -79,6 +79,7 @@ const Keys = {
   LEFT: 'Left',
   BACKSPACE: 'Backspace',
   DISMISS: 'DISMISS',
+  DELETE: 'Delete',
 
   JUMP_OUT_PARENTHESES: 'JUMP_OUT_PARENTHESES',
   JUMP_OUT_EXPONENT: 'JUMP_OUT_EXPONENT',
@@ -102,6 +103,7 @@ const Actions = {
   CLEAR: 'CLEAR',
   ALPHABET: 'ALPHABET',
   NUMBER: 'NUMBER',
+  DELETE: 'DELETE',
 }
 
 const KeyAction = (key) => {
@@ -128,6 +130,8 @@ const KeyAction = (key) => {
     return Actions.ALPHABET
   } else if (key === Keys.NUMBER) {
     return Actions.NUMBER
+  } else if (key === Keys.DELETE) {
+    return Actions.DELETE
   }
 
   return Actions.TYPE

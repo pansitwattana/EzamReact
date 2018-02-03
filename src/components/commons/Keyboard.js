@@ -57,7 +57,7 @@ class KeyboardComponent extends Component {
   
   renderKeywords(keywords) {
     return keywords.map(keyword => (
-      <Button style={{ height: '100%' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
+      <Button style={{ height: '100%', padding: '.5em 1em .5em' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
   }

@@ -82,6 +82,11 @@ class PaperComponent extends Component {
     }
   }
 
+  componentWillMount() {
+    document.addEventListener("keypress", this.handleKeyPress, false);
+    document.addEventListener("keydown", this.handleKeydown, false)
+  }
+
   componentWillUnmount() {
     math.reset()
   }
@@ -162,15 +167,17 @@ class PaperComponent extends Component {
     const newMethod = methods[i]
     if (i !== line) {
       const oldMethod = methods[line]
-      oldMethod.focus = false
-      newMethod.focus = true
-      this.setState({ methods, line: i })
-      math.focus(newMethod.id)
-      math.blur(oldMethod.id)
+      if (oldMethod) {
+        oldMethod.focus = false
+        newMethod.focus = true
+        this.setState({ methods, line: i })
+        math.focus(newMethod.id)
+        math.blur(oldMethod.id)
+      }
     }
     if (event.target.tagName === 'DIV') {
       math.goRight(newMethod.id)
-      console.log('go right')
+      // console.log('go right')
     }
   }
 
@@ -406,6 +413,13 @@ class PaperComponent extends Component {
         line: line > 0 ? line - 1 : line,
         checked
       })
+    } else if (action === Actions.DELETE) {
+      console.log('clear all')
+      let { methods } = this.state      
+      let method = methods[this.state.line]
+      method.text = ''
+      math.setLatex(method.id, '')
+      this.setState({ methods })
     } else {
       const methods = this.state.methods.map((method) => {
         const methodReset = method
@@ -416,14 +430,19 @@ class PaperComponent extends Component {
     }
   }
 
+  handleKeydown = (event) => {
+    const { key } = event
+    if (key === 'Backspace') {
+      this.handleKeyboard(Keys.BACKSPACE)
+    } else if (key === 'ArrowRight') {
+      this.handleKeyboard(Keys.RIGHT)
+    } else if (key === 'ArrowLeft') {
+      this.handleKeyboard(Keys.LEFT)
+    }
+  }
+
   handleKeyPress = (event) => {
-    console.log(event)
-    // if (event.key === 'Enter') {
-    //   console.log('enter press here! ')
-    //   this.state.methods.forEach((value) => {
-    //     console.log(math.getLaTeX(value.id))
-    //   })
-    // }
+    console.log('type ' + event.key)
     this.handleKeyboard(event.key)
   }
 
@@ -431,6 +450,10 @@ class PaperComponent extends Component {
     const method = this.state.methods[index]
     const id = method.id
     const latex = math.getLaTeX(id)
+    if (latex === null) {
+      return
+    }
+
     const simplified = Simplifier(latex)
     console.log(latex)
     if (simplified !== null) {
@@ -456,7 +479,7 @@ class PaperComponent extends Component {
       let imageUrl = null
       if (image) { imageUrl = image.url }
       return (
-        <div onKeyPress={this.handleKeyPress} tabIndex="0">
+        <div>
           <Wrapper>
             <Paper>
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}

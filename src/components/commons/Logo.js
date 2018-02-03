@@ -63,6 +63,10 @@ class SidebarMenu extends Component {
             <Icon name="user circle" />
             Profile
           </Menu.Item>
+          <Menu.Item onClick={() => this.props.history.push('/achievement')} name="user circle">
+            <Icon name="trophy" />
+            Achievement
+          </Menu.Item>
           <Menu.Item onClick={this.logout} name="log out">
             <Icon name="log out" />
             Log out
