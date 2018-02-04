@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import propTypes from 'prop-types'
 import { Sidebar, Segment, Menu, Icon } from 'semantic-ui-react'
 import logo from '../../icon.png'
+import profileImage from '../../assets/images/dummy.png'
 
 const NavBar = styled.div`
   background-color: #222;
@@ -33,12 +34,20 @@ const Drawer = styled.div`
 `
 
 class SidebarMenu extends Component {
-  state = { visible: false }
+  state = { 
+    visible: false,
+    path: '/'
+  }
 
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
   logout = () => {
     window.localStorage.removeItem('auth0IdToken')
+  }
+
+  onPageChange = (path) => {
+    this.setState({ path, visible: false })
+    this.props.history.push(path)
   }
 
   render() {
@@ -47,23 +56,23 @@ class SidebarMenu extends Component {
     return (
       <Sidebar.Pushable style={{ borderWidth: '0px 0px 0px 0px', WebkitBoxShadow: '0 0 0 0', borderRadius: '0' }} as={Segment}>
         <Sidebar as={Menu} animation="push" width="thin" visible={visible} icon="labeled" vertical inverted>
-          <Menu.Item onClick={() => this.props.history.push('/')} name="home">
+          <Menu.Item onClick={() => this.onPageChange('/')} name="home">
             <Icon name="home" />
             Home
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.history.push('/post')} name="compose">
+          <Menu.Item onClick={() => this.onPageChange('/post')} name="compose">
             <Icon name="compose" />
             New Post
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.history.push('/posts')} name="book">
+          <Menu.Item onClick={() => this.onPageChange('/posts')} name="book">
             <Icon name="book" />
             My posts
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.history.push('/profile')} name="user circle">
+          <Menu.Item onClick={() => this.onPageChange('/profile')} name="user circle">
             <Icon name="user circle" />
             Profile
           </Menu.Item>
-          <Menu.Item onClick={() => this.props.history.push('/achievement')} name="user circle">
+          <Menu.Item onClick={() => this.onPageChange('/achievement')} name="user circle">
             <Icon name="trophy" />
             Achievement
           </Menu.Item>
@@ -78,8 +87,8 @@ class SidebarMenu extends Component {
               <Drawer onClick={this.toggleVisibility}>
                 <Icon name="content" size="big" />
               </Drawer>
-              <Logo src={logo} alt="logo" />
-              <Profile src="images/user_account_profile_avatar_person_student_male-512.png" alt="profile" />
+              <Logo onClick={() => this.props.history.push('/')} src={logo} alt="logo" />
+              <Profile onClick={() => this.props.history.push('/profile')} src={profileImage} alt="profile" />
             </NavBar>
             {this.props.children}
           </Segment>

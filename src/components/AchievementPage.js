@@ -2,7 +2,6 @@ import React from 'react'
 import { Card, Icon, Image } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { gql, graphql } from 'react-apollo'
-import Layout from './commons/Logo'
 import Error from './commons/Error'
 import Label from './commons/CornerLabel'
 import testImg from '../assets/images/dummy.png'
@@ -40,39 +39,37 @@ const AchievementPage = ({ userQuery }) => {
   const commentCount = user._commentsMeta.count
 
   return (
-    <Layout>
-      <Container>
-        <Card.Group itemsPerRow={2} >
-          <AchievementCard 
-            coverImage={testImg}
-            header="Beginner Solver"
-            icon="book"
-            meta="solve 10 problems"
-            count={solveCount}
-            need={10}
-            unit="problems"
-          />
-          <AchievementCard 
-            coverImage={testImg}
-            header="Beginner Questioner"
-            icon="book"
-            meta="post 10 problems"
-            count={postCount}
-            need={10}
-            unit="problems"
-          />
-          <AchievementCard 
-            coverImage={testImg}
-            header="Beginner Commentator"
-            icon="comments"
-            meta="comment 10 texts"
-            count={commentCount}
-            need={10}
-            unit="comments"
-          />
-        </Card.Group>
-      </Container>
-    </Layout>
+    <Container>
+      <Card.Group itemsPerRow={2} >
+        <AchievementCard 
+          coverImage={testImg}
+          header="Beginner Solver"
+          icon="book"
+          meta="solve 10 problems"
+          count={solveCount}
+          need={10}
+          unit="problems"
+        />
+        <AchievementCard 
+          coverImage={testImg}
+          header="Beginner Questioner"
+          icon="book"
+          meta="post 10 problems"
+          count={postCount}
+          need={10}
+          unit="problems"
+        />
+        <AchievementCard 
+          coverImage={testImg}
+          header="Beginner Commentator"
+          icon="comments"
+          meta="comment 10 texts"
+          count={commentCount}
+          need={10}
+          unit="comments"
+        />
+      </Card.Group>
+    </Container>
   )
 }
 

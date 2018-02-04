@@ -50,6 +50,11 @@ const Text = styled.span`
   `};
 `
 
+const ProblemContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 class ScreenComponent extends Component {
 
   state = {
@@ -68,20 +73,21 @@ class ScreenComponent extends Component {
       onSubmit,
       onEditSubmit,
       onCheck,
-      tags
+      tags,
+      hideButton
     } = this.props
     const { imageOpen } = this.state
     const toggleIcon = imageOpen ? 'angle up' : 'angle down'
-    const imageToggle = imageUrl ? <Button onClick={() => this.setState({ imageOpen: !imageOpen })} style={{ width: '30%', alignSelf: 'center' }} basic icon={toggleIcon} /> : undefined
+    const imageToggle = imageUrl ? <Button onClick={() => this.setState({ imageOpen: !imageOpen })} style={{ width: '30%', height: '15px', alignSelf: 'center' }} size="tiny" basic icon={toggleIcon} /> : undefined
     const imageDisplay = imageUrl && imageOpen ? (
       <Item size="tiny" style={{ margin: '0 30px' }}>
-        <Image src={imageUrl} />
+        <Image src={imageUrl} style={{ 'max-height': '120px', margin: 'auto' }} />
       </Item>) : undefined
     const display = <LaTeX text={description + " " + displayText} id={id} />
     let submitText = 'Check'
     let onButtonClick = onCheck
     let highlight = false
-    if (done && checked) { 
+    if (done && checked) {
       submitText = 'Edit' 
       onButtonClick = onEditSubmit
       highlight = true
@@ -104,15 +110,21 @@ class ScreenComponent extends Component {
               {imageDisplay}
               {imageToggle}
               <Item.Content style={{ paddingTop: '5px' }}>
-                {displayText ? (<Item.Description>
-                  {display}
-                </Item.Description>) : undefined}
+                <Item.Description>
+                  <ProblemContainer>
+                    {display}
+                    {!hideButton ? (<Button style={{ 'max-height': '30px'}} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                      {submitText}  
+                      <Icon name='right check' />
+                    </Button>) : undefined}
+                  </ProblemContainer>
+                </Item.Description>
                 <Item.Extra>
                   {labels}
-                  <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                  {/* <Button onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
                     {submitText}  
                     <Icon name='right check' />
-                  </Button>
+                  </Button> */}
                 </Item.Extra>
               </Item.Content>
             </Item>
@@ -154,13 +166,16 @@ class ScreenComponent extends Component {
 // }
 
 ScreenComponent.defaultProps = {
-  tags: []
+  tags: [],
+  description: '',
+  displayText: '',
 }
 
 ScreenComponent.propTypes = {
-  displayText: PropTypes.string.isRequired,
+  displayText: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   tags: PropTypes.array,
+  description: PropTypes.string,
 }
 
 export default ScreenComponent

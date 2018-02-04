@@ -329,6 +329,7 @@ class PaperComponent extends Component {
     
     if (!result) {
       console.log('error')
+      this.setState({ submiting: false })
       return
     }
     
@@ -484,7 +485,7 @@ class PaperComponent extends Component {
             <Paper>
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen
-                displayText={latex}
+                displayText={latex || ''}
                 description={description}
                 imageUrl={imageUrl}
                 id={id}

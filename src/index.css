@@ -3,3 +3,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.mq-editable-field, .mq-math-mode .mq-editable-field {
+  border: none !important;
+}

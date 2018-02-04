@@ -7,7 +7,7 @@ const Label = styled.div`
   top: 0em;
   width: 0;
   height: 0;
-  border-top: 40px solid ${prop => prop.highlight ? 'rgba(0, 200, 50, .5)' : 'transparent' };
+  border-top: 40px solid ${prop => prop.highlight ? prop.color : 'transparent' };
   border-right: 40px solid transparent;
 `
 
@@ -20,9 +20,9 @@ const Text = styled.div`
   transform: rotate(-45deg);
 `
 
-export default ({ text, show }) => (
+export default ({ text, show, color }) => (
   <div>
-    <Label highlight={show}/>
+    <Label highlight={show} color={color === 'red' ? 'rgba(250, 30, 30, .5)' : 'rgba(0, 200, 50, .5)'} />
     <Text>{text}</Text>
   </div>
 )

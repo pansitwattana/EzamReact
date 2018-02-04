@@ -9,7 +9,9 @@ import deleteCommentMutation from '../graph/deleteComment'
 import LaTex from './commons/LaTeX'
 import Header from './commons/Header'
 import Error from './commons/Error'
+import Screen from './commons/Screen'
 import CommentList from './commons/CommentList'
+import Label from './commons/CornerLabel'
 
 const Container = styled.div`
   margin: 5px 0px 40px 0px;
@@ -407,31 +409,38 @@ class Answer extends Component {
         />
       ) : <div />
       return (
-        <Container key={id} highlight={isAuthor || isOwner} highlightColor={isOwner ? 'red' : 'green'}>
-          <Cover>
-            {answerHeader}
-            <Option>
-              <div>
-                {rateCount} Vote
-              </div>
-              {threeDot}
-            </Option>
-          </Cover>
-          {Answer.renderMethods(answers)}
-          {commentGroup}
-          {commentList}
-          {commentForm}
-        </Container>)
+        <Card key={id} style={{ width: '98%', marginLeft: '1%', marginRight: '1%' }}>
+          <Label text={isOwner ? 'Owner' : 'Yours'} show={isAuthor || isOwner} color={isOwner ? 'red' : 'green'}/>
+          <Container>
+            <Cover>
+              {answerHeader}
+              <Option>
+                <div>
+                  {rateCount} Vote
+                </div>
+                {threeDot}
+              </Option>
+            </Cover>
+            {Answer.renderMethods(answers)}
+            {commentGroup}
+            {commentList}
+            {commentForm}
+          </Container>
+        </Card>)
     })
   }
 
   render() {
+    const post = this.props.data.Post
+    const display = post ? post.latex : ''
+    console.log(display)
     return (
       <div>
-        <Header text="Answer Sheet" />
+        <Screen displayText={display} onSubmit={() => console.log('submit')} hideButton={true} />
         <div style={{
           overflow: 'auto',
-          height: window.innerHeight - 50,
+          height: window.innerHeight - 118,
+          marginTop: '5px',
         }}>
           {this.generateAnswers()}
         </div>
@@ -444,6 +453,7 @@ const answerQuery = gql`
   query($id: ID!) {
     Post(id: $id) {
       id
+      latex
       author {
         id
       }

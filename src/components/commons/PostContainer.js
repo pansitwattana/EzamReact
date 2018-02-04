@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import LaTexContainer from './LaTexContainer'
+import Label from '../commons/CornerLabel'
 
 const Author = styled.div`
   font-size: 10px;
@@ -51,14 +52,16 @@ class PostContainer extends Component {
     const { posts, user } = this.props
     return posts.map((problem, index) => {
       const status = this.getUserStatus(problem, user)
-      const answerSpan = status ? <Status>{status}</Status> : <div />
+      const done = status === 'Done'
+      const opacity = done ? 0.5 : 1
       return (
         <Card
           key={problem.id}
-          style={{ width: '95%' }}
+          style={{ width: '95%', opacity }}
           onClick={() => this.onClick(index, status)}
         >
           <Card.Content>
+          <Label text='Done' show={done} />
             <Card.Header
               style={{
                 display: 'flex',
@@ -85,8 +88,7 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <LaTexContainer text={problem.latex} id={problem.id} />
-              {answerSpan}
+              <LaTexContainer text={problem.latex || ''} id={problem.id} />
             </Card.Description>
           </Card.Content>
         </Card>

@@ -25,7 +25,6 @@ class Catalog extends Component {
 
     return (
       <div>
-        <Header text={title} />
         <Search />
         <Card.Group
           style={{ 

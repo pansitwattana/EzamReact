@@ -52,6 +52,7 @@ TeX.defaultProps = {
   showMathMenu: false,
   showMathMenuMSIE: false,
   tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  value: ''
 }
 
 TeX.propTypes = {
@@ -60,7 +61,7 @@ TeX.propTypes = {
   showMathMenuMSIE: PropTypes.bool,
   style: PropTypes.object,
   tex2jax: PropTypes.object,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
 }
 
 export default TeX

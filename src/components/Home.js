@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { gql, graphql } from 'react-apollo'
 import Menu from './commons/Menu'
-import Logo from './commons/Logo'
+// import Logo from './commons/Logo'
 import Course from './commons/Course'
 import Search from './commons/Search'
 import AddButton from './commons/AddButton'
@@ -142,7 +142,7 @@ class Home extends Component {
       console.log('guest')
     }
   }
-
+  
   onSubjectChange = (subject) => {
     this.setState({ currentSubject: subject })
   }
@@ -173,7 +173,7 @@ class Home extends Component {
       />
     ))
     return (
-      <Logo>
+      // <Logo>
         <Background>
           <Search value="" />
           <Menu onClick={this.onSubjectChange} />
@@ -188,7 +188,7 @@ class Home extends Component {
           {addButton}
           {loginButton}
         </Background>
-      </Logo>
+      // </Logo>
     )
   }
 }
