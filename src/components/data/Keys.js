@@ -119,8 +119,8 @@ const KeyAction = (key) => {
             key === Keys.PLUSMINUS || key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA ||
             key === Keys.NOTEQUAL || key === Keys.SUB_2 || key === Keys.SUB_3 || key === Keys.SUB_4 || key === Keys.SUB_5 || key === Keys.SUB_6 ||
             key === Keys.SUB_7 || key === Keys.SUB_8 || key === Keys.SUB_9 || key === Keys.EXP_4 || key === Keys.EXP_5 || key === Keys.EXP_6 ||
-            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 ||
-            key === Keys.LN || key === Keys.TIMES) {
+            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 || key === Keys.SIGMA || key === Keys.OMEGA || key === Keys.XI ||
+            key === Keys.LN || key === Keys.TIMES || key === Keys.THETA || key === Keys.ETA || key === Keys.PI || key === Keys.IOTA) {
     return Actions.LATEX
   } else if (key === Keys.DOWN) {
     return Actions.HIDE

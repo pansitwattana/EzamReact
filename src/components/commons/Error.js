@@ -3,7 +3,7 @@ import { Card } from 'semantic-ui-react'
 import propTypes from 'prop-types'
 
 const Error = ({ message }) => (
-  <Card>
+  <Card style={{ width: '96%', margin: '2%' }}>
     <Card.Content>
       <Card.Header>{message}</Card.Header>
     </Card.Content>

@@ -33,6 +33,11 @@ const Drawer = styled.div`
   justify-content: center;
 `
 
+const ProfileContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 class SidebarMenu extends Component {
   state = { 
     visible: false,
@@ -76,6 +81,10 @@ class SidebarMenu extends Component {
             <Icon name="trophy" />
             Achievement
           </Menu.Item>
+          <Menu.Item onClick={() => this.onPageChange('/stats')} name="user circle">
+            <Icon name="line chart" />
+            Stats
+          </Menu.Item>
           <Menu.Item onClick={this.logout} name="log out">
             <Icon name="log out" />
             Log out
@@ -88,6 +97,13 @@ class SidebarMenu extends Component {
                 <Icon name="content" size="big" />
               </Drawer>
               <Logo onClick={() => this.props.history.push('/')} src={logo} alt="logo" />
+              {/* <ProfileContainer>
+                <div style={{ marginRight: '10px' }}>
+                  <Icon name='idea' />
+                  <span>12 Int </span>
+                </div>
+                <Profile onClick={() => this.props.history.push('/profile')} src={profileImage} alt="profile" />
+              </ProfileContainer> */}
               <Profile onClick={() => this.props.history.push('/profile')} src={profileImage} alt="profile" />
             </NavBar>
             {this.props.children}

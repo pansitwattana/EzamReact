@@ -54,8 +54,15 @@ const typed = (str, id) => {
 }
 
 const focus = (id) => {
-  typed(' ', id)
-  typed(Keys.BACKSPACE, id)
+  // typed(' ', id)
+  // typed(Keys.BACKSPACE, id)
+  const mathField = mathFields[id]
+  if (mathField) {
+    mathField.focus()
+  } else {
+    typed(' ', id)
+    typed(Keys.BACKSPACE, id)
+  }
 }
 
 const blur = (id) => {
@@ -97,6 +104,7 @@ const setLatex = (id, latex) => {
         substituteTextarea: () => document.createElement('span'),
       })
       mathField.latex(latex)
+      mathFields[id] = mathField
     }
   }
 }

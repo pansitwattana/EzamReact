@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Icon, Image } from 'semantic-ui-react'
+import { Card, Icon, Image, Progress } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { gql, graphql } from 'react-apollo'
 import Error from './commons/Error'
@@ -22,18 +22,21 @@ const AchievementCard = ({ coverImage, header, meta, count, need, unit, icon }) 
         <Icon name={icon} />
         {count}/{need} {unit}
       </a>
+      <Progress percent={count > need ? 100 : count * 100 / need} indicating />
     </Card.Content>
   </Card>
 )
 
 const AchievementPage = ({ userQuery }) => {
-  if (userQuery.loading) {
-    return <Error message='Loading...'/>
-  } else if (userQuery.error) {
-    return <Error message={userQuery.error} />
+  const { user, loading, error } = userQuery
+  if (loading) {
+    return <Error message='Loading...' />
+  } else if (error) {
+    return <Error message={error} />
+  } else if (!user) {
+    return <Error message={'not logged in'} />
   }
 
-  const { user } = userQuery
   const solveCount = user._solutionsMeta.count
   const postCount = user._postsMeta.count
   const commentCount = user._commentsMeta.count

@@ -63,6 +63,7 @@ class PaperComponent extends Component {
     isDone: false,
     solutionId: null,
     checked: false,
+    startedAt: new Date(),
   }
 
   initial(problem) {
@@ -92,22 +93,26 @@ class PaperComponent extends Component {
   }
 
   componentDidMount() {
-    this.loadMethod()
+    const isLoadFromAnswer = this.loadMethod()
     this.initial(this.props.postQuery.Post)
     const { line } = this.state
     const { methods } = this.state
     const method = methods[line]
-    method.focus = true
-    math.focus(method.id)
+    // method.focus = true
+    // math.focus(method.id)
+    // if (isLoadFromAnswer) {
+      setTimeout(this.onEditLoaded, 1000);
+    // }
   }
 
-  componentDidUpdate() {
-    const { line, methods, loadMethod } = this.state
+  onEditLoaded = () => {
+    const { methods, line } = this.state
     if (this.loadedMethod) {
       console.log('loaded solution')
-      const length = methods.lastIndexOf
+      const length = methods.length
       methods.forEach((method, index) => {
         math.setLatex(method.id, method.text)
+        console.log('loaded ', method.text)
         if (index === length - 1)
           this.loadedMethod = false
       })
@@ -120,23 +125,24 @@ class PaperComponent extends Component {
       }
   
       method.focus = true
-
+      
       math.focus(method.id)
+      math.goRight(method.id)
     }
   }
 
   loadMethod() {
     const { location } = this.props
-    if (!location) { return }
+    if (!location) { return false }
     
     const { state } = location
-    if (!state) { return }
+    if (!state) { return false }
 
     const { solution } = state
-    if (!solution) { return }
+    if (!solution) { return false }
     
     const { answers, id } = solution
-    if (!answers) { return }
+    if (!answers) { return false }
 
     console.log('Edit method enabled')
 
@@ -155,11 +161,8 @@ class PaperComponent extends Component {
 
     
     this.loadedMethod = true
-    this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true }, () => {
-      // methods.forEach(method => {
-      //   math.setLatex(method.id, method.text)
-      // })
-    })
+    this.setState({ solutionId: id, methods, line: length - 1, isDone: true, checked: true })
+    return true
   }
 
   onInputTouch(i, event) {
@@ -324,7 +327,7 @@ class PaperComponent extends Component {
 
   submitAnswer(id) {
     this.setState({ submiting: true })
-    const { methods, problem, hasChecker } = this.state
+    const { methods, problem, hasChecker, startedAt } = this.state
     let result = this.validatation(methods, problem, hasChecker)
     
     if (!result) {
@@ -343,23 +346,32 @@ class PaperComponent extends Component {
     const answers = latexMethod.map(method => ({ latex: method.text, text: '' }))
     console.log(answers)
     const { user } = this.props.data
+    console.log(user)
     if (user) {
       const variables = {
         postId: id,
         userId: user.id,
         answers,
+        startedAt,
       }
 
-      this.props
-        .submitSolutions({ variables })
+      const newUserExp = {
+        id: user.id,
+        experience: user.experience + 100,
+      }
+
+      this.props.submitSolutions({ variables })
         .then((res) => {
           console.log(res)
-          this.setState({ submiting: false })
-          if (id) {
-            this.props.history.replace('/answer', { id })
-          } else {
-            console.error('id is null')
-          }
+          this.props.updateExperience({ variables: newUserExp })
+            .then(userRes => {
+              this.setState({ submiting: false })
+              if (id) {
+                this.props.history.replace('/answer', { id })
+              } else {
+                console.error('id is null')
+              }
+            })
         })
         .catch((error) => {
           console.error(error)
@@ -377,7 +389,11 @@ class PaperComponent extends Component {
 
   handleKeyboard(value) {
     this.loadedMath = true
-    math.typed(value, this.state.methods[this.state.line].id)
+    const methodCurrent = this.state.methods[this.state.line]
+    if (!methodCurrent) {
+      return
+    }
+    math.typed(value, methodCurrent.id)
     const action = KeyAction(value)
     let checked = true
     if (this.state.hasChecker) {
@@ -434,6 +450,7 @@ class PaperComponent extends Component {
   handleKeydown = (event) => {
     const { key } = event
     if (key === 'Backspace') {
+      event.preventDefault();
       this.handleKeyboard(Keys.BACKSPACE)
     } else if (key === 'ArrowRight') {
       this.handleKeyboard(Keys.RIGHT)
@@ -444,7 +461,9 @@ class PaperComponent extends Component {
 
   handleKeyPress = (event) => {
     console.log('type ' + event.key)
-    this.handleKeyboard(event.key)
+    if (event.key !== 'ArrowRight' || event.key !== 'ArrowLeft') {
+      this.handleKeyboard(event.key)
+    }
   }
 
   onSimplify = (index) => {
@@ -476,7 +495,8 @@ class PaperComponent extends Component {
     const itemSize = 40
     if (problem) {
       const { submiting, keywords, isDone, checked } = this.state
-      const { latex, image, description, id } = problem
+      const { latex, image, description, id, tags } = problem
+      const tagNames = tags.map(tag => tag.name)
       let imageUrl = null
       if (image) { imageUrl = image.url }
       return (
@@ -492,6 +512,7 @@ class PaperComponent extends Component {
                 done={isDone}
                 loading={submiting}
                 checked={checked}
+                tags={tagNames}
                 onSubmit={() => this.submitAnswer(id)}
                 onEditSubmit={() => this.submitEdit(id)}
                 onCheck={() => this.onCheck(id)}
@@ -531,14 +552,26 @@ class PaperComponent extends Component {
 }
 
 const submitSolutions = gql`
-  mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!) {
+  mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!, $startedAt: DateTime!) {
     createSolution(
       rateCount: 0
       authorId: $userId
       postId: $postId
       answers: $answers
+      startedAt: $startedAt
     ) {
       id
+    }
+  }
+`
+
+const updateExperience = gql`
+  mutation($id: ID!, $experience: Int!) {
+    updateUser(
+      id: $id,
+      experience: $experience
+    ) {
+      experience
     }
   }
 `
@@ -558,6 +591,7 @@ const userQuery = gql`
   query {
     user {
       id
+      experience
     }
   }
 `
@@ -586,13 +620,15 @@ mutation($id: ID!) {
 }
 `
 
-const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperComponent)
+const PaperWithUpdateExp = graphql(updateExperience, { name: 'updateExperience' })(PaperComponent)
+
+const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperWithUpdateExp)
 
 const PaperWithData = graphql(userQuery, {
   options: { fetchPolicy: 'network-only' },
 })(PaperWithMutation)
 
-const PaperWithPost = graphql(postQuery, { 
+const PaperWithPost = graphql(postQuery, {
   name: 'postQuery',
   options: ownProps => ({ variables: { id: ownProps.match.params.id } })
 })(PaperWithData)
