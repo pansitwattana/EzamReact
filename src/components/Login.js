@@ -134,6 +134,8 @@ mutation($idToken: String!, $email: String!, $name: String!) {
     authProvider: { auth0: { idToken: $idToken } }
     email: $email
     name: $name
+    credit: 100
+    experience: 0
   ) {
     id
   }
