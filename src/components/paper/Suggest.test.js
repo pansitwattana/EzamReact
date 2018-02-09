@@ -79,6 +79,30 @@ test('getKeywords', () => {
 
 })
 
+test('getKeyword from long story (Physics)', () => {
+  test('Physcis car', () => {
+    const latex = 'A car travels to Bangkok. The distance is $3.07 * 10^5 m$. If the velocity of the car when it reaches to Bangkok is $61.7 m/s$, how much time has passed. Assume that  acceleration is uniform.'
+    const keywords = getKeywords(latex)
+    expect(keywords[0]).toBe('3.07 * 10^5')
+    expect(keywords[1]).toBe('61.7')
+  })
+
+  test('Physcis stone', () => {
+    const latex = 'A stone was thown up with velocity of $56.6 m/s$ from a cliff $(243m)$. What is the velocity when the stone hit the ground? $(g = 10 m/s²)$'
+    const keywords = getKeywords(latex)
+    expect(keywords[0]).toBe('56.6')
+    expect(keywords[1]).toBe('243')
+    expect(keywords[2]).toBe('10')
+  })
+
+  test('Physcis falling', () => {
+    const latex = 'A thing falls into a small hole. It takes $8.6 s$ to reach the bottom. How deep is the hole? $(g = 10 m/s^2)$'
+    const keywords = getKeywords(latex)
+    expect(keywords[0]).toBe('8.6')
+    expect(keywords[1]).toBe('10')
+  })
+})
+
 // test('find keywords \\lim_{x\\to2}f(x)=5', () => {
 //   const problem = '\\lim_{x\\to2}f(x)=5'
 //   expect(getKeywords(problem)).toMatchSnapshot()
