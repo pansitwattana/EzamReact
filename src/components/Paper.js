@@ -17,7 +17,7 @@ import Error from './commons/Error'
 import deleteAnswerMutation from '../graph/deleteAnswer'
 import Simplifier from '../calculation/Simplifier';
 
-const { getKeywords } = suggest
+const { getKeywords, getSolutionKeywords } = suggest
 let errorManager = null
 const Wrapper = styled.div`
   background: white;
@@ -403,9 +403,10 @@ class PaperComponent extends Component {
       if (this.state.methods.length > 9) {
         return
       }
-      const { methods } = this.state
+      const { methods, keywords } = this.state
       const latex = math.getLaTeX(methods[this.state.line].id)
       if (latex) {
+        const newKeywords = getSolutionKeywords(latex, keywords)
         const method = {
           test: '',
           id: uuid(),
@@ -416,7 +417,9 @@ class PaperComponent extends Component {
         methods[line].focus = false
         methods.splice(line + 1, 0, method)
         this.loadedMath = false
-        this.setState({ methods, line: line + 1, checked })
+        this.setState({ methods, line: line + 1, checked, keywords: newKeywords }, () => {
+          math.focus(method.id)
+        })
       }
     } else if (action === Actions.CLEAR) {
       let { methods } = this.state
@@ -460,8 +463,11 @@ class PaperComponent extends Component {
   }
 
   handleKeyPress = (event) => {
-    console.log('type ' + event.key)
-    if (event.key !== 'ArrowRight' || event.key !== 'ArrowLeft') {
+    if (event.key === '/') {
+      event.preventDefault()
+    }
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+      console.log('type ' + event.key)
       this.handleKeyboard(event.key)
     }
   }

@@ -16,7 +16,7 @@ export default (expression) => {
     const result = math.eval(expr)
     return math.format(result, { precision: 13 });
   } catch (e) {
-    console.error(e)
+    // console.error(e)
     return null
   }
 

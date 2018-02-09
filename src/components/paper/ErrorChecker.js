@@ -18,6 +18,7 @@ const type = {
   NONE: 0,
   EQUATION: 1,
   DIFFERENTIAL: 2,
+  PHYSICS: 3,
 }
 
 const status = {

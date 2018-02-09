@@ -1,6 +1,16 @@
 import uuid from 'uuid'
 import { Parser }from '../../calculation'
 
+const finalize = (array) => {
+  return array.filter(function(item, pos) {
+    return array.indexOf(item) === pos && item !== "x" && item.length < 10;
+  })
+}
+
+const addIds = (keywords) => {
+  return keywords.map(keyword => ({ value: keyword, id: uuid() }))
+}
+
 const getTerms = (equation) => {
   // const equationNoMulti = equation.replace('*', '')
   // console.log(equationNoMulti)
@@ -21,7 +31,7 @@ const getTerms = (equation) => {
     return term
   })
   const removeSingleNumber = filterOperator.filter(term => {
-    return !term.match(/^\d+$/)
+    return !term.match(/^\d+$/) || term.length !== 1
   })
 
   const filterConstant = removeSingleNumber.map(term => {
@@ -36,34 +46,38 @@ const getTerms = (equation) => {
   })
   
   const results = removeSingleNumber.concat(filterConstant)
-  
-  const uniqueResults = results.filter(function(item, pos) {
-    return results.indexOf(item) === pos && item !== "x" && item.length < 6;
-  })
 
-  return uniqueResults
+  return finalize(results)
 }
 
 const checkValid = (math) => {
   return Parser(math) !== null
 }
 
-export default {
-  getKeywords: (text) => {
-    let terms = []
-    const math = Parser(text)
-    if (math === null) {
-      return []
-    }
-    
-    terms = getTerms(math)
-    
-    if (terms.length === 0 && math.indexOf('y') !== -1) {
-      terms.push('y')
-    }
+const getKeywords = (text) => {
+  let terms = []
+  const math = Parser(text)
+  if (math === null) {
+    return []
+  }
+  
+  terms = getTerms(math)
+  
+  if (terms.length === 0 && math.indexOf('y') !== -1) {
+    terms.push('y')
+  }
 
-    const keywords = terms
-    return keywords.map(keyword => ({ value: keyword, id: uuid() }))
-  },
+  const keywords = terms
+  return keywords
+}
+
+export default {
+  getKeywords: (text) => addIds(getKeywords(text)),
   checkValid,
+  getSolutionKeywords: (method, oldKeywords) => {
+    const keywords = getKeywords(method)
+    const results = [...keywords, ...oldKeywords.map(key => key.value)]
+    console.log(results)
+    return addIds(finalize(results))
+  }
 }

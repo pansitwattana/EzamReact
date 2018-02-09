@@ -337,7 +337,6 @@ class Problem extends Component {
                 placeholder="Question Title"
                 onChange={e => this.setState({ title: e.target.value })}
                 onFocus={() => this.setState({ showKeyboard: false })}
-                onBlur={() => this.setState({ showKeyboard: true })}
                 ref={(input) => { this.titleInput = input; }}
               />
 

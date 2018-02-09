@@ -21,7 +21,12 @@ class EquationChecker extends ErrorChecker {
     }
     
     const value = solver(solution)
-    return value === this.answer
+    if (value !== null) {
+      return value === this.answer
+    }
+    else {
+      return true
+    }
   }
 }
 

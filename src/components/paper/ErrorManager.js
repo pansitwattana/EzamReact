@@ -1,5 +1,6 @@
 import EquationChecker from './EquationChecker'
 import DiffentialChecker from './DifferentialChecker'
+import PhysicsChecker from './PhysicsChecker'
 import { status } from './ErrorChecker'
 
 class ErrorManager {
@@ -7,6 +8,7 @@ class ErrorManager {
     this.problem = problem
     let isEquation = false
     let isDifferential = false
+    let isKinetic = false
     this.problem.tags.forEach(tag => {
       if (tag.name === "Equation") {
         isEquation = true
@@ -14,20 +16,26 @@ class ErrorManager {
       else if (tag.name === "Differential") {
         isDifferential = true
       }
+      else if (tag.name === 'Kinetics') {
+        isKinetic = true
+      }
     })
     if (isEquation) this.checker = new EquationChecker(problem.latex)
     else if (isDifferential) this.checker = new DiffentialChecker(problem.latex)
+    else if (isKinetic) {
+      this.checker = new PhysicsChecker(problem)
+    }
 
     if (this.checker) {
       if (this.checker.status === status.FAIL) {
-        console.log(`error disable`)
+        console.log(`Error failed to check`)
       }
       else {
-        console.log(`error checker enabled ${this.checker.type}`)
+        console.log(`Error checker enabled ${this.checker.type}`)
       }
     }
     else {
-      console.log('error checker disabled')
+      console.log('Error checker does not support')
     }
   }
 

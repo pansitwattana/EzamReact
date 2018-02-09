@@ -6,29 +6,54 @@ export default (expression, variables) => {
     return 'No variable pass through parameter'
   }
 
+  const keyVariables = Object.keys(variables)
+
+  
+
   let expr = parser(expression)
   if (!expr) {
     return 'can not parse expression'
   }
 
+  //check adjency variables
+  let cloneExpression = expr
+  let replaceXExpression = expression
+  keyVariables.forEach(key => {
+    replaceXExpression = replaceXExpression.replace(key, 'x')
+  })
+
+  const index = replaceXExpression.indexOf('xx') // xxx ?
+
+  if (index !== -1) {
+    let newExpression = expression.substr(0, index + 1)
+    newExpression += '*' + expression.substr(index + 1, expression.length)
+    console.log(index, newExpression)
+    cloneExpression = newExpression
+  }
+
   let algebraObj
   try{
-    algebraObj = algebra.parse(expr)
+    algebraObj = algebra.parse(cloneExpression)
   } catch (e) {
-    console.log(e)
+    // console.log(e)
     return `can not parse to algebra.js (${expr})`
   }
   
-
-  let valToReplace = variables
-  for (const variable in variables) {
-    const val = variables[variable]
+  
+  let valToReplace = Object.assign({}, variables);
+  for (const variable in valToReplace) {
+    const val = valToReplace[variable]
     if (!expression.includes(variable)) {
-      const answer = algebraObj.eval()
-      if (answer) {
-        return answer
-      }
-      return `Variables ${variable}=${val} not found`;
+      continue
+      // try {
+      //   const answer = algebraObj.eval()
+      //   if (answer) {
+      //     return answer
+      //   }
+      //   return `Variables ${variable}=${val} not found`;
+      // } catch(e) {
+      //   return expression
+      // }
     }
     const valExpr = parser(val)
     if (valExpr == null) {
