@@ -7,9 +7,14 @@ export default (equation) => {
   }
   // console.log(expression)
 
-  let variables = expression.replace(/[0-9^*+-=/]+/g, "")
+  let variables = expression.replace(/[^A-Za-z]/g, '');
 
   variables = variables.split('')
+
+  const uniqueVars = variables.filter((item, pos) => {
+    return variables.indexOf(item) === pos;
+  })
+
   // console.log({ variables })
-  return variables
+  return uniqueVars
 }

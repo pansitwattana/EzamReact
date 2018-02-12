@@ -108,7 +108,6 @@ class Login extends Component {
     }
     return (
       <div>
-        <Logo onMouseDown={() => this.props.history.replace('/')}/>
         <Header text="Login" />
         <Form>
           <Input icon="user" iconPosition="left" placeholder="Username" onChange={(e, username) => this.setState({ username: username.value })} />

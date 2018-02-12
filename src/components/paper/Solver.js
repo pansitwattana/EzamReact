@@ -22,12 +22,17 @@ export default (equation, variable = 'x') => {
     return null
   }
   if (eq instanceof Equation) {
-    const ans = eq.solveFor(variable)
-    if (!ans) {
-      console.error(`Algebra can not solve for ${equation}`)
+    try {
+      const ans = eq.solveFor(variable)
+      if (!ans) {
+        console.error(`Algebra can not solve for ${equation}`)
+        return null
+      }
+      return ans.toString()
+    } catch (e) {
+      console.error(e)
       return null
     }
-    return ans.toString()
   }
   console.error(`It's not an equation (${equation})`)
   return null

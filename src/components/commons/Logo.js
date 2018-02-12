@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 // import auth from 'auth0-lock'
+import Auth0Lock from 'auth0-lock'
 import propTypes from 'prop-types'
 import { Sidebar, Segment, Menu, Icon } from 'semantic-ui-react'
 import logo from '../../icon.png'
@@ -38,15 +39,29 @@ const ProfileContainer = styled.div`
   align-items: center;
 `
 
+
+   
+const lock = new Auth0Lock(
+  'XbROZxuwYdEHTQaGNN5irLFDpR5JB6b3',
+  'ezam.auth0.com',
+  {
+    auth: {
+      responseType: 'id_token',
+      params: { scope: 'openid email' },
+    },
+  },
+);
+
 class SidebarMenu extends Component {
   state = { 
     visible: false,
     path: '/'
   }
-
+ 
   toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
   logout = () => {
+    lock.logout()
     window.localStorage.removeItem('auth0IdToken')
   }
 

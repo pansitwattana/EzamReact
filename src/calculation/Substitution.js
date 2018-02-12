@@ -17,18 +17,26 @@ export default (expression, variables) => {
 
   //check adjency variables
   let cloneExpression = expr
-  let replaceXExpression = expression
+  let replaceXExpression = cloneExpression
   keyVariables.forEach(key => {
-    replaceXExpression = replaceXExpression.replace(key, 'x')
+    const regExp = new RegExp(key, 'g')
+    replaceXExpression = replaceXExpression.replace(regExp, 'x')
   })
+  let willReplaceX = replaceXExpression
+  let tempReplace = willReplaceX
+  let tempExp = expression
+  while (willReplaceX.includes('xx')) {
+    const index = willReplaceX.indexOf('xx') // xxx ?
+    if (index !== -1) {
+      tempExp = cloneExpression.substr(0, index + 1)
+      tempExp += '*' + cloneExpression.substr(index + 1, cloneExpression.length)
 
-  const index = replaceXExpression.indexOf('xx') // xxx ?
-
-  if (index !== -1) {
-    let newExpression = expression.substr(0, index + 1)
-    newExpression += '*' + expression.substr(index + 1, expression.length)
-    console.log(index, newExpression)
-    cloneExpression = newExpression
+      willReplaceX = tempReplace.substr(0, index + 1)
+      willReplaceX += '*' + tempReplace.substr(index + 1, expression.length)
+      // console.log(index, newExpression)
+      cloneExpression = tempExp
+    }
+    tempReplace = willReplaceX
   }
 
   let algebraObj

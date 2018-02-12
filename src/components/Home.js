@@ -165,13 +165,16 @@ class Home extends Component {
     if (!nextProps.userQuery.loading && this.props.userQuery.loading) {
       const { user } = nextProps.userQuery
       let { tags } = this.state
-      let math = this.checkCount(tags.Mathematics, user.solutions)
-      let physics = this.checkCount(tags.Physics, user.solutions)
-      let sci = this.checkCount(tags.Sciences, user.solutions)
-      tags.Mathematics = math
-      tags.Physics = physics
-      tags.Sciences = sci
-      this.setState({ tags })
+      if (user) {
+        const { solutions } = user
+        let math = this.checkCount(tags.Mathematics, solutions)
+        let physics = this.checkCount(tags.Physics, solutions)
+        let sci = this.checkCount(tags.Sciences, solutions)
+        tags.Mathematics = math
+        tags.Physics = physics
+        tags.Sciences = sci
+        this.setState({ tags })
+      }
     }
   }
 

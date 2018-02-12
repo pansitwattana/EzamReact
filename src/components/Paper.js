@@ -70,7 +70,11 @@ class PaperComponent extends Component {
     if (problem) {
       errorManager = new ErrorManager(problem)
       const keywords = getKeywords(problem.latex)
-      console.log('called', { keywords, problem })
+      console.log('called', { keywords })
+      if (problem.solutions.length > 0) {
+        console.log(problem.latex)
+        console.log(problem.solutions[0].answers)
+      }
       const hasChecker = errorManager.hasChecker()
       this.setState({ hasChecker, keywords, checked: !hasChecker })
     }
@@ -221,6 +225,7 @@ class PaperComponent extends Component {
     let isError = false
     if (hasChecker) {
       const corrects = errorManager.check(solutions)
+      console.log('Error Detection', corrects)
       if (corrects) {
         latexMethod = filterMethods.map((method, i) => {
           let newMethod = method
@@ -228,6 +233,8 @@ class PaperComponent extends Component {
             newMethod.error = true
             isError = true
             error = `get error at ${method.text}`
+          } else {
+            newMethod.error = false
           }
           return newMethod
         })
@@ -358,6 +365,7 @@ class PaperComponent extends Component {
       const newUserExp = {
         id: user.id,
         experience: user.experience + 100,
+        credit: user.credit + 10,
       }
 
       this.props.submitSolutions({ variables })
@@ -379,6 +387,10 @@ class PaperComponent extends Component {
           alert(error)
         })
     }
+    else {
+      alert('No User Logged In')
+      this.setState({ submiting: false })
+    }
   }
 
   handleSuggestion(value) {
@@ -388,73 +400,82 @@ class PaperComponent extends Component {
   }
 
   handleKeyboard(value) {
-    this.loadedMath = true
-    const methodCurrent = this.state.methods[this.state.line]
-    if (!methodCurrent) {
-      return
-    }
-    math.typed(value, methodCurrent.id)
-    const action = KeyAction(value)
-    let checked = true
-    if (this.state.hasChecker) {
-      checked = false
-    }
-    if (action === Actions.NEWLINE) {
-      if (this.state.methods.length > 9) {
-        return
+    return new Promise((resolve, reject) => {
+      this.loadedMath = true
+      const methodCurrent = this.state.methods[this.state.line]
+      if (!methodCurrent) {
+        reject('cant get current method')
       }
-      const { methods, keywords } = this.state
-      const latex = math.getLaTeX(methods[this.state.line].id)
-      if (latex) {
-        const newKeywords = getSolutionKeywords(latex, keywords)
-        const method = {
-          test: '',
-          id: uuid(),
-          focus: true,
-          error: false,
+      math.typed(value, methodCurrent.id)
+      const action = KeyAction(value)
+      let checked = true
+      if (this.state.hasChecker) {
+        checked = false
+      }
+      if (action === Actions.NEWLINE) {
+        if (this.state.methods.length > 9) {
+          reject('line is more than 9')
+        }
+        const { methods, keywords } = this.state
+        const latex = math.getLaTeX(methods[this.state.line].id)
+        if (latex) {
+          const newKeywords = getSolutionKeywords(latex, keywords)
+          const method = {
+            test: '',
+            id: uuid(),
+            focus: true,
+            error: false,
+          }
+          const { line } = this.state
+          methods[line].focus = false
+          methods.splice(line + 1, 0, method)
+          this.loadedMath = false
+          this.setState({ methods, line: line + 1, checked, keywords: newKeywords }, () => {
+            math.focus(method.id)
+            resolve(method.id)
+          })
+        }
+      } else if (action === Actions.CLEAR) {
+        let { methods } = this.state
+        if (methods.length <= 1) {
+          resolve()
         }
         const { line } = this.state
-        methods[line].focus = false
-        methods.splice(line + 1, 0, method)
-        this.loadedMath = false
-        this.setState({ methods, line: line + 1, checked, keywords: newKeywords }, () => {
-          math.focus(method.id)
+        methods = methods.filter((item, index) => index !== line)
+        this.setState({
+          methods,
+          line: line > 0 ? line - 1 : line,
+          checked
+        }, () => {
+          resolve(methods)
+        })
+      } else if (action === Actions.DELETE) {
+        console.log('clear all')
+        let { methods } = this.state      
+        let method = methods[this.state.line]
+        method.text = ''
+        math.setLatex(method.id, '')
+        this.setState({ methods }, () => {
+          resolve(methods)
+        })
+      } else {
+        const methods = this.state.methods.map((method) => {
+          const methodReset = method
+          methodReset.error = false
+          return methodReset
+        })
+        this.setState({ methods, checked }, () => {
+          resolve(methods)
         })
       }
-    } else if (action === Actions.CLEAR) {
-      let { methods } = this.state
-      if (methods.length <= 1) {
-        return
-      }
-      const { line } = this.state
-      methods = methods.filter((item, index) => index !== line)
-      this.setState({
-        methods,
-        line: line > 0 ? line - 1 : line,
-        checked
-      })
-    } else if (action === Actions.DELETE) {
-      console.log('clear all')
-      let { methods } = this.state      
-      let method = methods[this.state.line]
-      method.text = ''
-      math.setLatex(method.id, '')
-      this.setState({ methods })
-    } else {
-      const methods = this.state.methods.map((method) => {
-        const methodReset = method
-        methodReset.error = false
-        return methodReset
-      })
-      this.setState({ methods, checked })
-    }
+    })
   }
 
   handleKeydown = (event) => {
     const { key } = event
     if (key === 'Backspace') {
-      event.preventDefault();
       this.handleKeyboard(Keys.BACKSPACE)
+      event.preventDefault();
     } else if (key === 'ArrowRight') {
       this.handleKeyboard(Keys.RIGHT)
     } else if (key === 'ArrowLeft') {
@@ -469,11 +490,14 @@ class PaperComponent extends Component {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
       console.log('type ' + event.key)
       this.handleKeyboard(event.key)
+        .then(res => console.log(res))
+        .catch(error => console.error(error))
     }
   }
 
   onSimplify = (index) => {
-    const method = this.state.methods[index]
+    const { methods, line } = this.state
+    const method = methods[index]
     const id = method.id
     const latex = math.getLaTeX(id)
     if (latex === null) {
@@ -481,10 +505,17 @@ class PaperComponent extends Component {
     }
 
     const simplified = Simplifier(latex)
-    console.log(latex)
-    if (simplified !== null) {
-      console.log(simplified)
-      math.setLatex(id, simplified)
+    console.log(latex, methods)
+    if (simplified !== null && simplified !== latex) {
+      this.handleKeyboard(Keys.ENTER)
+        .then(() => {
+          const newMethod = methods[line+1]
+          console.log(newMethod)
+          if (newMethod) {
+            console.log(simplified)
+            math.setLatex(newMethod.id, simplified)
+          }
+        })
     }
   }
 
@@ -572,12 +603,14 @@ const submitSolutions = gql`
 `
 
 const updateExperience = gql`
-  mutation($id: ID!, $experience: Int!) {
+  mutation($id: ID!, $experience: Int!, $credit: Int!) {
     updateUser(
       id: $id,
-      experience: $experience
+      experience: $experience,
+      credit: $credit
     ) {
       experience
+      credit
     }
   }
 `
@@ -598,12 +631,13 @@ const userQuery = gql`
     user {
       id
       experience
+      credit
     }
   }
 `
 
 const postQuery = gql`
-  query($id: ID!) {
+  query($id: ID!, $userId: ID) {
     Post(id: $id) {
       id
       latex
@@ -613,6 +647,16 @@ const postQuery = gql`
       }
       tags {
         name
+      }
+      solutions(filter: {
+        author: {
+          id: $userId
+        }
+      }) {
+        id
+        answers {
+          latex
+        }
       }
     }
   }
@@ -636,7 +680,7 @@ const PaperWithData = graphql(userQuery, {
 
 const PaperWithPost = graphql(postQuery, {
   name: 'postQuery',
-  options: ownProps => ({ variables: { id: ownProps.match.params.id } })
+  options: ownProps => ({ variables: { id: ownProps.match.params.id, userId: "cj99we2yqkeh30166ddgr9h97" } })
 })(PaperWithData)
 
 const PaperWithDeleteAnswer = graphql(deleteAnswer, { name: 'deleteAnswer' })(PaperWithPost)

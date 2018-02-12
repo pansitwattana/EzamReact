@@ -23,6 +23,8 @@ class ErrorManager {
     if (isEquation) this.checker = new EquationChecker(problem.latex)
     else if (isDifferential) this.checker = new DiffentialChecker(problem.latex)
     else if (isKinetic) {
+      console.log('enable check physics')
+      console.log(problem)
       this.checker = new PhysicsChecker(problem)
     }
 

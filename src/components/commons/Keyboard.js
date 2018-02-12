@@ -29,6 +29,7 @@ const KeyboardRow = styled.div`
 const Suggestion = styled.div`
   height: 10%;
   width: 95%;
+  overflow: auto;
 `
 class KeyboardComponent extends Component {
   state = {
@@ -44,7 +45,7 @@ class KeyboardComponent extends Component {
     const { type } = this.state
     if (action === Actions.ALPHABET && type === Math) {
       this.setState({ type: Alphabet })
-    } else if (action === Actions.NUMBER && type === Math) {
+    } else if (action === Actions.NUMBER && type === Alphabet) {
       this.setState({ type: Math })
     } else if (action === Actions.ALPHABET && type !== Math) {
       this.setState({ type: MathJaxAlphabet })

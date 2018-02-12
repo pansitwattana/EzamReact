@@ -1,9 +1,10 @@
 import uuid from 'uuid'
 import { Parser }from '../../calculation'
+import getVariables from '../../calculation/GetVariables'
 
 const finalize = (array) => {
   return array.filter(function(item, pos) {
-    return array.indexOf(item) === pos && item !== "x" && item.length < 10;
+    return array.indexOf(item) === pos && item !== "x" && item.length < 10 && item !== "";
   })
 }
 
@@ -55,24 +56,44 @@ const checkValid = (math) => {
 }
 
 const getKeywords = (text) => {
-  let terms = []
-  const math = Parser(text)
-  if (math === null) {
-    return []
-  }
+  if (text.length < 80) {
+    let terms = []
+    const math = Parser(text)
+    if (math === null) {
+      return []
+    }
+    
+    terms = getTerms(math)
+    
+    if (terms.length === 0 && math.indexOf('y') !== -1) {
+      terms.push('y')
+    }
   
-  terms = getTerms(math)
-  
-  if (terms.length === 0 && math.indexOf('y') !== -1) {
-    terms.push('y')
-  }
+    const keywords = terms
+    
+    const variables = getVariables(text)
 
-  const keywords = terms
-  return keywords
+    return [...keywords, ...variables]
+  }
+  else {
+    let splitText = text.split('$')
+    let keywords = splitText.filter((text, index) => index % 2 === 1)
+    if (keywords) {
+      let removeNoises = keywords.map(keyword => {
+        const splitKeyword = keyword.split(' ')
+        let keywordsSplit = keyword.split(' ')
+        const keywordsFilter = splitKeyword.filter(text => !text.match(/[a-zA-Z=]+/))
+        // const keywordsFilter = splitKeyword.filter(text => /[^a-zA-Z=]+$/.test(text))
+        return keywordsFilter.join('')
+      })
+      return removeNoises
+    }
+    return keywords
+  }
 }
 
 export default {
-  getKeywords: (text) => addIds(getKeywords(text)),
+  getKeywords: (text) => addIds(getKeywords(text)), // get text within $..$ split to array
   checkValid,
   getSolutionKeywords: (method, oldKeywords) => {
     const keywords = getKeywords(method)

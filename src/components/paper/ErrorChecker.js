@@ -10,7 +10,12 @@ class ErrorChecker {
   }
 
   checkAll(solutions) {
-    return solutions.map(solution => this.isCorrect(solution))
+    this.reset()
+    return solutions.map((solution, index) => this.isCorrect(solution, index))
+  }
+
+  reset() {
+    
   }
 }
 

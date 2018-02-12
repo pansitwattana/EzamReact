@@ -6,29 +6,32 @@ import getVariables from '../../calculation/GetVariables'
 
 class PhysicsChecker extends ErrorChecker {
   constructor(problem) {
-    const { answers, latex } = problem
-    super(latex)
-    if (answers && answers.length > 0) {
-      this.answers = answers
-      const variables = getVariables(latex)
-      const key = variables[0]
-      this.variables = variables
-      if (variables === null || variables.length === 0) {
-        this.status = status.FAIL
-        return
-      }      
-      // console.log(variables)
-
-      const values = this.randomNumbers(variables)
-      this.key = key
-      this.values = values
-      
-      this.keyValue = this.calculateKeyValue(latex, key, values)
-      if (this.keyValue === null) {
-        this.status = status.FAIL
+    super(problem)
+    const solution = problem.solutions[0]
+    if (solution) {
+      const answers = solution.answers
+      if (answers.length > 0) {
+        const formular = answers[0].latex
+        
+        const variables = getVariables(formular)
+        if (variables === null || variables.length === 0) {
+          this.status = status.FAIL
+          return
+        }
+        const key = variables[0]
+        this.variables = variables
+        // console.log(variables)
+    
+        const values = this.randomNumbers(variables)
+        this.key = key
+        this.values = values
+        
+        this.keyValue = this.calculateKeyValue(formular, key, values)
+        if (this.keyValue === null) {
+          this.status = status.FAIL
+        }
+        this.status = status.OK
       }
-
-      this.status = status.OK
     }
     else {
       this.status = status.FAIL
@@ -37,25 +40,49 @@ class PhysicsChecker extends ErrorChecker {
   }
 
   //override
-  isCorrect(method) {
-    if (status === status.FAIL || this.answer === null) {
+  isCorrect(method, index) {
+    if (status === status.FAIL) {
       return null
     }
     const { key, keyValue, values } = this
-    const value = this.calculateKeyValue(method, key, values)
-    console.log(value, keyValue)
-    if (value === null || keyValue === null) {
-      return null
+
+    if (index === 0) {
+      const value = this.calculateKeyValue(method, key, values)
+      // console.log(value, keyValue)
+      if (value === null || keyValue === null) {
+        return null
+      }
+      return value === keyValue
+      //Split Equation(formular)
+      //Substitution(left formular, this.variables) //except key
+      //Substitution(right formular, this.variables) //except key
+      //Concat formular (after sub)
+      //value = Solve (key)
+      //if (value === this.value) 
+      // return true
     }
-    //Split Equation(formular)
-    //Substitution(left formular, this.variables) //except key
-    //Substitution(right formular, this.variables) //except key
-    //Concat formular (after sub)
-    //value = Solve (key)
-    //if (value === this.value) 
-    // return true
-    
-    return value === keyValue
+    else {
+      const { methodVariables, answer } = this
+      const variables = getVariables(method)
+      if (variables.length > 1) {
+        return null
+      }
+      
+      const variable = variables[0]
+      const result = solver(method, variable)
+      if (answer === null || answer === undefined) {
+        this.methodVariables = variables
+        this.answer = result
+        return true
+      }
+      else {
+        if (result === null) {
+          return null
+        }
+
+        return answer === result
+      }
+    }
   }
 
   randomNumbers(variables) {
@@ -81,6 +108,10 @@ class PhysicsChecker extends ErrorChecker {
     const result = solver(newEquation, key)
     // console.log(result)
     return result
+  }
+
+  reset() {
+    this.answer = null
   }
 }
 

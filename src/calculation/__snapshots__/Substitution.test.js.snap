@@ -2,18 +2,6 @@
 
 exports[`Eval Physics Formular 2as 1`] = `"183366456546670880/3552713678800501"`;
 
-exports[`Eval Physics Formular s=ut+0.5at^2 1`] = `"5/2t^2 + 2t"`;
+exports[`Eval Physics Formular u*t+\\frac{1}{2}a*t^2 1`] = `"202284915020154900/2489206111144457"`;
 
-exports[`Eval Physics Formular u^2+2as 1`] = `"577243238993101600/3552713678800501"`;
-
-exports[`Eval Physics Formular v^2 1`] = `"v^2"`;
-
-exports[`Eval Physics Formular v^2=u^2+2as 1`] = `"54"`;
-
-exports[`Eval Physics Formular v^2=u^2+2as 2`] = `"25"`;
-
-exports[`Eval Physics Formular v^2=u^2+2as 3`] = `"u^2 + 20"`;
-
-exports[`Eval Physics Formular v^2=u^2+2as 4`] = `"u^2 + 20"`;
-
-exports[`Eval Physics Formular v^2-u^2 1`] = `"v^2 - 393876782446430660/3552713678800501"`;
+exports[`Eval Physics Formular ut+\\frac{1}{2}at^2 1`] = `"202284915020154900/2489206111144457"`;

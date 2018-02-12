@@ -16,6 +16,18 @@ const Status = styled.span`
   color: green;
 `
 
+const SolveCount = styled.div`
+  padding: 10px;
+  border: solid #DADADB;
+  border-width: 1px 1px;
+  border-radius: 5px;
+`
+
+const Solve = styled.span`
+  font-size: 16px;
+  font-weight: bold;
+`
+
 class PostContainer extends Component {
   onClick(index, status) {
     // console.log(this.state.problems[index])
@@ -28,7 +40,7 @@ class PostContainer extends Component {
     }
   }
 
-  getUserStatus(problem, user) {
+  getUserStatus(solutions, user) {
     if (!user) {
       return false
     }
@@ -39,7 +51,7 @@ class PostContainer extends Component {
     //   return 'Edit'
     // }
 
-    problem.solutions.forEach((solution) => {
+    solutions.forEach((solution) => {
       if (solution.author.id === user.id) {
         done = 'Done'
       }
@@ -50,13 +62,16 @@ class PostContainer extends Component {
 
   render() {
     const { posts, user } = this.props
-    return posts.map((problem, index) => {
-      const status = this.getUserStatus(problem, user)
+    return posts.map((post, index) => {
+      const { solutions, author, latex, id, difficulty, title } = post
+      const solveCount = solutions.length
+      const hasOwnerSolution = solutions.filter(solution => solution.author.id === author.id).length > 0
+      const status = this.getUserStatus(solutions, user)
       const done = status === 'Done'
       const opacity = done ? 0.5 : 1
       return (
         <Card
-          key={problem.id}
+          key={id}
           style={{ width: '95%', opacity }}
           onClick={() => this.onClick(index, status)}
         >
@@ -69,7 +84,7 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <span>{problem.title}</span>
+              <span>{title}</span>
             </Card.Header>
             <Card.Meta
               style={{
@@ -78,8 +93,12 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <span>{problem.difficulty}</span>
-              <Author>Posted by {problem.author.name}</Author>
+              <span>{difficulty}</span>
+              <div>
+                <SolveCount><Solve>{solveCount}</Solve> SOLVES</SolveCount>
+                {hasOwnerSolution ? <Status>Answered</Status> : undefined}
+                <Author>Posted by {author.name}</Author>
+              </div>
             </Card.Meta>
             <Card.Description
               style={{
@@ -88,7 +107,7 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <LaTexContainer text={problem.latex || ''} id={problem.id} />
+              <LaTexContainer text={latex || ''} id={id} />
             </Card.Description>
           </Card.Content>
         </Card>

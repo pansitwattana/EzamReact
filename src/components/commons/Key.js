@@ -177,6 +177,7 @@ class KeyComponent extends Component {
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        onClick={(e) => console.log(e)}
         number={number}
         operator={operator.toString()}
         action={action.toString()}
