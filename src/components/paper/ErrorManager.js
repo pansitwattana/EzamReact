@@ -16,7 +16,7 @@ class ErrorManager {
       else if (tag.name === "Differential") {
         isDifferential = true
       }
-      else if (tag.name === 'Kinetics') {
+      else if (tag.subject === 'Physics' || tag.subject === 'Chemical') {
         isKinetic = true
       }
     })

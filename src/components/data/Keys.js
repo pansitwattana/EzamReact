@@ -41,6 +41,7 @@ const Keys = {
   FRAC_EXCLUSIVE: 'FRAC_EXCLUSIVE',
   ENTER: 'Enter',
   EXP: '^',
+  EXP_1: '\\^1',
   EXP_2: '\\^2',
   EXP_3: '\\^3',
   EXP_4: '\\^4',
@@ -49,6 +50,8 @@ const Keys = {
   EXP_7: '\\^7',
   EXP_8: '\\^8',
   EXP_9: '\\^9',
+
+  SUB_1: '\\_1',
   SUB_2: '\\_2',
   SUB_3: '\\_3',
   SUB_4: '\\_4',

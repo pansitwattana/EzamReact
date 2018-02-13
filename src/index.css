@@ -1,9 +1,13 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Kanit', sans-serif;
 }
 
 .mq-editable-field, .mq-math-mode .mq-editable-field {
   border: none !important;
+}
+
+.ui.menu {
+  font-family: 'Kanit', sans-serif;
 }

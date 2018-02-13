@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Icon, Dimmer, Loader, Label, Item, Button, Image } from 'semantic-ui-react'
+import { Icon, Dimmer, Loader, Label, Item, Button, Image, Modal } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import LaTeX from './LaTexContainer'
 // import LaTeX from './LaTeX'
@@ -70,9 +70,12 @@ class ScreenComponent extends Component {
       done,
       loading,
       checked,
+      hasAnswer,
+      userCredit,
       onSubmit,
       onEditSubmit,
       onCheck,
+      onUnlock,
       tags,
       hideButton
     } = this.props
@@ -100,6 +103,7 @@ class ScreenComponent extends Component {
     const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
     return (
       <Screen>
+        
         {loading ? (
           <Dimmer active>
             <Loader content="Loading" />
@@ -125,6 +129,23 @@ class ScreenComponent extends Component {
                     {submitText}  
                     <Icon name='right check' />
                   </Button> */}
+                  {hasAnswer && <Modal
+                    floated="right"
+                    trigger={<Button icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
+                    header='Unlock Solution!'
+                    content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}
+                    actions={[
+                      'Cancel',
+                      { 
+                        key: 'Unlock', 
+                        content: 'Unlock', 
+                        positive: true,
+                        disabled: userCredit < 50,
+                        onClick: onUnlock,
+                      },
+                    ]}
+                  />}
+                  
                 </Item.Extra>
               </Item.Content>
             </Item>
@@ -169,6 +190,7 @@ ScreenComponent.defaultProps = {
   tags: [],
   description: '',
   displayText: '',
+  userCredit: 0,
 }
 
 ScreenComponent.propTypes = {
@@ -176,6 +198,7 @@ ScreenComponent.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   tags: PropTypes.array,
   description: PropTypes.string,
+  userCredit: PropTypes.number,
 }
 
 export default ScreenComponent

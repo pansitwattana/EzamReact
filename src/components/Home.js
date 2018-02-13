@@ -93,7 +93,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Static',
+          title: 'Sound',
           subtitle: 'Basic',
           id: 2,
           count: 0,
@@ -105,7 +105,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Electric',
+          title: 'Electricity',
           subtitle: 'Basic',
           id: 4,
           count: 0,
@@ -117,7 +117,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Work',
+          title: 'Light',
           subtitle: 'Basic',
           id: 6,
           count: 0,
@@ -125,7 +125,7 @@ class Home extends Component {
       ],
       Sciences: [
         {
-          title: 'Pressure',
+          title: 'Gas',
           subtitle: 'Basic',
           id: 1,
           count: 0,

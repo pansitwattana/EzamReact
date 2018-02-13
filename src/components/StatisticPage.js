@@ -59,8 +59,8 @@ const aggregateLastWeek = (datas) => {
 }
 
 const Container = styled.div`
-  width: 96%;
-  margin: 5% 2%;
+  width: 92%;
+  margin: 5% auto;
   height: 100%;
 `
 

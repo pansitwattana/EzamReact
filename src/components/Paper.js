@@ -63,6 +63,7 @@ class PaperComponent extends Component {
     isDone: false,
     solutionId: null,
     checked: false,
+    hasAnswer: false,
     startedAt: new Date(),
   }
 
@@ -71,12 +72,14 @@ class PaperComponent extends Component {
       errorManager = new ErrorManager(problem)
       const keywords = getKeywords(problem.latex)
       console.log('called', { keywords })
+      let hasAnswer = false
       if (problem.solutions.length > 0) {
         console.log(problem.latex)
         console.log(problem.solutions[0].answers)
+        hasAnswer = true
       }
       const hasChecker = errorManager.hasChecker()
-      this.setState({ hasChecker, keywords, checked: !hasChecker })
+      this.setState({ hasChecker, keywords, checked: !hasChecker, hasAnswer })
     }
   }
 
@@ -229,12 +232,18 @@ class PaperComponent extends Component {
       if (corrects) {
         latexMethod = filterMethods.map((method, i) => {
           let newMethod = method
-          if (!corrects[i]) {
-            newMethod.error = true
-            isError = true
-            error = `get error at ${method.text}`
-          } else {
+          const correct = corrects[i]
+          if (correct === null) {
             newMethod.error = false
+          }
+          else {
+            if (!correct) {
+              newMethod.error = true
+              isError = true
+              error = `get error at ${method.text}`
+            } else {
+              newMethod.error = false
+            }
           }
           return newMethod
         })
@@ -309,6 +318,25 @@ class PaperComponent extends Component {
           console.error(error)
         })
       
+    }
+  }
+
+  onUnlock(id, userCredit, userId) {
+    if (userCredit >= 50) {
+      const variables = {
+        id: userId,
+        credit: userCredit - 50
+      }
+      this.setState({ submiting: true })
+      this.props.updateCredit({ variables })
+        .then(res => {
+          this.setState({ submiting: false })
+          this.props.history.replace('/answer', { id })
+        })
+        .catch(error => this.setState({ submiting: false }))
+    }
+    else {
+      console.error('user credit is less than 50')
     }
   }
 
@@ -531,8 +559,11 @@ class PaperComponent extends Component {
     const { length } = this.state.methods
     const itemSize = 40
     if (problem) {
-      const { submiting, keywords, isDone, checked } = this.state
+      const { submiting, keywords, isDone, checked, hasAnswer } = this.state
       const { latex, image, description, id, tags } = problem
+      const { user } = this.props.data
+      const userCredit = user ? user.credit : 0
+      const userId = user ? user.id : 0
       const tagNames = tags.map(tag => tag.name)
       let imageUrl = null
       if (image) { imageUrl = image.url }
@@ -550,9 +581,12 @@ class PaperComponent extends Component {
                 loading={submiting}
                 checked={checked}
                 tags={tagNames}
+                userCredit={userCredit}
+                hasAnswer={hasAnswer}
                 onSubmit={() => this.submitAnswer(id)}
                 onEditSubmit={() => this.submitEdit(id)}
                 onCheck={() => this.onCheck(id)}
+                onUnlock={() => this.onUnlock(id, userCredit, userId)}
               />
               <VirtualList
                 width="100%"
@@ -615,6 +649,17 @@ const updateExperience = gql`
   }
 `
 
+const updateCredit = gql`
+  mutation($id: ID!, $credit: Int!) {
+    updateUser(
+      id: $id,
+      credit: $credit
+    ) {
+      credit
+    }
+  }
+`
+
 const updateSolution = gql`
   mutation($answers: [SolutionanswersAnswer!]!, $solutionId: ID!) {
     updateSolution(
@@ -647,6 +692,7 @@ const postQuery = gql`
       }
       tags {
         name
+        subject
       }
       solutions(filter: {
         author: {
@@ -670,7 +716,9 @@ mutation($id: ID!) {
 }
 `
 
-const PaperWithUpdateExp = graphql(updateExperience, { name: 'updateExperience' })(PaperComponent)
+const PaperWithUpdateCredit = graphql(updateCredit, { name: 'updateCredit' })(PaperComponent)
+
+const PaperWithUpdateExp = graphql(updateExperience, { name: 'updateExperience' })(PaperWithUpdateCredit)
 
 const PaperWithMutation = graphql(submitSolutions, { name: 'submitSolutions' })(PaperWithUpdateExp)
 

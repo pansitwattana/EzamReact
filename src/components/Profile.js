@@ -14,7 +14,7 @@ const Profile = ({ userQuery }) => {
     return <Error message={'not logged in'} />
   }
 
-  const { credit, experience } = user
+  const { credit, experience, name, email } = user
   const level = Math.ceil(experience / 1000) + 1
 
 
@@ -23,9 +23,9 @@ const Profile = ({ userQuery }) => {
       <Card style={{ width: '100%', display: 'flex' }}>
         <Image style={{ width: '200px', alignSelf: 'center' }} src="/images/user_account_profile_avatar_person_student_male-512.png" />
         <Card.Content>
-          <Card.Header>Pansit Wattanaprasobsuk</Card.Header>
+          <Card.Header>{name}</Card.Header>
           <Card.Meta>Joined in 2016</Card.Meta>
-          <Card.Description>Daniel is a comedian living in Nashville.</Card.Description>
+          <Card.Description>{email}</Card.Description>
         </Card.Content>
         <Card.Content extra>
           <a>
@@ -68,6 +68,8 @@ const userQuery = gql`
       id
       credit
       experience
+      name
+      email
     }
   }
 `

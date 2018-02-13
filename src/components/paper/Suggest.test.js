@@ -96,12 +96,12 @@ test('Physcis falling', () => {
   expect(words).toEqual(['8.6', '10'])
 })
 
-test('Physcis Formular', () => {
-  const latex = 's=ut+\\frac{1}{2}at^2'
-  const keywords = getKeywords(latex)
-  const words = keywords.map(key => key.value)
-  expect(words).toEqual(['s', 'u', 't', 'a', 't'])
-})
+// test('Physcis Formular', () => {
+//   const latex = 's=ut+\\frac{1}{2}at^2'
+//   const keywords = getKeywords(latex)
+//   const words = keywords.map(key => key.value)
+//   expect(words).toEqual(['s', 'u', 't', 'a', 't'])
+// })
 
 
 // test('find keywords \\lim_{x\\to2}f(x)=5', () => {

@@ -55,7 +55,11 @@ const checkValid = (math) => {
   return Parser(math) !== null
 }
 
-const getKeywords = (text) => {
+const getKeywords = (text = '') => {
+  if (text === null) {
+    return []
+  }
+
   if (text.length < 80) {
     let terms = []
     const math = Parser(text)
@@ -81,7 +85,6 @@ const getKeywords = (text) => {
     if (keywords) {
       let removeNoises = keywords.map(keyword => {
         const splitKeyword = keyword.split(' ')
-        let keywordsSplit = keyword.split(' ')
         const keywordsFilter = splitKeyword.filter(text => !text.match(/[a-zA-Z=]+/))
         // const keywordsFilter = splitKeyword.filter(text => /[^a-zA-Z=]+$/.test(text))
         return keywordsFilter.join('')

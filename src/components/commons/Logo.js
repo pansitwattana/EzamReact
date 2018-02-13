@@ -20,6 +20,7 @@ const NavBar = styled.div`
 
 const Logo = styled.img`
   height: 50px;
+  cursor: pointer;
 `
 
 const Profile = styled.img`

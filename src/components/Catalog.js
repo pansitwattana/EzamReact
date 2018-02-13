@@ -31,7 +31,7 @@ class Catalog extends Component {
         let solve2 = b.solutions.length
         return solve2 - solve1
       })
-    } else if (filter === "Owner's Answer") {
+    } else if (filter === "Answer") {
       filterPosts = filterPosts.filter(({ author, solutions }) => solutions.filter(solution => solution.author.id === author.id).length > 0)
     } else if (filter === "Haven't Done" && user) {
       filterPosts = filterPosts.filter(({ solutions }) => solutions.filter(({ author }) => author.id === user.id).length === 0)
@@ -64,7 +64,7 @@ class Catalog extends Component {
           <Dropdown style={{ padding: '0px 5px'}} text={this.state.filter} >
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => this.setState({ filter: 'Most Solved' })} text='Most Solved' />
-              <Dropdown.Item onClick={() => this.setState({ filter: "Owner's Answer" })} text="Answered" />
+              <Dropdown.Item onClick={() => this.setState({ filter: "Answer" })} text="Answered" />
               <Dropdown.Item onClick={() => this.setState({ filter: "Haven't Done" })} text="Haven't Done" />
               <Dropdown.Item onClick={() => this.setState({ filter: 'Recently' })} text='Recently' />
               <Dropdown.Item onClick={() => this.setState({ filter: 'No Answer' })} text='No Answer' />

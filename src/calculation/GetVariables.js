@@ -15,6 +15,7 @@ export default (equation) => {
     return variables.indexOf(item) === pos;
   })
 
+  const lowerCase = uniqueVars.map(variable => variable.toLowerCase())
   // console.log({ variables })
-  return uniqueVars
+  return lowerCase
 }

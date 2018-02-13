@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Keys } from '../data/Keys'
 
 const Key = styled.div`
-  background-color: #ffffff;
+  background-color: ${props => props.backgroundColor};
   display: table-cell;
   vertical-align: ${props => props.align};
   text-align: center;
@@ -133,11 +133,16 @@ class KeyComponent extends Component {
     let action = false
     let padding = '0px'
     let backgroundColor = 'white'
+    let keyColor = 'white'
     let borderRadius = '0px'
     let border = ''
     let color = '#555555'
     if (keyType === 'number') {
       number = true
+      if (/^\d+$/.test(keyValue)) {
+        keyColor = '#efefef'
+        backgroundColor = keyColor
+      }
     } else if (keyType === 'operator') {
       operator = true
       borderRadius = '20px'
@@ -183,6 +188,7 @@ class KeyComponent extends Component {
         action={action.toString()}
         width={width}
         align={align}
+        backgroundColor={keyColor}
       >
         <Operation
           operator={operator.toString()}

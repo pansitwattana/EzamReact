@@ -13,14 +13,14 @@ const Math = {
     [Keys.LOG_2, '<=', '>=', null, Keys.EXP, Keys.BACKSPACE],
     [null, Keys.COS, Keys.SUB_7, Keys.SUB_8, Keys.SUB_9, Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, Keys.SUB_4, Keys.SUB_5, Keys.SUB_6, Keys.TIMES],
-    [Keys.EXP_3, 'y', null, Keys.SUB_2, Keys.SUB_3, Keys.MINUS],
+    [Keys.EXP_3, 'y', Keys.SUB_1, Keys.SUB_2, Keys.SUB_3, Keys.MINUS],
     ['[', ']', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   up: [
     [Keys.LN, null, null, null, Keys.EXP, Keys.BACKSPACE],
     [Keys.INT, Keys.COS, Keys.EXP_7, Keys.EXP_8, Keys.EXP_9, Keys.DIVIDE],
     [Keys.DIFF, Keys.SQRT, Keys.EXP_4, Keys.EXP_5, Keys.EXP_6, Keys.TIMES],
-    [Keys.EXP_4, 'z', null, Keys.EXP_2, Keys.EXP_3, Keys.MINUS],
+    [Keys.EXP_4, 'z', Keys.EXP_1, Keys.EXP_2, Keys.EXP_3, Keys.MINUS],
     ['{', '}', ',', '0', Keys.NOTEQUAL, Keys.PLUS],
   ],
   symbol: [

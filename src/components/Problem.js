@@ -5,13 +5,11 @@ import { Button, Icon, Input, Image, Dimmer, Loader } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 // import { Math } from './data/Keyboards'
-import math from './paper/MathQuill'
 import { KeyAction, Actions } from './data/MathJaxKeys'
 import TeX from './commons/TeX'
 import Keyboard from './commons/Keyboard'
 // import MathInput from './commons/Input'
 import Options from './commons/Options'
-import Header from './commons/Header'
 import TitleSelect from './problem/TitleSelect'
 
 const TextArea = styled.textarea`
@@ -196,7 +194,7 @@ class Problem extends Component {
       imageId: null
     }
 
-    let image = null
+    // let image = null
     
     if (files) {
       this.uploadFile(files)
@@ -252,7 +250,7 @@ class Problem extends Component {
       this.setState({ latex: newLatex, textCursor: newCursorPosition })
     }
     else {
-      const { latex, showKeyboard, cursorDiff, textCursor } = this.state
+      const { latex, showKeyboard, textCursor } = this.state
       if (cursorPosition === 0) {
         cursorPosition = textCursor
         this.textInput.setSelectionRange(cursorPosition, cursorPosition)
@@ -330,7 +328,6 @@ class Problem extends Component {
           ) : (
           <div>
             <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
-              <Header text="Post" />
               <TitleSelect />
               <Input
                 style={{ margin: '10px', width: '100%' }}
