@@ -37,7 +37,7 @@ const aggregateSubject = (solutions) => {
 
 const aggregateLastWeek = (datas) => {
   const lastWeek = datas.filter(data => dayDiffer(new Date(data.createdAt), new Date()) <= 7)
-  let now = new Date();
+  // let now = new Date();
   
   let counts = []
   let labels = []

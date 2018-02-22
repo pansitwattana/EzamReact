@@ -2,7 +2,6 @@ import React from 'react'
 import { Card, Icon, Image } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 import Error from './commons/Error'
-import Header from './commons/Header'
 
 const Profile = ({ userQuery }) => {
   const { user, loading, error } = userQuery

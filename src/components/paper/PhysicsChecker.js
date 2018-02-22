@@ -11,8 +11,8 @@ class PhysicsChecker extends ErrorChecker {
     if (solution) {
       const answers = solution.answers
       if (answers.length > 0) {
-        const formular = answers[0].latex
-        
+        let formular = answers[0].latex
+        formular = formular.toLowerCase()
         const variables = getVariables(formular)
         if (variables === null || variables.length === 0) {
           this.status = status.FAIL
@@ -29,8 +29,9 @@ class PhysicsChecker extends ErrorChecker {
         this.keyValue = this.calculateKeyValue(formular, key, values)
         if (this.keyValue === null) {
           this.status = status.FAIL
+        } else {
+          this.status = status.OK
         }
-        this.status = status.OK
       }
     }
     else {
@@ -47,7 +48,8 @@ class PhysicsChecker extends ErrorChecker {
     const { key, keyValue, values } = this
 
     if (index === 0) {
-      const value = this.calculateKeyValue(method, key, values)
+      const methodLower = method.toLowerCase()
+      const value = this.calculateKeyValue(methodLower, key, values)
       // console.log(value, keyValue)
       if (value === null || keyValue === null) {
         return null
@@ -62,7 +64,7 @@ class PhysicsChecker extends ErrorChecker {
       // return true
     }
     else {
-      const { methodVariables, answer } = this
+      const { answer } = this
       const variables = getVariables(method)
       if (variables.length > 1) {
         return null

@@ -7,7 +7,7 @@ import uuid from 'uuid'
 import deleteAnswerMutation from '../graph/deleteAnswer'
 import deleteCommentMutation from '../graph/deleteComment'
 import LaTex from './commons/LaTeX'
-import Header from './commons/Header'
+// import Header from './commons/Header'
 import Error from './commons/Error'
 import Screen from './commons/Screen'
 import CommentList from './commons/CommentList'
@@ -220,7 +220,7 @@ class Answer extends Component {
     const { user } = this.props.userQuery
     if (!user) { return }
 
-    const { rateCount } = solution
+    // const { rateCount } = solution
     const userVotes = user.votes.map(vote => vote.id)
 
     solution.rate = !solution.rate
@@ -376,7 +376,7 @@ class Answer extends Component {
       const isAuthor = solutionCreatorId === userId
       const isOwner = solutionCreatorId === ownerId
       console.log({ isAuthor, isOwner, index })
-      const { id, comments, _votedMeta, author, answers } = solution
+      const { id, comments, author, answers } = solution
       const { rateCount, rate, comment } = state
       const answerHeader = isAuthor ? (
         <div>

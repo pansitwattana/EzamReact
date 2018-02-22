@@ -43,7 +43,7 @@ const Footer = styled.div`
   color: #fff; */
   position: absolute;
   right: 0px;
-  bottom: ${prop => prop.showKeyboard ? 45 : 0}%;
+  bottom: ${prop => prop.showKeyboard ? 45 : 0}'%';
   padding: 15px;
   /* border-radius: 30px;
   text-align: center;
@@ -114,7 +114,8 @@ class Problem extends Component {
 
     const imageFile = files[0];
     const reader = new FileReader();
-    const url = reader.readAsDataURL(imageFile);
+    // const url = reader.readAsDataURL(imageFile);
+    reader.readAsDataURL(imageFile);
 
     reader.onloadend = () => {
       this.setState({
@@ -225,7 +226,8 @@ class Problem extends Component {
     let cursorPosition = this.textInput.selectionStart
     const action = KeyAction(key)
     if (action === Actions.DELETE) {
-      const prevLatex = this.latexs.pop() || ''
+      // const prevLatex = this.latexs.pop() || ''
+      this.latexs.pop()
       const { textCursor } = this.state
       if (cursorPosition === 0) {
         cursorPosition = textCursor

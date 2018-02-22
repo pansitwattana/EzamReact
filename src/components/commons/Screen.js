@@ -20,13 +20,13 @@ const Screen = styled.div`
     0 3px 1px -2px rgba(0, 0, 0, 0.24), 0 1px 10px 0 rgba(0, 0, 0, 0.1);
 `
 
-const LeftContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  padding: 0px 10px;
-`
+// const LeftContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   cursor: pointer;
+//   padding: 0px 10px;
+// `
 
 // const Submit = styled.div`
 //   font-size: 30px;
@@ -39,16 +39,16 @@ const LeftContainer = styled.div`
 //   `};
 // `
 
-const Text = styled.span`
-  font-size: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  ${props =>
-    props.done &&
-    `
-    color: #cbf442;
-  `};
-`
+// const Text = styled.span`
+//   font-size: 12px;
+//   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+//   color: #ffffff;
+//   ${props =>
+//     props.done &&
+//     `
+//     color: #cbf442;
+//   `};
+// `
 
 const ProblemContainer = styled.div`
   display: flex;
@@ -117,10 +117,22 @@ class ScreenComponent extends Component {
                 <Item.Description>
                   <ProblemContainer>
                     {display}
-                    {!hideButton ? (<Button style={{ 'max-height': '30px'}} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
-                      {submitText}  
-                      <Icon name='right check' />
-                    </Button>) : undefined}
+                    {hasAnswer && <Modal
+                      floated="right"
+                      trigger={<Button icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
+                      header='Unlock Solution!'
+                      content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}
+                      actions={[
+                        'Cancel',
+                        { 
+                          key: 'Unlock', 
+                          content: 'Unlock', 
+                          positive: true,
+                          disabled: userCredit < 50,
+                          onClick: onUnlock,
+                        },
+                      ]}
+                    />}
                   </ProblemContainer>
                 </Item.Description>
                 <Item.Extra>
@@ -129,23 +141,10 @@ class ScreenComponent extends Component {
                     {submitText}  
                     <Icon name='right check' />
                   </Button> */}
-                  {hasAnswer && <Modal
-                    floated="right"
-                    trigger={<Button icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
-                    header='Unlock Solution!'
-                    content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}
-                    actions={[
-                      'Cancel',
-                      { 
-                        key: 'Unlock', 
-                        content: 'Unlock', 
-                        positive: true,
-                        disabled: userCredit < 50,
-                        onClick: onUnlock,
-                      },
-                    ]}
-                  />}
-                  
+                  {!hideButton ? (<Button style={{ 'max-height': '30px'}} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                    {submitText}  
+                    <Icon name='right check' />
+                  </Button>) : undefined}
                 </Item.Extra>
               </Item.Content>
             </Item>

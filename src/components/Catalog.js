@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { gql, graphql } from 'react-apollo'
 import styled from 'styled-components'
-import { Card, Dropdown } from 'semantic-ui-react'
-import Search from './commons/Search'
+import { Card, Dropdown, Input } from 'semantic-ui-react'
 import PostContainer from './commons/PostContainer'
 import Error from './commons/Error'
 
@@ -56,11 +55,11 @@ class Catalog extends Component {
 
   render() {
     const { title } = this.props.match.params
-
+    const loading = this.props.data.loading
     return (
       <div>
         <Header>
-          <Search />
+          <Input loading={loading} placeholder='Search...' />
           <Dropdown style={{ padding: '0px 5px'}} text={this.state.filter} >
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => this.setState({ filter: 'Most Solved' })} text='Most Solved' />

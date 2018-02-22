@@ -10,7 +10,6 @@ import { Input, Button } from 'semantic-ui-react'
 import { graphql, gql } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Header from './commons/Header'
-import Logo from './commons/Logo'
 
 const Form = styled.div`
   display: flex;

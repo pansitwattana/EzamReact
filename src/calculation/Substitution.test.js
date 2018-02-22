@@ -140,3 +140,12 @@ test('Eval Physics Formular ut+\\frac{1}{2}at^2', () => {
 
   expect(answer.toString()).toMatchSnapshot()
 })
+
+test('Eval \\frac{v}{i}', () => {
+  const answer = Substitution('\\frac{v}{i}', { 
+    v: '10.529314230564932',
+    i: '3.468027260429826',
+  })
+
+  expect(answer.toString()).toMatchSnapshot()
+})

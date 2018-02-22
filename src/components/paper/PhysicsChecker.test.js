@@ -116,11 +116,24 @@ test('Formular of V=IR method check2', () => {
     }]
   }
   const checker = new PhysicsChecker(problem)
+  expect(checker.isCorrect('V=IR', 0)).toBe(true)
+  expect(checker.isCorrect('v=ir', 0)).toBe(true)
+  expect(checker.isCorrect('\\frac{v}{i}=r', 0)).toBe(true)
+})
+
+test('Formular of V=IR check methods', () => {
+  const problem = {
+    solutions: [{
+      answers: [{ latex: 'V=IR' }, { latex: '25=4+4*10*s' }, { latex: '25=4+40\\cdot s' }, { latex: 's=21/40' }]
+    }]
+  }
+  const checker = new PhysicsChecker(problem)
   const solutions = [
     'V=IR', 
-    'v=ir',
-    '\\frac{v}{i}=r'
+    '50=5*R',
+    'R=50/5',
+    'R=10',
   ]
   
-  expect(checker.checkAll(solutions)).toEqual([true, true, true])
+  expect(checker.checkAll(solutions)).toEqual([true, true, true, true])
 })

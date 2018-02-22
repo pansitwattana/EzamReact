@@ -100,11 +100,11 @@ class PaperComponent extends Component {
   }
 
   componentDidMount() {
-    const isLoadFromAnswer = this.loadMethod()
+    this.loadMethod()
     this.initial(this.props.postQuery.Post)
-    const { line } = this.state
-    const { methods } = this.state
-    const method = methods[line]
+    // const { line } = this.state
+    // const { methods } = this.state
+    // const method = methods[line]
     // method.focus = true
     // math.focus(method.id)
     // if (isLoadFromAnswer) {
@@ -204,7 +204,7 @@ class PaperComponent extends Component {
       return newMethod
     })
     
-    const filterMethods = methods.filter(m => m.text != '')
+    const filterMethods = methods.filter(m => m.text !== '')
     
     const solutions = filterMethods.map((method) => {
       return method.text
@@ -225,7 +225,7 @@ class PaperComponent extends Component {
       }
     }
 
-    let isError = false
+    // let isError = false
     if (hasChecker) {
       const corrects = errorManager.check(solutions)
       console.log('Error Detection', corrects)
@@ -239,7 +239,7 @@ class PaperComponent extends Component {
           else {
             if (!correct) {
               newMethod.error = true
-              isError = true
+              // isError = true
               error = `get error at ${method.text}`
             } else {
               newMethod.error = false
@@ -449,7 +449,7 @@ class PaperComponent extends Component {
         if (latex) {
           const newKeywords = getSolutionKeywords(latex, keywords)
           const method = {
-            test: '',
+            text: '',
             id: uuid(),
             focus: true,
             error: false,

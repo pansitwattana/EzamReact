@@ -22,7 +22,7 @@ const Keys = {
   MINUS: '-',
   PLUSMINUS: '\\pm',
   NEGATIVE: 'NEGATIVE',
-  TIMES: '\cdot',
+  TIMES: '\\cdot',
   DIVIDE: '/',
   DECIMAL: 'DECIMAL',
   DOT: '.',

@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Eval \\frac{v}{i} 1`] = `"can not parse to algebra.js ((v)/(i))"`;
+
 exports[`Eval Physics Formular 2as 1`] = `"183366456546670880/3552713678800501"`;
 
 exports[`Eval Physics Formular u*t+\\frac{1}{2}a*t^2 1`] = `"202284915020154900/2489206111144457"`;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Icon, Image, Progress } from 'semantic-ui-react'
+import { Card, Icon, Progress } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { gql, graphql } from 'react-apollo'
 import Error from './commons/Error'

@@ -35,10 +35,10 @@ const Drawer = styled.div`
   justify-content: center;
 `
 
-const ProfileContainer = styled.div`
-  display: flex;
-  align-items: center;
-`
+// const ProfileContainer = styled.div`
+//   display: flex;
+//   align-items: center;
+// `
 
 
    
@@ -132,7 +132,7 @@ class SidebarMenu extends Component {
 
 SidebarMenu.propTypes = {
   history: propTypes.object.isRequired,
-  children: propTypes.object.isRequired,
+  children: propTypes.arrayOf(propTypes.object).isRequired,
 }
 
 export default withRouter(SidebarMenu)
