@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { gql, graphql } from 'react-apollo'
+import fuzzy from 'fuzzy'
 import VirtualList from 'react-tiny-virtual-list'
 import PropTypes from 'prop-types'
 import uuid from 'uuid'
@@ -59,7 +60,10 @@ class PaperComponent extends Component {
     line: 0,
     submiting: false,
     keywords: [],
+    filterKeywords: [],
+    searchKeyword: '',
     hasChecker: false,
+    errorCount: 0,
     isDone: false,
     solutionId: null,
     checked: false,
@@ -342,6 +346,7 @@ class PaperComponent extends Component {
 
   onCheck(id) {
     const { methods, problem, hasChecker } = this.state
+    let { errorCount } = this.state
     let result = this.validatation(methods, problem, hasChecker)
     
     if (!result) {
@@ -350,9 +355,9 @@ class PaperComponent extends Component {
     }
 
     const { latexMethod, error } = result
-
     if (error) {
-      this.setState({ methods: latexMethod, checked: false })
+      errorCount += 1
+      this.setState({ methods: latexMethod, checked: false, errorCount })
       console.log(error)
       return
     }
@@ -362,7 +367,7 @@ class PaperComponent extends Component {
 
   submitAnswer(id) {
     this.setState({ submiting: true })
-    const { methods, problem, hasChecker, startedAt } = this.state
+    const { methods, problem, hasChecker, startedAt, errorCount } = this.state
     let result = this.validatation(methods, problem, hasChecker)
     
     if (!result) {
@@ -388,6 +393,7 @@ class PaperComponent extends Component {
         userId: user.id,
         answers,
         startedAt,
+        errorCount,
       }
 
       const newUserExp = {
@@ -458,7 +464,7 @@ class PaperComponent extends Component {
           methods[line].focus = false
           methods.splice(line + 1, 0, method)
           this.loadedMath = false
-          this.setState({ methods, line: line + 1, checked, keywords: newKeywords }, () => {
+          this.setState({ methods, line: line + 1, checked, keywords: newKeywords, filterKeywords: [], searchKeyword: '' }, () => {
             math.focus(method.id)
             resolve(method.id)
           })
@@ -487,13 +493,31 @@ class PaperComponent extends Component {
           resolve(methods)
         })
       } else {
-        const methods = this.state.methods.map((method) => {
+        const { methods, keywords } = this.state
+        const arrKeywords = keywords.map(keyword => keyword.value)
+        let { searchKeyword } = this.state
+        if (value !== 'Backspace') {
+          searchKeyword += value
+        } else {
+          if (searchKeyword.length > 0)
+            searchKeyword = searchKeyword.slice(0, searchKeyword.length - 1)
+        }
+        
+        let results = fuzzy.filter(searchKeyword, arrKeywords)
+        let matches = results.map((el, index) => (
+          {
+            id: uuid(),
+            value: el.string,
+          }
+        ));
+        
+        const newMethods = methods.map((method) => {
           const methodReset = method
           methodReset.error = false
           return methodReset
         })
-        this.setState({ methods, checked }, () => {
-          resolve(methods)
+        this.setState({ methods: newMethods, checked, searchKeyword, filterKeywords: matches }, () => {
+          resolve(newMethods)
         })
       }
     })
@@ -559,9 +583,10 @@ class PaperComponent extends Component {
     const { length } = this.state.methods
     const itemSize = 40
     if (problem) {
-      const { submiting, keywords, isDone, checked, hasAnswer } = this.state
+      const { submiting, keywords, filterKeywords, isDone, checked, hasAnswer } = this.state
       const { latex, image, description, id, tags } = problem
       const { user } = this.props.data
+      const keywordsToShow = filterKeywords.length > 0 ? filterKeywords : keywords
       const userCredit = user ? user.credit : 0
       const userId = user ? user.id : 0
       const tagNames = tags.map(tag => tag.name)
@@ -613,7 +638,7 @@ class PaperComponent extends Component {
           <Keyboard
             onPress={key => this.handleKeyboard(key)}
             onSuggestionPress={key => this.handleSuggestion(key)}
-            keywords={keywords}
+            keywords={keywordsToShow}
           />
         </div>
       )
@@ -661,10 +686,11 @@ const updateCredit = gql`
 `
 
 const updateSolution = gql`
-  mutation($answers: [SolutionanswersAnswer!]!, $solutionId: ID!) {
+  mutation($answers: [SolutionanswersAnswer!]!, $solutionId: ID!, $errorCount: Int) {
     updateSolution(
       id: $solutionId
       answers: $answers
+      errorCount: $errorCount
     ) {
       id
     }

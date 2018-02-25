@@ -75,7 +75,7 @@ test('Formular of s=ut+\frac{1}{2}at^2 method check', () => {
   expect(checker.checkAll(solutions)).toEqual([true, true, true, false])
 })
 
-test('Formular of s=ut+\frac{1}{2}at^2 method check2', () => {
+test('Formular of s=ut+\\frac{1}{2}at^2 method check2', () => {
   const problem = {
     solutions: [{
       answers: [{ latex: 's=ut+\\frac{1}{2}at^2' }, { latex: '25=4+4*10*s' }, { latex: '25=4+40\\cdot s' }, { latex: 's=21/40' }]

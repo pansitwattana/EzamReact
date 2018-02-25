@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Icon, Dimmer, Loader, Label, Item, Button, Image, Modal } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
+import DownButton from 'react-icons/lib/md/keyboard-arrow-down'
+import UpButton from 'react-icons/lib/md/keyboard-arrow-up'
 import LaTeX from './LaTexContainer'
 // import LaTeX from './LaTeX'
 
@@ -49,6 +51,10 @@ const Screen = styled.div`
 //     color: #cbf442;
 //   `};
 // `
+const ToggleButton = styled.img`
+  width: 20px;
+  height: 10px;
+`
 
 const ProblemContainer = styled.div`
   display: flex;
@@ -58,7 +64,8 @@ const ProblemContainer = styled.div`
 class ScreenComponent extends Component {
 
   state = {
-    imageOpen: true
+    imageOpen: true,
+    show: true,
   }
 
   render() {
@@ -79,14 +86,14 @@ class ScreenComponent extends Component {
       tags,
       hideButton
     } = this.props
-    const { imageOpen } = this.state
+    const { imageOpen, show } = this.state
     const toggleIcon = imageOpen ? 'angle up' : 'angle down'
     const imageToggle = imageUrl ? <Button onClick={() => this.setState({ imageOpen: !imageOpen })} style={{ width: '30%', height: '15px', alignSelf: 'center' }} size="tiny" basic icon={toggleIcon} /> : undefined
     const imageDisplay = imageUrl && imageOpen ? (
       <Item size="tiny" style={{ margin: '0 30px' }}>
         <Image src={imageUrl} style={{ 'max-height': '120px', margin: 'auto' }} />
       </Item>) : undefined
-    const display = <LaTeX text={description + " " + displayText} id={id} />
+    const displayLatex = <LaTeX text={description + " " + displayText} id={id} />
     let submitText = 'Check'
     let onButtonClick = onCheck
     let highlight = false
@@ -103,23 +110,22 @@ class ScreenComponent extends Component {
     const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
     return (
       <Screen>
-        
         {loading ? (
           <Dimmer active>
             <Loader content="Loading" />
           </Dimmer>
         ) : (
-          <Item.Group style={{ width: '100%', height: '100%' }}>
-            <Item style={{ margin: '0px' }}>
+          <Item.Group style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            {show && <Item style={{ margin: '0px' }}>
               {imageDisplay}
               {imageToggle}
               <Item.Content style={{ paddingTop: '5px' }}>
-                <Item.Description>
+                <Item.Description style={{ marginTop: '0' }}>
                   <ProblemContainer>
-                    {display}
+                    {displayLatex}
                     {hasAnswer && <Modal
                       floated="right"
-                      trigger={<Button icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
+                      trigger={<Button style={{ maxHeight: '30px' }} icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
                       header='Unlock Solution!'
                       content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}
                       actions={[
@@ -141,13 +147,16 @@ class ScreenComponent extends Component {
                     {submitText}  
                     <Icon name='right check' />
                   </Button> */}
-                  {!hideButton ? (<Button style={{ 'max-height': '30px'}} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+                  {!hideButton ? (<Button style={{ maxHeight: '30px' }} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
                     {submitText}  
                     <Icon name='right check' />
                   </Button>) : undefined}
                 </Item.Extra>
               </Item.Content>
-            </Item>
+            </Item>}
+            <div style={{ width: 25, alignSelf: 'center' }} onClick={() => this.setState({ show: !show })}>
+              {show ? <UpButton /> : <DownButton />}
+            </div>
           </Item.Group>
         )}
       </Screen>
