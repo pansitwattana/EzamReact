@@ -108,7 +108,7 @@ class ScreenComponent extends Component {
       onButtonClick = onSubmit
       highlight = true
     }
-    const labels = tags.map(tag => <Label onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
+    const labels = tags.map(tag => <Label style={{ cursor: 'pointer' }} onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
     return (
       <Screen>
         {loading ? (

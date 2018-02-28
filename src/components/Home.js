@@ -79,7 +79,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Trigonometry',
+          title: 'O-NET ม.3',
           subtitle: 'Basic',
           id: 9,
           count: 0,

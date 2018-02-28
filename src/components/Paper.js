@@ -20,17 +20,21 @@ import Simplifier from '../calculation/Simplifier';
 
 const { getKeywords, getSolutionKeywords } = suggest
 let errorManager = null
+
 const Wrapper = styled.div`
   background: white;
-  height: 100%;
+  height: 57%;
   position: relative;
-  min-height: 100%;
 `
 
-const Paper = styled.div`overflow: auto;`
+const Paper = styled.div`
+  overflow: auto;
+  height: 100%;
+`
 
 const List = styled.div`
   margin: 10px;
+  min-height: 20px;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 3px 1px -2px rgba(0, 0, 0, 0.1),
@@ -451,6 +455,7 @@ class PaperComponent extends Component {
           reject('line is more than 9')
         }
         const { methods, keywords } = this.state
+        const methodLength = methods.length
         const latex = math.getLaTeX(methods[this.state.line].id)
         if (latex) {
           const newKeywords = getSolutionKeywords(latex, keywords)
@@ -466,6 +471,14 @@ class PaperComponent extends Component {
           this.loadedMath = false
           this.setState({ methods, line: line + 1, checked, keywords: newKeywords, filterKeywords: [], searchKeyword: '' }, () => {
             math.focus(method.id)
+            // setTimeout(() => {
+            if (methodLength === line + 1) {
+              let inputsRef = this.inputsRef
+              if (inputsRef) {
+                inputsRef.scrollIntoView();
+              }
+            }
+            // }, 100)
             resolve(method.id)
           })
         }
@@ -475,7 +488,11 @@ class PaperComponent extends Component {
           resolve()
         }
         const { line } = this.state
-        methods = methods.filter((item, index) => index !== line)
+        if (line > 1) {
+          methods = methods.filter((item, index) => index !== line)
+        } else {
+          math.setLatex(methods[line].id, '')
+        }
         this.setState({
           methods,
           line: line > 0 ? line - 1 : line,
@@ -485,8 +502,8 @@ class PaperComponent extends Component {
         })
       } else if (action === Actions.DELETE) {
         console.log('clear all')
-        let { methods } = this.state      
-        let method = methods[this.state.line]
+        let { methods, line } = this.state
+        let method = methods[line]
         method.text = ''
         math.setLatex(method.id, '')
         this.setState({ methods }, () => {
@@ -583,7 +600,8 @@ class PaperComponent extends Component {
     const { length } = this.state.methods
     const itemSize = 40
     if (problem) {
-      const { submiting, keywords, filterKeywords, isDone, checked, hasAnswer } = this.state
+      const { submiting, keywords, filterKeywords, isDone, checked, hasAnswer, methods } = this.state
+      const methodLength = methods.length
       const { latex, image, description, id, tags } = problem
       const { user } = this.props.data
       const keywordsToShow = filterKeywords.length > 0 ? filterKeywords : keywords
@@ -593,11 +611,12 @@ class PaperComponent extends Component {
       let imageUrl = null
       if (image) { imageUrl = image.url }
       return (
-        <div>
-          <Wrapper>
+        <div style={{ height: 'calc(100% - 50px)' }}>
+          <Wrapper innerRef={(paper) => this.paper = paper}>
             <Paper>
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}
               <Screen
+                ref={(screenRef) => this.screenRef = screenRef}
                 displayText={latex || ''}
                 description={description}
                 imageUrl={imageUrl}
@@ -614,9 +633,24 @@ class PaperComponent extends Component {
                 onUnlock={() => this.onUnlock(id, userCredit, userId)}
                 onTagClick={(tag) => this.props.history.push(`/catalog/${tag}`)}
               />
-              <VirtualList
+              <div>
+                {methods.map((method, index) =>
+                  <List
+                    innerRef={(inputsRef) => { if (index === methodLength - 1) this.inputsRef = inputsRef}}
+                    onClick={(event) => this.onInputTouch(index, event)}
+                    key={method.id}
+                  >
+                    <Input
+                      focus={method.focus}
+                      id={method.id}
+                      error={method.error}
+                      canSimplify={true}
+                      simplify={() => this.onSimplify(index)}
+                    />
+                  </List>)}
+              </div>
+              {/* <VirtualList
                 width="100%"
-                height={350}
                 itemCount={length}
                 itemSize={itemSize} // Also supports variable heights (array or function getter)
                 renderItem={({ index }) => (
@@ -633,7 +667,7 @@ class PaperComponent extends Component {
                     />
                   </List>
                 )}
-              />
+              /> */}
             </Paper>
           </Wrapper>
           <Keyboard

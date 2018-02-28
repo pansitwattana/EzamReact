@@ -64,8 +64,20 @@ class KeyComponent extends Component {
     status: 'none',
   }
 
+  onLongPress() {
+    const {
+      onPress, keyValue
+    } = this.props
+
+    if (keyValue === Keys.BACKSPACE) {
+      this.setState({ status: 'none' })
+      onPress(Keys.CLEAR)
+    }
+  }
+
   onTouchStart = (event) => {
     // console.log('start event')
+    this.buttonPressTimer = setTimeout(() => this.onLongPress(), 1200);
     const { touches } = event
     if (touches.length > 0) {
       this.setState({
@@ -98,7 +110,7 @@ class KeyComponent extends Component {
     const { status } = this.state
     // console.log(status)
     this.eventFire(status)
-
+    clearTimeout(this.buttonPressTimer);
     this.setState({
       pos: { x: 0, y: 0 },
       status: 'none',
@@ -182,7 +194,6 @@ class KeyComponent extends Component {
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
-        onClick={(e) => console.log(e)}
         number={number}
         operator={operator.toString()}
         action={action.toString()}

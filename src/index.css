@@ -16,6 +16,15 @@ body {
   font-family: 'Kanit', sans-serif;
 }
 
+.header {
+  font-family: 'Kanit', sans-serif !important;
+}
+
 input {
   font-family: 'Kanit', sans-serif;
+}
+
+body ::-webkit-scrollbar {
+  width: 0px;
+  height: 1px;
 }

@@ -28,8 +28,10 @@ const KeyboardRow = styled.div`
 
 const Suggestion = styled.div`
   height: 10%;
-  width: 95%;
-  overflow: auto;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space:nowrap;
 `
 class KeyboardComponent extends Component {
   state = {
@@ -94,7 +96,7 @@ class KeyboardComponent extends Component {
       value, symbol, down, up, action,
     } = this.state.type
     const rowCount = symbol.length
-    const height = (9 * value.length)
+    const height = (6 * value.length) + 10
     const keyboardRows = value.map((values, row) => {
       const symbolRow = symbol[row]
       const downRow = down[row]

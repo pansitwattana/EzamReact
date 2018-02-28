@@ -106,7 +106,7 @@ class SidebarMenu extends Component {
             Log out
           </Menu.Item>
         </Sidebar>
-        <Sidebar.Pusher>
+        <Sidebar.Pusher style={{ height: '100%' }}>
           <Segment style={{ height: '100%', padding: '0px 0px 0px 0px' }} basic>
             <NavBar onMouseDown={onMouseDown} >
               <Drawer onClick={this.toggleVisibility}>

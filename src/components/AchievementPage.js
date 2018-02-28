@@ -57,11 +57,11 @@ const AchievementPage = ({ userQuery }) => {
   const postCount = user._postsMeta.count
   const commentCount = user._commentsMeta.count
 
-  const solveLevel = Math.ceil(solveCount / 10)
+  const solveLevel = Math.ceil(solveCount / 10) || 1
   const solveNeed = 10 * solveLevel
   const solveHeader = getHeader(solveLevel)
 
-  const postLevel = Math.ceil(postCount / 10)
+  const postLevel = Math.ceil(postCount / 10) || 1
   const postNeed = 10 * postLevel
   const postHeader = getHeader(postLevel)
 
