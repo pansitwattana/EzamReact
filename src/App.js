@@ -15,6 +15,7 @@ import Register from './components/Register'
 import Problem from './components/Problem'
 import AchievementPage from './components/AchievementPage'
 import StatisticPage from './components/StatisticPage'
+import AddRoom from './components/AddRoom'
 
 const App = () => (
   <TransitionGroup style={{ height: '100%' }}>
@@ -31,6 +32,7 @@ const App = () => (
       <Route path="/create" component={CreateUser} />
       <Route path="/register" render={() => <Register data={'test'} />} />
       <Route path="/post" component={Problem} />
+      <Route path="/new" component={AddRoom} />
     </NavigationBar>
   </TransitionGroup>
 );

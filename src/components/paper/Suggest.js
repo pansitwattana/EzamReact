@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import { Parser }from '../../calculation'
+import { Parser } from '../../calculation'
 import getVariables from '../../calculation/GetVariables'
 
 const finalize = (array) => {

@@ -12,19 +12,18 @@ const Button = styled.div`
   border: 2px solid rgb(150, 150, 150);
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 `
 
 const Text = styled.span`
   font-size: 12px;
 `
 
-const AddButton = ({ onClick }) => (
+const AddButton = ({ onClick, children }) =>
   <Button onClick={onClick}>
     <Icon name="add circle" size="large" />
-    <Text>Add new</Text>
+    <Text>{children}</Text>
   </Button>
-)
 
 AddButton.propTypes = {
   onClick: propTypes.func.isRequired,

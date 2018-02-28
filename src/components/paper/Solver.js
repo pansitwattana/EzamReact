@@ -3,7 +3,12 @@ import algebra, { Equation } from 'algebra.js'
 
 export default (equation, variable = 'x') => {
   const algebraObj = new AlgebraLatex(equation)
-  const mathAnswer = algebraObj.toMath()
+  let mathAnswer = ''
+  try {
+    mathAnswer = algebraObj.toMath()
+  } catch (e) {
+    
+  }
   // console.log(mathAnswer)
   if (mathAnswer === '') {
     console.error(`can not parse to AlgebraJS (${equation})`)

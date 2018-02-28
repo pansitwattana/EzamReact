@@ -62,6 +62,8 @@ const Keys = {
   SUB_9: '\\_9',
 
   SQRT: '\\sqrt',
+  SQRT_3: '\\sqrt[3]{}',
+  SQRT_4: '\\sqrt[4]{}',
   CUBE_ROOT: 'CUBE_ROOT',
   RADICAL: 'RADICAL',
   LEFT_PAREN: 'LEFT_PAREN',
@@ -101,6 +103,7 @@ const Actions = {
   COMMANDOPEN: 'COMMANDOPEN',
   KEYSTROKE: 'KEYSTROKE',
   LATEX: 'LATEX',
+  LATEXLEFT: 'LATEXLEFT',
   TYPE: 'TYPE',
   HIDE: 'HIDE',
   CLEAR: 'CLEAR',
@@ -125,6 +128,8 @@ const KeyAction = (key) => {
             key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 || key === Keys.SIGMA || key === Keys.OMEGA || key === Keys.XI ||
             key === Keys.LN || key === Keys.TIMES || key === Keys.THETA || key === Keys.ETA || key === Keys.PI || key === Keys.IOTA) {
     return Actions.LATEX
+  } else if (key === Keys.SQRT_3 || key === Keys.SQRT_4) {
+    return Actions.LATEXLEFT
   } else if (key === Keys.DOWN) {
     return Actions.HIDE
   } else if (key === Keys.CLEAR) {

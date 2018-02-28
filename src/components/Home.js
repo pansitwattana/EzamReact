@@ -143,6 +143,7 @@ class Home extends Component {
           count: 0,
         }
       ],
+      Privates: [],
     },
     currentSubject: 'Mathematics',
   }
@@ -193,20 +194,29 @@ class Home extends Component {
   }
   
   onSubjectChange = (subject) => {
-    this.setState({ currentSubject: subject })
+    let newSubject = subject
+    if (subject === 'Math') {
+      newSubject = 'Mathematics'
+    } else if (subject === 'Sci') {
+      newSubject = 'Sciences'
+    }
+    this.setState({ currentSubject: newSubject })
   }
 
   render() {
+    const { tags, currentSubject } = this.state
     let addButton = <div />
     let loginButton = <LoginButton onClick={() => this.props.history.push('./login')} />
     if (!this.props.userQuery.loading) {
       const { user } = this.props.userQuery
       if (user) {
-        addButton = <AddButton onClick={() => this.props.history.push('/post')} />
+        addButton = currentSubject !== 'Privates' ?
+          (<AddButton onClick={() => this.props.history.push('/post')}>Add a Problem</AddButton>) :
+          (<AddButton onClick={() => this.props.history.push('/new')}>Add a Private Room</AddButton>)
         loginButton = <div />
       }
     }
-    const titles = this.state.tags[this.state.currentSubject]
+    const titles = tags[currentSubject]
     const firstRow = titles.slice(0, 3).map(subject => (
       <Course
         key={subject.id}

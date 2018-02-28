@@ -13,9 +13,14 @@ import Header from './commons/Header'
 
 const Form = styled.div`
   display: flex;
-  paddind: 10px 10px;
+  padding: 10px 10px;
   justify-content: center;
   flex-direction: column;
+`
+
+const LoginButton = styled(Button)`
+  margin: 30px !important;
+  padding: 20px;
 `
 
 class Login extends Component {
@@ -23,11 +28,6 @@ class Login extends Component {
     createUser: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
   };
-
-  state = {
-    username: '',
-    password: '',
-  }
 
   lock = new Auth0Lock(
     'XbROZxuwYdEHTQaGNN5irLFDpR5JB6b3',
@@ -107,17 +107,9 @@ class Login extends Component {
     }
     return (
       <div>
-        <Header text="Login" />
         <Form>
-          <Input icon="user" iconPosition="left" placeholder="Username" onChange={(e, username) => this.setState({ username: username.value })} />
-          <Input
-            icon="lock"
-            type="password"
-            iconPosition="left"
-            placeholder="Password"
-            onChange={(e, password) => this.setState({ password: password.value })}
-          />
-          <Button positive onClick={this.login}>Login</Button>
+          <LoginButton positive onClick={this.login}>Login</LoginButton>
+          <LoginButton onClick={this.login}>Register</LoginButton>
           {/* <Button onClick={() => this.props.changePage(null, 'register')}>Sign Up</Button> */}
 
         </Form>

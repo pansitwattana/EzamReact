@@ -12,6 +12,27 @@ const Header = styled.div`
   justify-content: center;
 `
 
+const product = list => list.reduce((prev, curr) => prev * curr, 1)
+
+const calculateBaye = (solutions, user, post) => {
+  const userSolutions = solutions.filter(solution => solution.author.id === user.id)
+  if (userSolutions.length > 0) {
+    console.log(userSolutions[0])
+    const solution = userSolutions[0]
+    const totallyCorrect = solution.errorCount > 0
+    let p
+    if (totallyCorrect) {
+      p = post.solutions.filter(solution => solution.errorCount > 0).length + 1
+      p /= (post.solutions.length + 1)
+    } else {
+      p = post.solutions.filter(solution => solution.errorCount === 0).length + 1
+      p /= (post.solutions.length + 1)
+    }
+    return p
+  }
+  return 0
+}
+
 class Catalog extends Component {
   state = {
     filter: 'Filter'
@@ -34,6 +55,19 @@ class Catalog extends Component {
       filterPosts = filterPosts.filter(({ author, solutions }) => solutions.filter(solution => solution.author.id === author.id).length > 0)
     } else if (filter === "Haven't Done" && user) {
       filterPosts = filterPosts.filter(({ solutions }) => solutions.filter(({ author }) => author.id === user.id).length === 0)
+    } else if (filter === 'Suggestion' && user) {
+      const userDones = filterPosts.filter(({ solutions }) => solutions.filter(({ author }) => author.id === user.id).length > 0)
+      const notDonePosts = filterPosts.filter(({ solutions }) => solutions.length > 0 && solutions.filter(({ author }) => author.id === user.id).length === 0)
+      console.log(notDonePosts)
+      filterPosts = notDonePosts.sort((a, b) => {
+        const probsA = userDones.map(({ solutions }) => calculateBaye(solutions, user, a))
+        const probsB = userDones.map(({ solutions }) => calculateBaye(solutions, user, b))
+        const productPa = product(probsA)
+        const productPb = product(probsB)
+        console.log(probsA, probsB)
+        console.log(productPa, productPb)
+        return productPa - productPb
+      })
     }
     return filterPosts
   }
@@ -67,6 +101,7 @@ class Catalog extends Component {
               <Dropdown.Item onClick={() => this.setState({ filter: "Haven't Done" })} text="Haven't Done" />
               <Dropdown.Item onClick={() => this.setState({ filter: 'Recently' })} text='Recently' />
               <Dropdown.Item onClick={() => this.setState({ filter: 'No Answer' })} text='No Answer' />
+              <Dropdown.Item onClick={() => this.setState({ filter: 'Suggestion' })} text='Suggestion' />
             </Dropdown.Menu>
           </Dropdown>
         </Header>
@@ -96,9 +131,11 @@ const postQuery = gql`
         latex
         difficulty
         solutions {
+          id
           author {
             id
           }
+          errorCount
         }
         author {
           name

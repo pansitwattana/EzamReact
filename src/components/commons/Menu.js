@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import propTypes from 'prop-types'
 
-const items = ['Mathematics', 'Physics', 'Sciences']
+const items = ['Math', 'Physics', 'Sci', 'Privates']
 
 const Menu = styled.div`
   padding: 10px 10px;

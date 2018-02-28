@@ -83,6 +83,7 @@ class ScreenComponent extends Component {
       onEditSubmit,
       onCheck,
       onUnlock,
+      onTagClick,
       tags,
       hideButton
     } = this.props
@@ -107,7 +108,7 @@ class ScreenComponent extends Component {
       onButtonClick = onSubmit
       highlight = true
     }
-    const labels = tags.map(tag => <Label size="tiny">{tag}</Label>)
+    const labels = tags.map(tag => <Label onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
     return (
       <Screen>
         {loading ? (

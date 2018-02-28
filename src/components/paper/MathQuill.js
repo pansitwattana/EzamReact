@@ -24,6 +24,9 @@ const typed = (str, id) => {
         mathField.keystroke(Keys.RIGHT)
       } else if (action === Actions.CLEAR) {
         mathField.latex('')
+      } else if (action === Actions.LATEXLEFT) {
+        mathField.write(str)
+        mathField.keystroke(Keys.LEFT)
       }
       mathField.focus()
     } else {

@@ -612,6 +612,7 @@ class PaperComponent extends Component {
                 onEditSubmit={() => this.submitEdit(id)}
                 onCheck={() => this.onCheck(id)}
                 onUnlock={() => this.onUnlock(id, userCredit, userId)}
+                onTagClick={(tag) => this.props.history.push(`/catalog/${tag}`)}
               />
               <VirtualList
                 width="100%"
@@ -648,13 +649,14 @@ class PaperComponent extends Component {
 }
 
 const submitSolutions = gql`
-  mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!, $startedAt: DateTime!) {
+  mutation($answers: [SolutionanswersAnswer!]!, $postId: ID!, $userId: ID!, $startedAt: DateTime!, $errorCount: Int) {
     createSolution(
       rateCount: 0
       authorId: $userId
       postId: $postId
       answers: $answers
       startedAt: $startedAt
+      errorCount: $errorCount
     ) {
       id
     }

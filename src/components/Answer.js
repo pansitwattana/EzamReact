@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { Card, Button, Icon, Popup, Form, TextArea } from 'semantic-ui-react'
+import { Card, Button, Icon, Popup, Form, TextArea, Input } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
 import deleteAnswerMutation from '../graph/deleteAnswer'
@@ -35,39 +35,87 @@ const Option = styled.div`
   justify-content: space-between;
   width: 25%;
 `
+const AnswerContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 
-class Answer extends Component {
-  static renderMethods(answers) {
+class AnswerMethods extends Component {
+
+  state = {
+    index: -1,
+    id: '',
+    text: '',
+  }
+
+  onEditClick = (index, id) => {
+    if (index !== this.state.index) {
+      this.setState({ index, text: '', id }, () => {
+        this.inputRef.focus()
+      })
+    } 
+    else {
+      this.setState({ index: -1 })
+    }
+  }
+
+  handleRef = (inputRef) => {
+    this.inputRef = inputRef
+  }
+
+  onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      const variables = {
+        answerId: this.state.id,
+        text: e.target.value,
+      }
+      this.props.onSubmit(variables)
+      this.setState({
+        index: -1,
+        id: '',
+        text: '',
+      })
+    }
+  }
+
+  render() {
+    const { answers, isAuthor, onSubmit } = this.props
     if (!answers) {
       return <div>Not Availiable</div>;
     }
 
-    return answers.map((answer) => {
-      const { latex } = answer
+    return answers.map((answer, index) => {
+      const { latex, id } = answer
       const description = answer.text
       let header = ''
       if (latex) {
         header = <LaTex text={latex} id={uuid()} />
       }
-
-      let meta = ''
-      if (description) {
-        meta = <Card.Meta>{description}</Card.Meta>
+      let meta = <div>{description}</div>
+      const selected = index === this.state.index
+      if (selected) {
+        meta = <Input onKeyPress={this.onKeyPress} ref={this.handleRef} size="tiny" placeholder='Type description' focus value={this.state.text || description} onChange={(event) => this.setState({ text: event.target.value })} />
       }
 
       return (
         <Card key={answer.id} style={{ width: '100%' }}>
           <Card.Content>
             <Card.Header>
-              {header}
+              <AnswerContainer>
+                {header}
+                {isAuthor ? <Icon onClick={() => this.onEditClick(index, id)} style={{ cursor: 'pointer' }} color='#ddd' name={selected ? "minus circle" : "add circle"} /> : <div />}
+              </AnswerContainer>
             </Card.Header>
-            {meta}
+            <Card.Meta>{meta}</Card.Meta>
           </Card.Content>
         </Card>
       )
     })
   }
 
+}
+
+class Answer extends Component {
   static dataLoaded = false
   static userLoaded = false
 
@@ -305,11 +353,18 @@ class Answer extends Component {
         this.props.userQuery.refetch()
       })
       .catch(err => console.error(err))
-  }
-  
+    }
+    
   editAnswer(solution, postId) {
     if (postId && solution)
-      this.props.history.push(`/paper/${postId}`, { solution })
+    this.props.history.push(`/paper/${postId}`, { solution })
+  }
+  
+  
+  onDescriptionUpdate = (variables) => {
+    this.props.updateDescription({ variables })
+      .then(res => this.props.data.refetch())
+      .catch(error => console.error(error))
   }
 
   submitDelete = (solution) => {
@@ -421,7 +476,7 @@ class Answer extends Component {
                 {threeDot}
               </Option>
             </Cover>
-            {Answer.renderMethods(answers)}
+            <AnswerMethods answers={answers} isAuthor={isAuthor} onSubmit={this.onDescriptionUpdate} />
             {commentGroup}
             {commentList}
             {commentForm}
@@ -556,6 +611,17 @@ const voteSolution = gql`
   }
 `
 
+const addDescription = gql`
+  mutation($answerId: ID!, $text: String!) {
+    updateAnswer(
+      id: $answerId
+      text: $text
+    ) {
+      id
+    }
+  }
+`
+
 // export default withRouter(Answer)
 const AnswerWithUser = graphql(userQuery, {
   name: 'userQuery',
@@ -572,11 +638,13 @@ const AnswerWithDeleteComment = graphql(deleteComment, { name: 'deleteComment' }
 
 const AnswerWithVoteSolution = graphql(voteSolution, { name: 'voteSolution' })(AnswerWithDeleteComment)
 
+const AnswerWithAddDescription = graphql(addDescription, { name: 'updateDescription' })(AnswerWithVoteSolution)
+
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ 
       variables: { id: ownProps.location.state.id },
       fetchPolicy: 'network-only',
     })
-  })(withRouter(AnswerWithVoteSolution))
+  })(withRouter(AnswerWithAddDescription))
 )

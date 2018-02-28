@@ -11,3 +11,11 @@ body {
 .ui.menu {
   font-family: 'Kanit', sans-serif;
 }
+
+.ui.input>input {
+  font-family: 'Kanit', sans-serif;
+}
+
+input {
+  font-family: 'Kanit', sans-serif;
+}
