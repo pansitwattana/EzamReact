@@ -74,7 +74,7 @@ const Keys = {
   LOG_2: '\\log_{2}',
   SIN: '\\sin',
   COS: '\\cos',
-  TAN: 'TAN',
+  TAN: '\\tan',
   // TODO(charlie): Add in additional Greek letters.
   
   // control key

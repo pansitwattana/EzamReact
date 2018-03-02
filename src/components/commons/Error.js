@@ -1,11 +1,20 @@
 import React from 'react'
-import { Card } from 'semantic-ui-react'
+import { Card, Button } from 'semantic-ui-react'
 import propTypes from 'prop-types'
+import styled from 'styled-components'
 
-const Error = ({ message }) => (
+const LoginButton = styled(Button)`
+  margin: 30px !important;
+  padding: 20px;
+`
+
+const Error = ({ message, login, onLoginClick }) => (
   <Card style={{ width: '96%', margin: '2%' }}>
     <Card.Content>
-      <Card.Header>{message}</Card.Header>
+      <Card.Header>
+        {message}
+        {login && <LoginButton positive onClick={onLoginClick}>Login</LoginButton>}
+      </Card.Header>
     </Card.Content>
   </Card>
 )

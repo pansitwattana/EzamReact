@@ -76,7 +76,17 @@ class Catalog extends Component {
     if (this.props.data.loading) {
       return <Error message="Loading..." />
     } else if (!this.props.data || !this.props.data.Tag) {
-      if (this.props.data.error) {
+      const { error } = this.props.data
+      if (error) {
+        const { graphQLErrors } = error
+        if (graphQLErrors) {
+          if (graphQLErrors[0]) {
+            const code = graphQLErrors[0].code
+            if (code === 3008) {
+              return <Error message="Please Login" login onLoginClick={() => this.props.history.push('/login')}/>
+            }
+          }
+        }
         return <Error message="No Internet Connection. Please refresh this page." />
       }
       return <Error message={`0 Problems in ${title}`} />

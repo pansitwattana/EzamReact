@@ -103,12 +103,12 @@ class ScreenComponent extends Component {
       onButtonClick = onEditSubmit
       highlight = true
     }
-    else if (!done && checked) { 
+    else if (!done && checked) {
       submitText = 'Submit' 
       onButtonClick = onSubmit
       highlight = true
     }
-    const labels = tags.map(tag => <Label style={{ cursor: 'pointer' }} onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
+    const labels = tags.map(tag => <Label key={tag} style={{ cursor: 'pointer' }} onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
     return (
       <Screen>
         {loading ? (

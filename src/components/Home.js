@@ -11,7 +11,8 @@ import LoginButton from './commons/LoginButton'
 
 const Background = styled.div`
   text-align: center; 
-  height: 100%;
+  height: calc(100% - 50px);
+  overflow: auto;
 `
 
 const CourseContainer = styled.div`
@@ -209,6 +210,7 @@ class Home extends Component {
     let loginButton = <LoginButton onClick={() => this.props.history.push('./login')} />
     if (!this.props.userQuery.loading) {
       const { user } = this.props.userQuery
+      console.log(user)
       if (user) {
         addButton = currentSubject !== 'Privates' ?
           (<AddButton onClick={() => this.props.history.push('/post')}>Add a Problem</AddButton>) :
@@ -275,6 +277,10 @@ query {
           name
         }
       }
+    }
+    tags {
+      name
+      id
     }
   }
 }
