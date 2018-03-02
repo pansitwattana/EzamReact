@@ -74,6 +74,11 @@ class Problem extends Component {
 
   componentDidMount() {
     this.titleInput.focus()
+    const { tag } = this.props.match.params
+    if (tag) {
+      console.log([tag])
+      this.setState({ selectedTags: [tag] })
+    }
   }
 
   onTagAdded = (selectedTags) => {
@@ -175,13 +180,21 @@ class Problem extends Component {
       alert('user not login')
       return;
     }
+    const { tag } = this.props.match.params
+    if (tag) {
+      console.log(tag)
+    }
     const tags = this.state.selectedTags
-    const tagIds = []
-    this.props.tagQuery.allTags.forEach((tag) => {
-      if (tags.includes(tag.name)) {
-        tagIds.push(tag.id)
-      }
-    })
+    let tagIds = []
+    if (tag) {
+      tagIds = [tag]
+    } else {
+      this.props.tagQuery.allTags.forEach((tag) => {
+        if (tags.includes(tag.name)) {
+          tagIds.push(tag.id)
+        }
+      })
+    }
 
     const { title, description, files } = this.state
 
@@ -315,12 +328,22 @@ class Problem extends Component {
   }
 
   render() {
+    const { tag } = this.props.match.params
+    if (tag) {
+      console.log(tag)
+    }
     // const { symbol, value, action } = Math
     const { selectedTags, showKeyboard, imgSrc, submiting } = this.state
+    let tagOptions = tag ? [tag] : selectedTags
     const { loading, allTags } = this.props.tagQuery
     const isLoading = loading || !allTags;
-    const tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
-      allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
+    let tags
+    if (!tag) {
+      tags = isLoading ? [{ key: '0', text: 'Loading', value: '' }] :
+        allTags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))
+    } else {
+      tags = [{ key: '0', text: tag, value: tag }]
+    }
     return (
       <div>
         {submiting ? (
@@ -364,16 +387,16 @@ class Problem extends Component {
                   ref={(input) => { this.descriptionInput = input; }}
                 />
 
-                <Options tags={tags} value={selectedTags} onChange={this.onTagAdded} />
+                {!tag && <Options tags={tags} value={tagOptions} onChange={this.onTagAdded} disable={tag} />}
 
                 <br />
-                <label for="file-upload" style={{
+                <label htmlFor="file-upload" style={{
                   border: '1px solid #ccc',
                   display: 'inline-block',
                   padding: '6px 12px',
                   cursor: 'pointer'
                 }}>
-                    <Icon name="camera" /> Custom Upload
+                  <Icon name="camera" /> Custom Upload
                 </label>
                 <input
                   id="file-upload"
@@ -436,7 +459,9 @@ query {
 
 const tagQuery = gql`
 query {
-  allTags {
+  allTags(filter: {
+    public: true
+  }) {
     id
     name
   }

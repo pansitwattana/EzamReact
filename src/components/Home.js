@@ -168,14 +168,31 @@ class Home extends Component {
       const { user } = nextProps.userQuery
       let { tags } = this.state
       if (user) {
+
+        tags.Privates = user.tags.map(tag => ({
+          title: tag.name,
+          subtitle: 'Basic',
+          id: tag.id,
+          count: 0
+        }))
+
         const { solutions } = user
         let math = this.checkCount(tags.Mathematics, solutions)
         let physics = this.checkCount(tags.Physics, solutions)
         let sci = this.checkCount(tags.Sciences, solutions)
+        let privateSection = this.checkCount(tags.Privates, solutions)
         tags.Mathematics = math
         tags.Physics = physics
         tags.Sciences = sci
+        tags.Privates = privateSection
+
         this.setState({ tags })
+        // {
+        //   title: 'Reaction',
+        //   subtitle: 'Basic',
+        //   id: 3,
+        //   count: 0,
+        // }
       }
     }
   }
@@ -214,7 +231,7 @@ class Home extends Component {
       if (user) {
         addButton = currentSubject !== 'Privates' ?
           (<AddButton onClick={() => this.props.history.push('/post')}>Add a Problem</AddButton>) :
-          (<AddButton onClick={() => this.props.history.push('/new')}>Add a Private Room</AddButton>)
+          (<AddButton onClick={() => this.props.history.push('/new')}>Add a Private Section</AddButton>)
         loginButton = <div />
       }
     }

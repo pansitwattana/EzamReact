@@ -31,7 +31,8 @@ const App = () => (
       <Route path="/posts" component={MyPosts} />
       <Route path="/create" component={CreateUser} />
       <Route path="/register" render={() => <Register data={'test'} />} />
-      <Route path="/post" component={Problem} />
+      <Route path="/post/:tag" component={Problem} />
+      <Route exact path="/post" component={Problem} />
       <Route path="/new" component={AddRoom} />
     </NavigationBar>
   </TransitionGroup>

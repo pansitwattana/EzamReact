@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Card, Dropdown, Input } from 'semantic-ui-react'
 import PostContainer from './commons/PostContainer'
 import Error from './commons/Error'
+import AddButton from './commons/AddButton';
 
 const Header = styled.div`
   display: flex;
@@ -38,8 +39,7 @@ class Catalog extends Component {
     filter: 'Filter'
   }
 
-  getPosts(filter, user) {
-    const posts = this.props.data.Tag.posts
+  getPosts(filter, user, posts) {
     if (filter === 'Filter') {
       return posts
     }
@@ -93,13 +93,27 @@ class Catalog extends Component {
     }
 
     const { user } = this.props.userQuery
-
-    return <PostContainer posts={this.getPosts(this.state.filter, user)} user={user} />
+    const tag = this.props.data.Tag
+    return <PostContainer posts={this.getPosts(this.state.filter, user, tag.posts)} user={user} />
   }
 
   render() {
     const { title } = this.props.match.params
-    const loading = this.props.data.loading
+    const { data, userQuery } = this.props
+    const { loading, error } = data
+    let height = window.innerHeight - 50 - 38
+    let isOwner = false
+    const tag = this.props.data.Tag
+    const { user } = this.props.userQuery
+    if (!loading && !error && !userQuery.loading && !userQuery.error) {
+      if (tag.owner) {
+        isOwner = user.id === tag.owner.id
+      }
+    }
+    
+    if (isOwner) {
+      height -= 74
+    }
     return (
       <div>
         <Header>
@@ -121,11 +135,12 @@ class Catalog extends Component {
             justifyContent: 'center',
             margin: 0,
             overflow: 'auto',
-            height: window.innerHeight - 50 - 38,
+            height,
           }}
         >
           {this.renderPost(title)}
         </Card.Group>
+        <AddButton onClick={() => this.props.history.push(`/post/${tag.id}`)}>Add a Problem</AddButton>
       </div>
     )
   }
@@ -135,6 +150,10 @@ const postQuery = gql`
   query($title: String!) {
     Tag(name: $title) {
       name
+      id
+      owner {
+        id
+      }
       posts {
         id
         title

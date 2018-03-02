@@ -6,7 +6,7 @@ import { Icon } from 'semantic-ui-react'
 const Button = styled.div`
   border-radius: 3px;
   padding: 0.25em 1em;
-  margin: 0 37%;
+  margin: 5px 37%;
   background: transparent;
   color: rgb(150, 150, 150);
   border: 2px solid rgb(150, 150, 150);
@@ -14,6 +14,7 @@ const Button = styled.div`
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  text-align: center; 
 `
 
 const Text = styled.span`
