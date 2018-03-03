@@ -3,6 +3,7 @@ import math from 'mathjs'
 import SplitEquation from '../../../calculation/SplitEquation';
 import GetVariables from '../../../calculation/GetVariables';
 import Simplify from '../../../calculation/Simplify';
+import SubstitutionCheck from '../SubstitutionCheck';
 
 function isNumeric(num){
   return !isNaN(num)
@@ -22,12 +23,19 @@ const getResult = (answer) => {
       let values = equation.rhs.split(',')
       values = values.map(value => Simplify(value))
       result.values = values
+    } else if (variables.length === 1) {
+      result.type = Type.Function
+      result = {
+        type: Type.Function,
+        value: equation.rhs,
+        values: [answer],
+      }
     } else {
-      // result.type = Type.MultiVariables
+      result.type = Type.MultiVariables
     }
   } else {
     const variables = GetVariables(equation.rhs)
-    if (variables.length <= 1) {
+    if (variables.length === 0) {
       let values = equation.rhs.split(',')
       values = values.map(value => Simplify(value))
       result = {
@@ -35,8 +43,14 @@ const getResult = (answer) => {
         type: Type.Variables,
         values
       }
+    } else if (variables.length === 1) {
+      result = {
+        type: Type.Function,
+        value: equation.rhs,
+        values: [answer],
+      }
     } else {
-      // result.type = Type.MultiVariables
+      result.type = Type.MultiVariables
     }
   }
   return result
@@ -44,6 +58,13 @@ const getResult = (answer) => {
 export default {
   getResult,
   checkAnswer: (answer, finalAnswer) => {
+    if (finalAnswer === '') {
+      return false
+    }
+    if (finalAnswer === answer) {
+      return true
+    }
+
     const result = getResult(answer)
     const finalResult = getResult(finalAnswer)
     const options = { notation: 'fixed', precision: 4 }
@@ -65,6 +86,12 @@ export default {
         }
       })
       return !isError
+    } else if (result.type === Type.Single && (finalResult.type === Type.Function || finalResult.type === Type.MultiVariables) ||
+      (result.type === Type.Function && finalResult.type === Type.Single && result.type === Type.MultiVariables && finalResult.type === Type.Single)
+    ) {
+      return false
+    } else if (result.type === Type.Function && finalResult.type === Type.Function) {
+      return SubstitutionCheck(result.value, finalResult.value)
     }
     return null
   }

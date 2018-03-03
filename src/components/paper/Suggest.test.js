@@ -2,13 +2,13 @@ import suggest from './Suggest'
 
 const { getKeywords, checkValid } = suggest
 
-test('find keywords 5x^2=7x+6', () => {
-  const keywords = getKeywords('5x^2=7x+6')
-  expect(true).toBe(true)
+// test('find keywords 5x^2=7x+6', () => {
+//   const keywords = getKeywords('5x^2=7x+6')
+//   expect(k
   // expect(keywords[0]).toBe('5*x^2')
   // expect(keywords[1]).toBe('x^2')
   // expect(keywords[2]).toBe('7*x')
-})
+// })
 
 // test('find keywords y^2+x^5+2=3x+3y', () => {
 //   const keywords = getKeywords('y^2+x^5+2=3x+3y')

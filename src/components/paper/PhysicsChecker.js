@@ -5,8 +5,8 @@ import split from '../../calculation/SplitEquation'
 import getVariables from '../../calculation/GetVariables'
 
 class PhysicsChecker extends ErrorChecker {
-  constructor(problem) {
-    super(problem)
+  constructor(problem, answer) {
+    super(problem, answer)
     const solution = problem.solutions[0]
     if (solution) {
       const answers = solution.answers

@@ -3,7 +3,8 @@ import parser from './Parser'
 
 export default (expression, variables) => {
   if (!variables) {
-    return 'No variable pass through parameter'
+    // return 'No variable pass through parameter'
+    return null
   }
 
   const keyVariables = Object.keys(variables)
@@ -12,7 +13,8 @@ export default (expression, variables) => {
 
   let expr = parser(expression)
   if (!expr) {
-    return 'can not parse expression'
+    // return 'can not parse expression'
+    return null
   }
 
   //check adjency variables
@@ -44,7 +46,8 @@ export default (expression, variables) => {
     algebraObj = algebra.parse(cloneExpression)
   } catch (e) {
     // console.log(e)
-    return `can not parse to algebra.js (${expr})`
+    // return `can not parse to algebra.js (${expr})`
+    return null
   }
   
   
@@ -65,7 +68,8 @@ export default (expression, variables) => {
     }
     const valExpr = parser(val)
     if (valExpr == null) {
-      return `${variable} (${val}) can not parse`
+      // return `${variable} (${val}) can not parse`
+      return null
     }
 
     let valAlgebra
@@ -73,7 +77,8 @@ export default (expression, variables) => {
       valAlgebra = algebra.parse(valExpr)
     } catch (e) {
       console.log(e)
-      return `can not parse to algebra.js (${valExpr})`
+      // return `can not parse to algebra.js (${valExpr})`
+      return null
     }
 
     valToReplace[variable] = valAlgebra

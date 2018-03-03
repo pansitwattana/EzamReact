@@ -22,8 +22,8 @@ export default (equation, variable = 'x') => {
   try {
     eq = algebra.parse(mathAnswer)
   } catch (e) {
-    console.error({ equation, variable, mathAnswer })
-    console.error(e)
+    // console.error({ equation, variable, mathAnswer })
+    // console.error(e)
     return null
   }
   if (eq instanceof Equation) {

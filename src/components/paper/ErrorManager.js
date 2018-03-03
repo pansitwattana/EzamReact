@@ -20,12 +20,12 @@ class ErrorManager {
         isKinetic = true
       }
     })
-    if (isEquation) this.checker = new EquationChecker(problem.latex)
-    else if (isDifferential) this.checker = new DiffentialChecker(problem.latex)
+    if (isEquation) this.checker = new EquationChecker(problem.latex, problem.answer)
+    else if (isDifferential) this.checker = new DiffentialChecker(problem.latex, problem.answer)
     else if (isKinetic) {
       console.log('enable check physics')
       console.log(problem)
-      this.checker = new PhysicsChecker(problem)
+      this.checker = new PhysicsChecker(problem, problem.answer)
     }
 
     if (this.checker) {

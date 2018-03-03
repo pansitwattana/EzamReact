@@ -2,9 +2,9 @@ import { ErrorChecker, type, status }from './ErrorChecker'
 import { Subsitute, Calculate, Split } from '../../calculation'
 
 class DifferentialChecker extends ErrorChecker {
-  constructor(problem) {
+  constructor(problem, answer) {
     const problemSpliting = Split(problem)
-    super(problemSpliting.rhs || problem)
+    super(problemSpliting.rhs || problem, answer)
 
     this.type = type.DIFFERENTIAL
     this.x = 2

@@ -3,7 +3,7 @@ import parser from './Parser'
 export default (equation) => {
   const expression = parser(equation)
   if (!expression) {
-    return null
+    return []
   }
   // console.log(expression)
 

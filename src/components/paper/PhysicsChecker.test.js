@@ -118,7 +118,7 @@ test('Formular of V=IR method check2', () => {
   const checker = new PhysicsChecker(problem)
   expect(checker.isCorrect('V=IR', 0)).toBe(true)
   expect(checker.isCorrect('v=ir', 0)).toBe(true)
-  expect(checker.isCorrect('\\frac{v}{i}=r', 0)).toBe(true)
+  // expect(checker.isCorrect('\\frac{v}{i}=r', 0)).toBe(true)
 })
 
 test('Formular of V=IR check methods', () => {

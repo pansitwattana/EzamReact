@@ -77,13 +77,14 @@ class PaperComponent extends Component {
 
   initial(problem) {
     if (problem) {
+      console.log(problem)
       errorManager = new ErrorManager(problem)
       const keywords = getKeywords(problem.latex)
-      console.log('called', { keywords })
+      // console.log('called', { keywords })
       let hasAnswer = false
       if (problem.solutions.length > 0) {
-        console.log(problem.latex)
-        console.log(problem.solutions[0].answers)
+        // console.log(problem.latex)
+        // console.log(problem.solutions[0].answers)
         hasAnswer = true
       }
       const hasChecker = errorManager.hasChecker()

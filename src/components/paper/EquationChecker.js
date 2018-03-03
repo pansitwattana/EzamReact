@@ -2,8 +2,8 @@ import { ErrorChecker, type, status } from './ErrorChecker'
 import solver from './Solver'
 
 class EquationChecker extends ErrorChecker {
-  constructor(problem) {
-    super(problem)
+  constructor(problem, finalAnswer) {
+    super(problem, finalAnswer)
     let answer = solver(problem)
     if (answer) {
       this.answer = answer
