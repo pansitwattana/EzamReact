@@ -602,7 +602,7 @@ class PaperComponent extends Component {
     if (problem) {
       const { submiting, keywords, filterKeywords, isDone, checked, hasAnswer, methods } = this.state
       const methodLength = methods.length
-      const { latex, image, description, id, tags } = problem
+      const { latex, image, description, id, tags, answer } = problem
       const { user } = this.props.data
       const keywordsToShow = filterKeywords.length > 0 ? filterKeywords : keywords
       const userCredit = user ? user.credit : 0
@@ -749,6 +749,7 @@ const postQuery = gql`
       id
       latex
       description
+      answer
       image {
         url
       }
