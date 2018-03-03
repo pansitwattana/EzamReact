@@ -14,15 +14,14 @@ import TitleSelect from './problem/TitleSelect'
 
 const TextArea = styled.textarea`
   margin: 10px;
-  width: 100%;
-  height: 70px;
+  height: ${prop => prop.height || '70px'};
   background: #FFF;
   border-radius: 2px;
 `
 
 const LaTeXShow = styled.div`
   margin: 10px;
-  height: 70px;
+  height: ${prop => prop.height || '70px'};
   background: #FFF;
   border-radius: 2px;
   box-shadow:
@@ -67,6 +66,7 @@ class Problem extends Component {
     imgSrc: null,
     files: null,
     latex: '',
+    answer: '',
     prevLatex: '',
     textCursor: 0,
     cursorDiff: 0,
@@ -196,7 +196,7 @@ class Problem extends Component {
       })
     }
 
-    const { title, description, files } = this.state
+    const { title, description, files, answer } = this.state
 
     let variables = {
       title,
@@ -205,7 +205,8 @@ class Problem extends Component {
       description,
       difficulty: 'Easy',
       tagIds,
-      imageId: null
+      imageId: null,
+      answer
     }
 
     // let image = null
@@ -327,6 +328,16 @@ class Problem extends Component {
     this.setState({ showKeyboard: false, cursorDiff: 0 })
   }
 
+  onAnswerChange = (e) => {
+    const textArea = e.target
+    this.setState({ answer: textArea.value })
+  }
+
+  onAnswerFocus = (e) => {
+    // const textArea = e.target
+    this.setState({ showKeyboard: false })
+  }
+
   render() {
     const { tag } = this.props.match.params
     if (tag) {
@@ -355,7 +366,7 @@ class Problem extends Component {
             <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
               <TitleSelect />
               <Input
-                style={{ margin: '10px', width: '100%' }}
+                style={{ margin: '10px' }}
                 placeholder="Question Title"
                 onChange={e => this.setState({ title: e.target.value })}
                 onFocus={() => this.setState({ showKeyboard: false })}
@@ -372,6 +383,18 @@ class Problem extends Component {
 
               <LaTeXShow>
                 <TeX value={this.state.latex} />
+              </LaTeXShow>
+
+              <TextArea
+                height='25px'
+                readOnly={showKeyboard}
+                onFocus={this.onAnswerFocus}
+                onChange={this.onAnswerChange}
+                value={this.state.answer}
+              />
+
+              <LaTeXShow height='20px'>
+                <TeX value={this.state.answer && `$${this.state.answer}$`} />
               </LaTeXShow>
               {/* <Header text="Add Solution" />
               <Question>
@@ -430,13 +453,14 @@ class Problem extends Component {
 }
 // SolutionanswersAnswer
 const createPost = gql`
-mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty, , $imageId: ID){
+mutation ($title: String!, $authorId: ID!, $latex: String!  $description: String, $tagIds: [ID!], $difficulty: Difficulty, , $imageId: ID, $answer: String){
   createPost (
     title: $title
     authorId: $authorId
     latex: $latex
     description: $description
     difficulty: $difficulty
+    answer: $answer
     tagsIds: $tagIds
     imageId: $imageId
   ) {

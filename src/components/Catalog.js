@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { gql, graphql } from 'react-apollo'
 import styled from 'styled-components'
+import fuzzy from 'fuzzy'
 import { Card, Dropdown, Input } from 'semantic-ui-react'
 import PostContainer from './commons/PostContainer'
 import Error from './commons/Error'
@@ -36,7 +37,16 @@ const calculateBaye = (solutions, user, post) => {
 
 class Catalog extends Component {
   state = {
-    filter: 'Filter'
+    filter: 'Filter',
+    searchValue: '',
+  }
+
+  onSearch = ({ target }) => {
+    const { value } = target
+    if (value !== '')
+      this.setState({ searchValue: target.value, filter: 'Search' })
+    else
+      this.setState({ searchValue: target.value, filter: 'Filter' })
   }
 
   getPosts(filter, user, posts) {
@@ -68,6 +78,12 @@ class Catalog extends Component {
         console.log(productPa, productPb)
         return productPa - productPb
       })
+    } else if (filter === 'Search') {
+      const keyword = this.state.searchValue
+      const posts = filterPosts.map(post => post.latex)
+      const results = fuzzy.filter(keyword, posts)
+      const matchIndexes = results.map(result => result.index)
+      filterPosts = filterPosts.filter((post, index) => matchIndexes.indexOf(index) === -1)
     }
     return filterPosts
   }
@@ -117,7 +133,7 @@ class Catalog extends Component {
     return (
       <div>
         <Header>
-          <Input loading={loading} placeholder='Search...' />
+          <Input loading={loading} placeholder='Search...' value={this.state.searchValue} onChange={this.onSearch} />
           <Dropdown style={{ padding: '0px 5px'}} text={this.state.filter} >
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => this.setState({ filter: 'Most Solved' })} text='Most Solved' />

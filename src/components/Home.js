@@ -5,7 +5,6 @@ import { gql, graphql } from 'react-apollo'
 import Menu from './commons/Menu'
 // import Logo from './commons/Logo'
 import Course from './commons/Course'
-import Search from './commons/Search'
 import AddButton from './commons/AddButton'
 import LoginButton from './commons/LoginButton'
 
@@ -263,7 +262,6 @@ class Home extends Component {
     return (
       // <Logo>
         <Background>
-          <Search value="" />
           <Menu onClick={this.onSubjectChange} />
           <CourseContainer>
             <CourseRow>

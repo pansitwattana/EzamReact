@@ -109,6 +109,33 @@ class ScreenComponent extends Component {
       highlight = true
     }
     const labels = tags.map(tag => <Label key={tag} style={{ cursor: 'pointer' }} onClick={() => onTagClick(tag)} size="tiny">{tag}</Label>)
+    let submitButton =
+      (<Button style={{ maxHeight: '30px' }} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+        {submitText}  
+        <Icon name='right check' />
+      </Button>)
+    if (submitText === 'Submit') {
+      submitButton = 
+        (<Modal
+          style={{ marginTop: 0 }}
+          trigger={
+            (<Button style={{ maxHeight: '30px' }} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
+              {submitText}  
+              <Icon name='right check' />
+            </Button>)}
+          header='Correct!'
+          floated='center'
+          actions={[
+            'Edit',
+            {
+              key: 'Confirm', 
+              content: 'View Solutions', 
+              positive: true,
+              onClick: onButtonClick,
+            },
+          ]}
+        />)
+    }
     return (
       <Screen>
         {loading ? (
@@ -131,7 +158,7 @@ class ScreenComponent extends Component {
                       content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}
                       actions={[
                         'Cancel',
-                        { 
+                        {
                           key: 'Unlock', 
                           content: 'Unlock', 
                           positive: true,
@@ -148,10 +175,7 @@ class ScreenComponent extends Component {
                     {submitText}  
                     <Icon name='right check' />
                   </Button> */}
-                  {!hideButton ? (<Button style={{ maxHeight: '30px' }} onClick={onButtonClick} primary={highlight} floated='right' size='tiny' basic={!highlight} color='blue' content='Blue'>        
-                    {submitText}  
-                    <Icon name='right check' />
-                  </Button>) : undefined}
+                  {!hideButton ? submitButton : undefined}
                 </Item.Extra>
               </Item.Content>
             </Item>}
