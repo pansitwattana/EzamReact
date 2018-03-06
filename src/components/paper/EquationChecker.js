@@ -10,7 +10,11 @@ class EquationChecker extends ErrorChecker {
       this.status = status.OK
     }
     else {
-      this.status = status.FAIL
+      if (finalAnswer) {
+        this.status = status.FINALCHECK
+      } else {
+        this.status = status.FAIL
+      }
     }
     this.type = type.EQUATION
   }

@@ -31,8 +31,9 @@ const Suggestion = styled.div`
   width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;
-  white-space:nowrap;
+  white-space: nowrap;
 `
+
 class KeyboardComponent extends Component {
   state = {
     type: Math,
@@ -60,7 +61,7 @@ class KeyboardComponent extends Component {
   
   renderKeywords(keywords) {
     return keywords.map(keyword => (
-      <Button style={{ height: '100%', padding: '5px', maxHeight: '40px' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
+      <Button style={{ height: '100%', padding: '5px', maxHeight: '40px', fontSize: '0.78em' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
   }

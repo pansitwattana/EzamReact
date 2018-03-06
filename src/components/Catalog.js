@@ -122,7 +122,7 @@ class Catalog extends Component {
     const tag = this.props.data.Tag
     const { user } = this.props.userQuery
     if (!loading && !error && !userQuery.loading && !userQuery.error) {
-      if (tag.owner) {
+      if (tag && tag.owner && user) {
         isOwner = user.id === tag.owner.id
       }
     }

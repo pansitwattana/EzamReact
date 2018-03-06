@@ -129,7 +129,7 @@ class ScreenComponent extends Component {
             'Edit',
             {
               key: 'Confirm', 
-              content: 'View Solutions', 
+              content: 'See Solutions', 
               positive: true,
               onClick: onButtonClick,
             },
@@ -152,7 +152,8 @@ class ScreenComponent extends Component {
                   <ProblemContainer>
                     {displayLatex}
                     {hasAnswer && <Modal
-                      floated="right"
+                      floated="center"
+                      style={{ marginTop: 0 }}
                       trigger={<Button style={{ maxHeight: '30px' }} icon="lock" negative secondary size="mini" floated="right">Unlock</Button>}
                       header='Unlock Solution!'
                       content={userCredit >= 50 ? `Confirm to use 50 credit to unlock! (${userCredit})` : `You need more credit to unlock (${userCredit})`}

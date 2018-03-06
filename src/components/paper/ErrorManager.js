@@ -1,10 +1,14 @@
 import EquationChecker from './EquationChecker'
 import DiffentialChecker from './DifferentialChecker'
 import PhysicsChecker from './PhysicsChecker'
-import { status } from './ErrorChecker'
+import { status, ErrorChecker } from './ErrorChecker'
 
 class ErrorManager {
   constructor(problem) {
+    if (!problem) {
+      console.error('no problem input')
+      return
+    }
     this.problem = problem
     let isEquation = false
     let isDifferential = false
@@ -26,6 +30,8 @@ class ErrorManager {
       console.log('enable check physics')
       console.log(problem)
       this.checker = new PhysicsChecker(problem, problem.answer)
+    } else if (problem.answer) {
+      this.checker = new ErrorChecker(problem, problem.answer)
     }
 
     if (this.checker) {

@@ -6,7 +6,12 @@ class ErrorChecker {
     this.problem = problem
     this.finalAnswer = answer
     this.type = type.NONE
-    this.status = status.FAIL
+
+    if (answer !== null) {
+      this.status = status.FINALCHECK
+    } else {
+      this.status = status.FAIL
+    }
   }
 
   finalCheck(method) {
@@ -51,6 +56,7 @@ const type = {
 const status = {
   OK: 0,
   FAIL: 1,
+  FINALCHECK: 2,
 }
 
 export { ErrorChecker, type, status }

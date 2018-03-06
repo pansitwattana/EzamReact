@@ -4,7 +4,7 @@ import getVariables from '../../calculation/GetVariables'
 
 const finalize = (array) => {
   return array.filter(function(item, pos) {
-    return array.indexOf(item) === pos && item !== "x" && item.length < 10 && item !== "";
+    return array.indexOf(item) === pos && item !== "x" && item.length < 15 && item !== "";
   })
 }
 

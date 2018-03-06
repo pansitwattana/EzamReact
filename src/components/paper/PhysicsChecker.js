@@ -28,7 +28,11 @@ class PhysicsChecker extends ErrorChecker {
         
         this.keyValue = this.calculateKeyValue(formular, key, values)
         if (this.keyValue === null) {
-          this.status = status.FAIL
+          if (answer) {
+            this.status = status.FINALCHECK
+          } else {
+            this.status = status.FAIL
+          }
         } else {
           this.status = status.OK
         }
@@ -38,6 +42,19 @@ class PhysicsChecker extends ErrorChecker {
       this.status = status.FAIL
     }
     this.type = type.PHYSICS
+  }
+
+  setFormular(formular) {
+    const variables = getVariables(formular)
+    const key = variables[0]
+    this.variables = variables
+    // console.log(variables)
+
+    const values = this.randomNumbers(variables)
+    this.key = key
+    this.values = values
+    
+    this.keyValue = this.calculateKeyValue(formular, key, values)
   }
 
   //override
@@ -67,6 +84,10 @@ class PhysicsChecker extends ErrorChecker {
       const { answer } = this
       const variables = getVariables(method)
       if (variables.length > 1) {
+        // for case second formular
+        this.setFormular(method)
+        this.answer = null
+        // console.log(value, keyValue)
         return null
       }
       
@@ -98,18 +119,29 @@ class PhysicsChecker extends ErrorChecker {
   }
 
   calculateKeyValue(latex, key, values) {
-    // console.log({ values, key: this.key })
     const equation = split(latex)
-    // console.log(latexSplit)
-    const lhsValue = substitute(equation.lhs, values).toString()
-    const rhsValue = substitute(equation.rhs, values).toString()
-    // console.log(lhsValue.toString())
-    // console.log(rhsValue.toString())
-    const newEquation = `${lhsValue}=${rhsValue}`
-    // console.log(newEquation)
-    const result = solver(newEquation, key)
-    // console.log(result)
-    return result
+    if (equation.lhs !== null && equation.rhs !== null) {
+      const leftSubValue = substitute(equation.lhs, values)
+      const rightSubValue = substitute(equation.rhs, values)
+      if (leftSubValue === null || rightSubValue === null) {
+        return null
+      }
+
+      const lhsValue = leftSubValue.toString()
+      const rhsValue = rightSubValue.toString()
+      const newEquation = `${lhsValue}=${rhsValue}`
+      const result = solver(newEquation, key)
+      return result
+    } else if (equation.rhs) {
+      const rightSubValue = substitute(equation.rhs, values)
+      if (rightSubValue === null) {
+        return null
+      }
+      const rhsValue = rightSubValue.toString()
+      return rhsValue
+    }
+
+    return null
   }
 
   reset() {

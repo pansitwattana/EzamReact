@@ -18,7 +18,11 @@ class DifferentialChecker extends ErrorChecker {
     const minus = `${fxplusdx}-${fx}`
     const dyObject = Calculate(minus)
     if (dyObject === null) {
-      this.status = status.FAIL
+      if (answer) {
+        this.status = status.FINALCHECK
+      } else {
+        this.status = status.FAIL
+      }
       return
     }
 

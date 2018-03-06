@@ -93,7 +93,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Sound',
+          title: 'Energy',
           subtitle: 'Basic',
           id: 2,
           count: 0,

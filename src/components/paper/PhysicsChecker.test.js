@@ -137,3 +137,32 @@ test('Formular of V=IR check methods', () => {
   
   expect(checker.checkAll(solutions)).toEqual([true, true, true, true])
 })
+
+test('2 Formular test of F=ma check methods', () => {
+  const problem = {
+    solutions: [{
+      answers: [{
+        latex: 'F=ma'
+      }, 
+      {
+        latex: 'a=\\frac{\\left(5.82\\cdot10^6\\right)}{6.94\\cdot10^9}'
+      },
+      {
+        latex: 'a=\\frac{291}{347000}'
+      },
+      {
+        latex: 's=ut+\\frac{1}{2}at^2'
+      },
+      {
+        latex: 's=57.2\\cdot25.4+\\frac{1}{2}\\cdot\\frac{291}{347000}\\cdot25.4^2',
+      }, {
+        latex: '\\mathrm{s}=1453.150520979827'
+      }]
+    }],
+    answer: '1453.150520979827',
+  }
+  const checker = new PhysicsChecker(problem, problem.answer)
+  const solutions = ["F=ma", "5.82\\cdot10^6=6.94\\cdot10^9\\cdot a", "a=\\frac{\\left(5.82\\cdot10^6\\right)}{6.94\\cdot10^9}", "a=\\frac{291}{347000}", "s=ut+\\frac{1}{2}at^2", "s=57.2\\cdot25.4+\\frac{1}{2}\\cdot\\frac{291}{347000}\\cdot25.4^2", "\\mathrm{s}=1453.150520979827"]
+  
+  expect(checker.checkAll(solutions)).toEqual([true, true, true, true, null, true, true])
+})

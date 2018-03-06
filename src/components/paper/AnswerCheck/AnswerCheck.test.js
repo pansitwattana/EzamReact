@@ -86,6 +86,12 @@ test('check from 10x', () => {
   expect(checkAnswer('dy/dx=10x', '10x^2/2x')).toBe(false)
 })
 
+test('check from 89.80', () => {
+  expect(checkAnswer('89.80', '89.80')).toBe(true)
+  expect(checkAnswer('89.80', '89.79732735443746')).toBe(true)
+  expect(checkAnswer('89.80', 'v=89.79732735443746')).toBe(true)
+})
+
 // test('check from 2x+1-\\frac{1}{x^3}-\\frac{1}{x^2}', () => {
 //   expect(checkAnswer('2x+1-\\frac{1}{x^3}-\\frac{1}{x^2}', 'dy/dx=-\\frac{1}{x^3}+2x+1-\\frac{1}{x^2}')).toBe(true)
 //   expect(checkAnswer('2x+1-\\frac{1}{x^3}-\\frac{1}{x^2}', 'dy/dx=2x+1-\\frac{1}{x^3}-\\frac{1}{x^2}')).toBe(true)
