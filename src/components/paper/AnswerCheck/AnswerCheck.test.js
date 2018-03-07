@@ -88,7 +88,7 @@ test('check from 10x', () => {
 
 test('check from 89.80', () => {
   expect(checkAnswer('89.80', '89.80')).toBe(true)
-  expect(checkAnswer('89.80', '89.79732735443746')).toBe(true)
+  expect(checkAnswer('89.7973', 'v=89.79732735443746')).toBe(true)
   expect(checkAnswer('89.80', 'v=89.79732735443746')).toBe(true)
 })
 
@@ -105,6 +105,11 @@ test('check from \\frac{y^3}{3}+\\frac{5y^2}{2}+20y+c', () => {
   // expect(checkAnswer('\\frac{y^3}{3}+\\frac{5y^2}{2}+20y', '\\frac{y^3}{3}+10y+10y+\\frac{5y^2}{2}')).toBe(true)
 
   // expect(checkAnswer('\\frac{y^3}{3}+\\frac{5y^2}{2}+20y+c', '\\frac{y^3}{3}+\\frac{5y^2}{2}+20y')).toBe(false)
+})
+
+test('check from answer = "386110.13085910655" and  \\mathrm{s}=386110.13085910655', () => {
+  expect(checkAnswer('386110.1308591065', '\\mathrm{s}=386110.13085910655')).toBe(true)
+
 })
 
 // get type function

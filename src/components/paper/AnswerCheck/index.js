@@ -66,15 +66,23 @@ export default {
     }
 
     const result = getResult(answer)
+    const format = math.format(result.values[0])
+    
     const finalResult = getResult(finalAnswer)
-    const options = { notation: 'fixed', precision: 4 }
+    const options = { notation: 'exponential', precision: 2 }
     if (result.type === Type.Single && finalResult.type === Type.Single ||
       result.type === Type.Single && finalResult.type === Type.Variables || 
       result.type === Type.Variables && finalResult.type === Type.Single ||
       result.type === Type.Variables && finalResult.type === Type.Variables
     ) {
-      const results1 = result.values.map(val => math.format(val, options)).sort()
-      const results2 = finalResult.values.map(val => math.format(val, options)).sort()
+      const results1 = result.values.map(val => {
+        const parse = parseFloat(val)
+        return parse !== NaN ? math.format(parse, options) : val
+      }).sort()
+      const results2 = finalResult.values.map(val => {
+        const parse = parseFloat(val)
+        return parse !== NaN ? math.format(parse, options) : val
+      }).sort()
       if (results1.length !== results2.length) {
         return false
       }

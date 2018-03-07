@@ -1,3 +1,4 @@
+import math from 'mathjs'
 import { ErrorChecker, type, status } from './ErrorChecker'
 import solver from './Solver'
 import substitute from '../../calculation/Substitution'
@@ -102,8 +103,9 @@ class PhysicsChecker extends ErrorChecker {
         if (result === null) {
           return null
         }
+        const options = { notation: 'fixed', precision: 4 }
 
-        return answer === result
+        return math.format(answer, options) === math.format(result, options)
       }
     }
   }

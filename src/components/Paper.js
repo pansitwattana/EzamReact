@@ -189,7 +189,7 @@ class PaperComponent extends Component {
       if (oldMethod) {
         oldMethod.focus = false
         newMethod.focus = true
-        this.setState({ methods, line: i })
+        this.setState({ methods, line: i, searchKeyword: '', filterKeywords: [] })
         math.focus(newMethod.id)
         math.blur(oldMethod.id)
       }
@@ -433,9 +433,17 @@ class PaperComponent extends Component {
   }
 
   handleSuggestion(value) {
-    const id = this.state.methods[this.state.line].id
+    const { searchKeyword, methods, line, filterKeywords } = this.state
+    const { id } = methods[line]
+    if (searchKeyword && filterKeywords.length > 0) {
+      for (let i = 0; i < searchKeyword.length; i++) {
+        math.typed(Keys.BACKSPACE, id)
+      }
+    }
     math.typed(value, id)
     math.typed(Keys.RIGHT, id)
+    // math.typed(' ', id)
+    // math.typed(Keys.BACKSPACE, id)
   }
 
   handleKeyboard(value) {
@@ -514,13 +522,14 @@ class PaperComponent extends Component {
         const { methods, keywords } = this.state
         const arrKeywords = keywords.map(keyword => keyword.value)
         let { searchKeyword } = this.state
-        if (value !== 'Backspace') {
+        if (value === Keys.PLUS || value === Keys.MINUS || value === Keys.TIMES || value === Keys.EQUAL || value === Keys.DIVIDE || value === Keys.CDOT || value === '*') {
+          searchKeyword = ''
+        } else if (value !== 'Backspace' && value !== Keys.LEFT && value !== Keys.RIGHT) {
           searchKeyword += value
-        } else {
+        } else if (value === 'Backspace') {
           if (searchKeyword.length > 0)
             searchKeyword = searchKeyword.slice(0, searchKeyword.length - 1)
-        }
-        
+        } 
         let results = fuzzy.filter(searchKeyword, arrKeywords)
         let matches = results.map((el, index) => (
           {
@@ -528,7 +537,7 @@ class PaperComponent extends Component {
             value: el.string,
           }
         ));
-        
+        console.log({ searchKeyword })
         const newMethods = methods.map((method) => {
           const methodReset = method
           methodReset.error = false
@@ -545,11 +554,15 @@ class PaperComponent extends Component {
     const { key } = event
     if (key === 'Backspace') {
       this.handleKeyboard(Keys.BACKSPACE)
-      event.preventDefault();
     } else if (key === 'ArrowRight') {
       this.handleKeyboard(Keys.RIGHT)
     } else if (key === 'ArrowLeft') {
       this.handleKeyboard(Keys.LEFT)
+    } else if (key === 'Tab') {
+      const { filterKeywords } = this.state
+      if (filterKeywords.length > 0) {
+        this.handleSuggestion(filterKeywords[0].value)
+      }
     }
   }
 
@@ -558,15 +571,15 @@ class PaperComponent extends Component {
       event.preventDefault()
     }
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
-      console.log('type ' + event.key)
+      // console.log('type ' + event.key)
       this.handleKeyboard(event.key)
-        .then(res => console.log(res))
-        .catch(error => console.error(error))
+        // .then(res => console.log(res))
+        // .catch(error => console.error(error))
     }
   }
 
   onSimplify = (index) => {
-    const { methods, line } = this.state
+    const { methods, line, keywords } = this.state
     const method = methods[index]
     const id = method.id
     const latex = math.getLaTeX(id)
@@ -584,6 +597,8 @@ class PaperComponent extends Component {
           if (newMethod) {
             console.log(simplified)
             math.setLatex(newMethod.id, simplified)
+            const newKeywords = getSolutionKeywords(simplified, keywords)
+            this.setState({ keywords: newKeywords })
           }
         })
     }

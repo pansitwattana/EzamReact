@@ -22,7 +22,7 @@ class ErrorChecker {
   }
 
   isCorrect() {
-    return false
+    return null
   }
 
   checkAll(solutions) {

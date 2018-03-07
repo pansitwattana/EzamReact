@@ -430,7 +430,7 @@ class Answer extends Component {
       const solutionCreatorId = solution.author.id
       const isAuthor = solutionCreatorId === userId
       const isOwner = solutionCreatorId === ownerId
-      console.log({ isAuthor, isOwner, index })
+      // console.log({ isAuthor, isOwner, index })
       const { id, comments, author, answers } = solution
       const { rateCount, rate, comment } = state
       const answerHeader = isAuthor ? (
