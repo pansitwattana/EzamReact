@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`simplify \\frac{6}{9} 1`] = `"6666666"`;
+exports[`simplify \\frac{6}{9} 1`] = `"\\\\frac{2}{3}"`;
 
 exports[`simplify \\frac{6x}{9} 1`] = `"\\\\frac{ x\\\\cdot2}{3}"`;
 
