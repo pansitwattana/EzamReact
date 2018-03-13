@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, Icon, Progress } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { gql, graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
 import Error from './commons/Error'
 import Label from './commons/CornerLabel'
 import testImg from '../assets/images/dummy.png'
@@ -50,7 +51,7 @@ const AchievementPage = ({ userQuery }) => {
   } else if (error) {
     return <Error message={error} />
   } else if (!user) {
-    return <Error message={'not logged in'} />
+    return <Error message="Please Login" login onLoginClick={() => this.props.history.push('/login')}/>
   }
 
   const solveCount = user._solutionsMeta.count
@@ -121,4 +122,4 @@ const AchievementUser = graphql(userQuery, {
   options: { fetchPolicy: 'network-only' },
 })(AchievementPage)
 
-export default AchievementUser
+export default withRouter(AchievementUser)

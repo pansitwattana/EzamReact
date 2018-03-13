@@ -419,7 +419,7 @@ class Problem extends Component {
                   padding: '6px 12px',
                   cursor: 'pointer'
                 }}>
-                  <Icon name="camera" /> Custom Upload
+                  <Icon name="camera" /> Image Upload
                 </label>
                 <input
                   id="file-upload"

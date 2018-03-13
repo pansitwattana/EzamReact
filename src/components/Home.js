@@ -143,7 +143,7 @@ class Home extends Component {
           count: 0,
         }
       ],
-      Privates: [],
+      Sections: [],
     },
     currentSubject: 'Mathematics',
   }
@@ -168,7 +168,7 @@ class Home extends Component {
       let { tags } = this.state
       if (user) {
 
-        tags.Privates = user.tags.map(tag => ({
+        tags.Sections = user.tags.map(tag => ({
           title: tag.name,
           subtitle: 'Basic',
           id: tag.id,
@@ -179,11 +179,11 @@ class Home extends Component {
         let math = this.checkCount(tags.Mathematics, solutions)
         let physics = this.checkCount(tags.Physics, solutions)
         let sci = this.checkCount(tags.Sciences, solutions)
-        let privateSection = this.checkCount(tags.Privates, solutions)
+        let privateSection = this.checkCount(tags.Sections, solutions)
         tags.Mathematics = math
         tags.Physics = physics
         tags.Sciences = sci
-        tags.Privates = privateSection
+        tags.Sections = privateSection
 
         this.setState({ tags })
         // {
@@ -228,7 +228,7 @@ class Home extends Component {
       const { user } = this.props.userQuery
       console.log(user)
       if (user) {
-        addButton = currentSubject !== 'Privates' ?
+        addButton = currentSubject !== 'Sections' ?
           (<AddButton onClick={() => this.props.history.push('/post')}>Add a Problem</AddButton>) :
           (<AddButton onClick={() => this.props.history.push('/new')}>Add a Private Section</AddButton>)
         loginButton = <div />

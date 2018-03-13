@@ -11,3 +11,11 @@ test('simplify 77*3sin(5x/10)', () => {
 test('simplify 10x+5x+77/3sin(5x/10)', () => {
   expect(Simplify('10x+5x+77/3sin(5x/10)')).toMatchSnapshot()
 })
+
+test('simplify \\frac{6}{9}', () => {
+  expect(Simplify('\\frac{6}{9}')).toMatchSnapshot()
+})
+
+test('simplify \\frac{6x}{9}', () => {
+  expect(Simplify('\\frac{6x}{9}')).toMatchSnapshot()
+})

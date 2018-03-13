@@ -77,7 +77,20 @@ class Catalog extends Component {
         console.log(probsA, probsB)
         console.log(productPa, productPb)
         return productPa - productPb
-      })
+      }).slice(0, 5)
+    } else if (filter === 'Challenge' && user) {
+      const userDones = filterPosts.filter(({ solutions }) => solutions.filter(({ author }) => author.id === user.id).length > 0)
+      const notDonePosts = filterPosts.filter(({ solutions }) => solutions.length > 0 && solutions.filter(({ author }) => author.id === user.id).length === 0)
+      console.log(notDonePosts)
+      filterPosts = notDonePosts.sort((a, b) => {
+        const probsA = userDones.map(({ solutions }) => calculateBaye(solutions, user, a))
+        const probsB = userDones.map(({ solutions }) => calculateBaye(solutions, user, b))
+        const productPa = product(probsA)
+        const productPb = product(probsB)
+        console.log(probsA, probsB)
+        console.log(productPa, productPb)
+        return productPb - productPa
+      }).slice(0, 5)
     } else if (filter === 'Search') {
       const keyword = this.state.searchValue
       const posts = filterPosts.map(post => post.latex)
@@ -136,12 +149,13 @@ class Catalog extends Component {
           <Input loading={loading} placeholder='Search...' value={this.state.searchValue} onChange={this.onSearch} />
           <Dropdown style={{ padding: '0px 5px'}} text={this.state.filter} >
             <Dropdown.Menu>
+              <Dropdown.Item onClick={() => this.setState({ filter: 'Suggestion' })} text='Suggestion' />
+              <Dropdown.Item onClick={() => this.setState({ filter: 'Challenge' })} text='Challenge' />
               <Dropdown.Item onClick={() => this.setState({ filter: 'Most Solved' })} text='Most Solved' />
               <Dropdown.Item onClick={() => this.setState({ filter: "Answer" })} text="Answered" />
               <Dropdown.Item onClick={() => this.setState({ filter: "Haven't Done" })} text="Haven't Done" />
               <Dropdown.Item onClick={() => this.setState({ filter: 'Recently' })} text='Recently' />
               <Dropdown.Item onClick={() => this.setState({ filter: 'No Answer' })} text='No Answer' />
-              <Dropdown.Item onClick={() => this.setState({ filter: 'Suggestion' })} text='Suggestion' />
             </Dropdown.Menu>
           </Dropdown>
         </Header>
@@ -190,6 +204,12 @@ const postQuery = gql`
     }
   }
 `
+
+// (filter: {
+//   tags_every: {
+//     public: true
+//   }
+// }) 
 
 const userQuery = gql`
 query {

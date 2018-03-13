@@ -54,7 +54,7 @@ class AddRoom extends Component {
         <Input
           size='big'
           style={{ width: '100%', margin: '5% 0' }}
-          placeholder="Room Title"
+          placeholder="Section Title"
           value={title}
           onChange={e => this.setState({ title: e.target.value })}
         />
@@ -70,7 +70,7 @@ class AddRoom extends Component {
           value={allowPost}
           label='Allow Members To Post'
         />
-        <Checkbox
+        {/* <Checkbox
           style={{ padding: 10, margin: '5% 0' }}
           value={showTime}
           onChange={() => this.setState({ showTime: !showTime })}
@@ -100,7 +100,7 @@ class AddRoom extends Component {
           timeIntervals={15}
           dateFormat="LLL"
           timeCaption="time"
-        />
+        /> */}
 
         <Button style={{ padding: 10, margin: '5% 0' }} icon onClick={this.submit}>
           <Icon name="send" />

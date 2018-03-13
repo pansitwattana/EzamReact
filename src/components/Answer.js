@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { Card, Button, Icon, Popup, Form, TextArea, Input } from 'semantic-ui-react'
+import  { Modal, Card, Button, Icon, Popup, Form, TextArea, Input } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
 import uuid from 'uuid'
 import deleteAnswerMutation from '../graph/deleteAnswer'
@@ -377,6 +377,13 @@ class Answer extends Component {
       .catch(error => console.error(error))
   }
 
+  submitReport = (senderId, solutionId) => {
+    const variables = { senderId, solutionId }
+    this.props.submitReport({ variables })
+      .then(res => console.log(res))
+      .catch(err => console.error(err))
+  }
+
   generateAnswers() {
     if (this.props.data.loading || this.props.userQuery.loading) {
       return <Error message="Loading..." />
@@ -405,17 +412,17 @@ class Answer extends Component {
       const aSolutionAuthorId = a.author.id
       const bSolutionAuthorId = b.author.id
       if (aSolutionAuthorId === ownerId) {
-        aScore = 1000000
+        aScore = 999999
       }
       else if (aSolutionAuthorId === userId) {
-        aScore = 999999
+        aScore = 1000000
       }
       
       if (bSolutionAuthorId === ownerId) {
-        bScore = 1000000
+        bScore = 999999
       }
       else if (bSolutionAuthorId === userId) {
-        bScore = 999999
+        bScore = 1000000
       }
 
       return bScore - aScore
@@ -455,14 +462,6 @@ class Answer extends Component {
             {commentButton}
           </Button.Group>
         )
-      const threeDot = isAuthor ? (
-        <Popup
-          trigger={<Icon name='ellipsis horizontal' />}
-          content={<Button onClick={() => this.submitDelete(solution)} color='red' content='Delete' />}
-          on='click'
-          position='top right'
-        />
-      ) : <div />
       return (
         <Card key={id} style={{ width: '98%', marginLeft: '1%', marginRight: '1%' }}>
           <Label text={isOwner ? 'Owner' : 'Yours'} show={isAuthor || isOwner} color={isOwner ? 'red' : 'green'}/>
@@ -473,7 +472,17 @@ class Answer extends Component {
                 <div>
                   {rateCount} Vote
                 </div>
-                {threeDot}
+                <Popup
+                  trigger={<Icon name='ellipsis horizontal' />}
+                  content={
+                    <div>
+                      {isAuthor ? (<Button onClick={() => this.submitDelete(solution)} color='red' content='Delete' />) :
+                        (<Button onClick={() => this.submitReport(userId, id)} content='Report' />)}
+                    </div>
+                  }
+                  on='click'
+                  position='top right'
+                />
               </Option>
             </Cover>
             <AnswerMethods answers={answers} isAuthor={isAuthor} onSubmit={this.onDescriptionUpdate} />
@@ -622,6 +631,17 @@ const addDescription = gql`
   }
 `
 
+const submitReport = gql`
+  mutation($senderId: ID!, $solutionId: ID!) {
+    createReport(
+      senderId: $senderId
+      solutionId: $solutionId
+    ) {
+      id
+    }
+  }
+`
+
 // export default withRouter(Answer)
 const AnswerWithUser = graphql(userQuery, {
   name: 'userQuery',
@@ -640,11 +660,13 @@ const AnswerWithVoteSolution = graphql(voteSolution, { name: 'voteSolution' })(A
 
 const AnswerWithAddDescription = graphql(addDescription, { name: 'updateDescription' })(AnswerWithVoteSolution)
 
+const AnswerWithReportSubmit = graphql(submitReport, { name: 'submitReport' })(AnswerWithAddDescription)
+
 export default (
   graphql(answerQuery, {
     options: ownProps => ({ 
       variables: { id: ownProps.location.state.id },
       fetchPolicy: 'network-only',
     })
-  })(withRouter(AnswerWithAddDescription))
+  })(withRouter(AnswerWithReportSubmit))
 )

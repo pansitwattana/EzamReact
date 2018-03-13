@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, Icon, Image } from 'semantic-ui-react'
 import { gql, graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
 import Error from './commons/Error'
 
 const Profile = ({ userQuery }) => {
@@ -10,7 +11,7 @@ const Profile = ({ userQuery }) => {
   } else if (error) {
     return <Error message={error} />
   } else if (!user) {
-    return <Error message={'not logged in'} />
+    return <Error message="Please Login" login onLoginClick={() => this.props.history.push('/login')}/>
   }
 
   const { credit, experience, name, email } = user
@@ -79,4 +80,4 @@ const ProfileWithUser = graphql(userQuery, {
 })(Profile)
 
 
-export default ProfileWithUser
+export default withRouter(ProfileWithUser)

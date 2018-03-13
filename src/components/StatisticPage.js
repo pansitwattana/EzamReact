@@ -3,6 +3,7 @@ import { gql, graphql } from 'react-apollo'
 import { Card, Statistic } from 'semantic-ui-react'
 import moment from 'moment'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 import Error from './commons/Error'
 import LineChart from './commons/LineChart'
 import BarChart from './commons/ฺBarChart'
@@ -71,7 +72,7 @@ const StatisticPage = ({ userQuery }) => {
   } else if (error) {
     return <Error message={error.message} />
   } else if (!user) {
-    return <Error message={'not logged in'} />
+    return <Error message="Please Login" login onLoginClick={() => this.props.history.push('/login')}/>
   }
   const { data, labels, sum } = aggregateLastWeek(user.solutions)
   const { barData, barLabels } = aggregateSubject(user.solutions)
@@ -139,4 +140,4 @@ const StatsUser = graphql(userQuery, {
   options: { fetchPolicy: 'network-only' },
 })(StatisticPage)
 
-export default StatsUser
+export default withRouter(StatsUser)
