@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Keys } from '../data/Keys'
+import StaticMath from './StaticMath'
 
 const Key = styled.div`
   background-color: ${props => props.backgroundColor};
@@ -210,7 +211,7 @@ class KeyComponent extends Component {
           border={border}
           highlight={highlight}
         >
-          <span>{keySymbol}</span>
+          <StaticMath>{keySymbol}</StaticMath>
         </Operation>
       </Key>)
   }

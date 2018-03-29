@@ -22,6 +22,7 @@ const App = () => (
     <NavigationBar>
       <Route exact path="/" component={Home} />
       <Route path="/paper/:id" component={Paper} />
+      {/* <Route exact path="/paper/" component={Paper} /> */}
       <Route path="/catalog/:title" component={Catalog} />
       <Route path="/answer" component={Answer} />
       <Route path="/profile" component={Profile} />

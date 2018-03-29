@@ -374,6 +374,7 @@ class Problem extends Component {
               />
 
               <TextArea
+                placeholder='Type Math Question'
                 readOnly={showKeyboard}
                 onFocus={this.onTextFocus}
                 onChange={this.onTextChange}
@@ -386,6 +387,7 @@ class Problem extends Component {
               </LaTeXShow>
 
               <TextArea
+                placeholder='Type Answer'
                 height='25px'
                 readOnly={showKeyboard}
                 onFocus={this.onAnswerFocus}
