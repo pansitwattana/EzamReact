@@ -7,6 +7,9 @@ const items = ['Math', 'Physics', 'Sci', 'Sections']
 const Menu = styled.div`
   padding: 10px 10px;
   width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 `
 
 const Item = styled.span`

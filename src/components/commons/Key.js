@@ -17,7 +17,7 @@ const Key = styled.div`
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none
+  user-select: none;
   transition: all 0.2s;
   width: ${props => props.width}%;
   ${props => props.highlight && `
@@ -33,7 +33,7 @@ const Key = styled.div`
   `}
   ${props => props.action === 'true' && `
     width: 33%;
-    padding: 15px;
+    padding: 10px;
   `}
 `
 
@@ -46,6 +46,7 @@ const Operation = styled.div`
   border: ${props => props.border};
   color: ${props => props.color};
   ${props => props.operator === 'true' && `
+    font-size: 8px;
     padding-top: 8px;
     padding-bottom: 8px;
     display: inline;
@@ -81,11 +82,20 @@ class KeyComponent extends Component {
     this.buttonPressTimer = setTimeout(() => this.onLongPress(), 1200);
     const { touches } = event
     if (touches.length > 0) {
+      const touch = touches[0]
+      const { upSymbol, downSymbol } = this.props
+      // console.log({ touch } )
+      const pos = {
+        x: touch.clientX,
+        y: touch.clientY,
+      }
+      const value = { swipeUp: upSymbol, swipeDown: downSymbol }
+      this.props.onClick({
+        x: touch.pageX,
+        y: touch.pageY,
+      }, value)
       this.setState({
-        pos: {
-          x: touches[0].clientX,
-          y: touches[0].clientY,
-        },
+        pos,
         status: 'touch',
       })
     }
@@ -99,9 +109,12 @@ class KeyComponent extends Component {
       // const height = 0
       const y = event.touches[0].clientY
       const deltaY = y - this.state.pos.y
+      const { onSwipe } = this.props
       if (deltaY > 0 && swipeDown) {
+        onSwipe(false, true)
         this.setState({ status: 'swipedown' })
       } else if (deltaY < 0 && swipeUp) {
+        onSwipe(true, false)
         this.setState({ status: 'swipeup' })
       }
     }
@@ -160,21 +173,21 @@ class KeyComponent extends Component {
       operator = true
       borderRadius = '20px'
       if (keyValue === Keys.PLUS) {
-        padding = '12px'
+        padding = '6px'
         backgroundColor = '#cb7dc9'
       } else if (keyValue === Keys.RIGHT || keyValue === Keys.LEFT) {
         backgroundColor = '#00ffff'
         color = '#000000'
-        padding = '13px'
+        padding = '7px'
       } else if (keyValue === Keys.ALPHABET || keyValue === Keys.NUMBER) {
         backgroundColor = '#323156'
         color = '#ffffff'
-        padding = '12px'
+        padding = '6px'
         borderRadius = '2px'
       } else if (keyValue === Keys.ENTER) {
         backgroundColor = '#ec1b5b'
         color = '#ffffff'
-        padding = '15px'
+        padding = '8px'
         borderRadius = '7px'
       }
     } else if (keyType === 'action') {
@@ -219,6 +232,8 @@ class KeyComponent extends Component {
 
 KeyComponent.defaultProps = {
   keySymbol: '',
+  upSymbol: '',
+  downSymbol: '',
   keyValue: '',
   highlight: false,
   colCount: 5,
@@ -229,9 +244,13 @@ KeyComponent.defaultProps = {
 KeyComponent.propTypes = {
   keyType: PropTypes.string.isRequired,
   keySymbol: PropTypes.string,
+  upSymbol: PropTypes.string,
+  downSymbol: PropTypes.string,
   keyValue: PropTypes.string,
   highlight: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
+  onSwipe: PropTypes.func.isRequired,
   swipeDown: PropTypes.string,
   swipeUp: PropTypes.string,
   colCount: PropTypes.number,

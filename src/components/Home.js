@@ -73,7 +73,7 @@ class Home extends Component {
           count: 0,
         },
         {
-          title: 'Matrix',
+          title: 'Tester',
           subtitle: 'Basic',
           id: 8,
           count: 0,

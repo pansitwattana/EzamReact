@@ -23,7 +23,7 @@ let errorManager = null
 
 const Wrapper = styled.div`
   background: white;
-  height: 57%;
+  height: 52%;
   position: relative;
 `
 
@@ -647,7 +647,7 @@ class PaperComponent extends Component {
                 onEditSubmit={() => this.submitEdit(id)}
                 onCheck={() => this.onCheck(id)}
                 onUnlock={() => this.onUnlock(id, userCredit, userId)}
-                onTagClick={(tag) => this.props.history.push(`/catalog/${tag}`)}
+                onTagClick={(tag) => console.log(tag + ' was clicked')/*this.props.history.push(`/catalog/${tag}`)*/}
               />
               <div>
                 {methods.map((method, index) =>
