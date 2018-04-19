@@ -2,15 +2,19 @@ import { ErrorChecker, type, status } from './ErrorChecker'
 import solver from './Solver'
 
 class EquationChecker extends ErrorChecker {
-  constructor(problem) {
-    super(problem)
+  constructor(problem, finalAnswer) {
+    super(problem, finalAnswer)
     let answer = solver(problem)
     if (answer) {
       this.answer = answer
       this.status = status.OK
     }
     else {
-      this.status = status.FAIL
+      if (finalAnswer) {
+        this.status = status.FINALCHECK
+      } else {
+        this.status = status.FAIL
+      }
     }
     this.type = type.EQUATION
   }
@@ -21,7 +25,12 @@ class EquationChecker extends ErrorChecker {
     }
     
     const value = solver(solution)
-    return value === this.answer
+    if (value !== null) {
+      return value === this.answer
+    }
+    else {
+      return true
+    }
   }
 }
 

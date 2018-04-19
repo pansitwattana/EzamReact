@@ -13,13 +13,15 @@ const Input = styled.span`
   line-height: ${props => props.size};
 `
 
-const InputComponent = ({ id, focus, error }) => {
+const InputComponent = ({ id, focus, error, canSimplify, simplify }) => {
   // const size = focus ? '40px' : '20px'
-  const errorBox = error ? <Icon name="remove" color="red" /> : <div />
+  const simplifyButton = canSimplify ? <Icon name='idea' onClick={simplify} fitted color='yellow' style={{ padding: '0px 5px', float: 'right' }} /> : undefined
+  const errorBox = error ? <Icon name="remove" color="red" /> : undefined
   return (
-    <div>
+    <div> 
       <Input id={id} border="white" />
       {errorBox}
+      {simplifyButton}
     </div>
   )
 }
@@ -27,12 +29,15 @@ const InputComponent = ({ id, focus, error }) => {
 InputComponent.defaultProps = {
   focus: false,
   error: false,
+  canSimplify: false,
 }
 
 InputComponent.propTypes = {
   id: PropTypes.string.isRequired,
+  simplify: PropTypes.func.isRequired,
   focus: PropTypes.bool,
   error: PropTypes.bool,
+  canSimplify: PropTypes.bool,
 }
 
 export default InputComponent

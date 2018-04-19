@@ -1,7 +1,7 @@
 import EquationChecker from './EquationChecker'
 
 test('5x=7', () => {
-  const checker = new EquationChecker('5x=7')
+  const checker = new EquationChecker('5x=7', '1.4')
   const correctSolution1 = 'x=7/5'
   const correctSolution2 = 'x=1.4'
   const wrongSolution = 'x=2'
@@ -27,7 +27,7 @@ test('5x=7', () => {
 // })
 
 test('checkAll', () => {
-  const checker = new EquationChecker('x=3x+9')
+  const checker = new EquationChecker('x=3x+9', '-4.5')
   const solutions = [
     'x=-4.5',
     'x=-9/2',

@@ -10,7 +10,7 @@ export default class MenuExampleCompact extends Component {
     const { activeItem } = this.state
 
     return (
-      <Menu style={{ width: '250px', alignSelf: 'center' }} compact icon="labeled">
+      <Menu style={{ margin: '10px 0', width: '250px', alignSelf: 'center' }} compact icon="labeled">
         <Menu.Item name="calculator" active={activeItem === 'calculator'} onClick={this.handleItemClick}>
           <Icon name="calculator" />
           Math

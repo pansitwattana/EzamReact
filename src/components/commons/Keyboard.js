@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import { Button } from 'semantic-ui-react'
 import LaTeX from './LaTeX'
 import Key from './Key'
-import { Math, Alphabet } from '../data/Keyboards'
+import { Math, Alphabet, MathJax, MathJaxAlphabet } from '../data/Keyboards'
 import { Keys, KeyAction, Actions } from '../data/Keys'
+import Label from './Keyboard/Label'
 
 const Keyboard = styled.div`
   position: fixed;
@@ -27,32 +28,97 @@ const KeyboardRow = styled.div`
 `
 
 const Suggestion = styled.div`
-  height: 10%;
-  width: 95%;
+  height: 15%;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 `
+
+let containerHeight = 0
+
 class KeyboardComponent extends Component {
   state = {
     type: Math,
+    showLabel: false,
+    labelPos: {
+      x: 0,
+      y: 0,
+    },
+    swipeStatus: {
+      up: false,
+      down: false
+    },
+    swipeValue: {
+      swipeUp: '',
+      swipeDown: '',
+    }
   }
+
   onKeywordPress = (keyword) => {
-    this.props.onPress(keyword)
+    this.props.onSuggestionPress(keyword)
+  }
+
+  onKeyPress = (value) => {
+  
   }
 
   handleKeyPress = (value) => {
     const action = KeyAction(value)
-    if (action === Actions.ALPHABET) {
-      this.setState({ type: Alphabet })
-    } else if (action === Actions.NUMBER) {
-      this.setState({ type: Math })
+    const { type } = this.state
+    if (action === Actions.ALPHABET && type === Math) {
+      this.setState({ type: Alphabet, showLabel: false })
+    } else if (action === Actions.NUMBER && type === Alphabet) {
+      this.setState({ type: Math, showLabel: false })
+    } else if (action === Actions.ALPHABET && type !== Math) {
+      this.setState({ type: MathJaxAlphabet, showLabel: false })
+    } else if (action === Actions.NUMBER && type !== Math) {
+      this.setState({ type: MathJax, showLabel: false })
     } else {
       this.props.onPress(value)
     }
+    this.setState({
+      showLabel: false,
+      swipeStatus: {
+        up: false,
+        down: false
+      },
+      swipeValue: {
+        swipeUp: '',
+        swipeDown: '',
+      }
+    })
   }
+
+  handleClick = (pos, swipeValue) => {
+    console.log({
+      pos, containerHeight, swipeValue
+    })
+    const top = 100
+    const left = 30
+    const y = ((window.innerHeight) * containerHeight / 100) - (window.innerHeight - pos.y) - top
+    const x = pos.x + left
+    const newPos = { x, y }
+    this.setState({ labelPos: newPos, showLabel: true, swipeValue })
+  }
+
+  handleSwipe = (swipeUp, swipeDown) => {
+    console.log(swipeUp, swipeDown)
+    this.setState({ swipeStatus: { swipeUp, swipeDown } })
+  }
+  
   renderKeywords(keywords) {
     return keywords.map(keyword => (
-      <Button style={{ height: '100%' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
+      <Button style={{ height: '100%', padding: '9px', margin: '2px' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
+  }
+
+  componentWillMount() {
+    const { isMathJax } = this.props
+    if (isMathJax) {
+      this.setState({ type: MathJax })
+    }
   }
 
   render() {
@@ -65,29 +131,36 @@ class KeyboardComponent extends Component {
     const { keywords } = this.props
     let suggestionComponent = <div />
     let keyHeight = 75
-    let keyActionHeight = 15
+    let keyActionHeight = 10
     if (keywords && keywords.length > 0) {
       keyHeight = 75
-      keyActionHeight = 15
+      keyActionHeight = 10
       suggestionComponent = (<Suggestion>{this.renderKeywords(keywords)}</Suggestion>)
     } else {
       keyHeight = 85
       keyActionHeight = 15
     }
 
+    const { type, showLabel, labelPos, swipeValue, swipeStatus } = this.state
+    const { x, y } = labelPos
     const {
-      value, symbol, down, up, action,
-    } = this.state.type
+      value, symbol, down, up, action, downSymbol, upSymbol
+    } = type
     const rowCount = symbol.length
-    const height = (9 * value.length)
+    const height = (6 * value.length) + 15
+    containerHeight = height
     const keyboardRows = value.map((values, row) => {
       const symbolRow = symbol[row]
+      const upSymbolRow = upSymbol[row]
+      const downSymbolRow = downSymbol[row]
       const downRow = down[row]
       const upRow = up[row]
       const col = symbolRow.length
       let key = ''
       const keys = values.map((keyValue, index) => {
         const symbolValue = symbolRow[index]
+        const upSymbolValue = upSymbolRow[index]
+        const downSymbolValue = downSymbolRow[index]
         const downValue = downRow[index]
         const upValue = upRow[index]
         key += symbolValue
@@ -97,31 +170,37 @@ class KeyboardComponent extends Component {
             keyType="number"
             keyValue={keyValue}
             keySymbol={symbolValue}
+            downSymbol={downSymbolValue}
+            upSymbol={upSymbolValue}
             swipeDown={downValue}
             swipeUp={upValue}
             onPress={this.handleKeyPress}
             colCount={col}
+            onClick={this.handleClick}
+            onSwipe={this.handleSwipe}
           />)
       })
       const rowHeight = keyHeight / rowCount
       return <KeyboardRow key={key} height={rowHeight} >{keys}</KeyboardRow>
     })
+    console.log(swipeValue)
     return (
       <Keyboard height={height}>
         {suggestionComponent}
         {keyboardRows}
         <KeyboardRow height={keyActionHeight}>
-          <Key keyType="operator" keyValue={action} keySymbol={action} onPress={this.handleKeyPress} swipeDown={action} />
-          <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={this.handleKeyPress} swipeDown={Keys.LEFT} />
-          <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={this.handleKeyPress} swipeDown={Keys.RIGHT} />
-          <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={this.handleKeyPress} swipeDown={Keys.ENTER} />
+          <Key keyType="operator" keyValue={action} keySymbol={action} onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={action} />
+          <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.LEFT} />
+          <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.RIGHT} />
+          <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.ENTER} />
         </KeyboardRow>
+        {showLabel && <Label x={x} y={y} value={swipeValue} status={swipeStatus} />}
       </Keyboard>
     )
   }
 }
 
-// const KeyboardComponent = ({ onPress, keyValues, keySymbols, swipeDownValue, action }) => {
+// const KeyboardCompoxnent = ({ onPress, keyValues, keySymbols, swipeDownValue, action }) => {
 //   const rowCount = keySymbols.length
 //   const height = (9 * keyValues.length)
 //   const keyboardRows = keyValues.map((values, row) => {
@@ -168,12 +247,15 @@ const KeyboardType = {
 KeyboardComponent.defaultProps = {
   show: true,
   keywords: [],
+  isMathJax: false,
 }
 
 KeyboardComponent.propTypes = {
   onPress: PropTypes.func.isRequired,
+  onSuggestionPress: PropTypes.func,
   keywords: PropTypes.array,
   show: PropTypes.bool,
+  isMathJax: PropTypes.bool,
 }
 
 export default KeyboardComponent

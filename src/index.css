@@ -1,5 +1,30 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Kanit', sans-serif;
+}
+
+.mq-editable-field, .mq-math-mode .mq-editable-field {
+  border: none !important;
+}
+
+.ui.menu {
+  font-family: 'Kanit', sans-serif;
+}
+
+.ui.input>input {
+  font-family: 'Kanit', sans-serif;
+}
+
+.header {
+  font-family: 'Kanit', sans-serif !important;
+}
+
+input {
+  font-family: 'Kanit', sans-serif;
+}
+
+body ::-webkit-scrollbar {
+  width: 0px;
+  height: 1px;
 }

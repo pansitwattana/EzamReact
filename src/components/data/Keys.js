@@ -22,7 +22,7 @@ const Keys = {
   MINUS: '-',
   PLUSMINUS: '\\pm',
   NEGATIVE: 'NEGATIVE',
-  TIMES: '×',
+  TIMES: '\\cdot',
   DIVIDE: '/',
   DECIMAL: 'DECIMAL',
   DOT: '.',
@@ -41,6 +41,7 @@ const Keys = {
   FRAC_EXCLUSIVE: 'FRAC_EXCLUSIVE',
   ENTER: 'Enter',
   EXP: '^',
+  EXP_1: '\\^1',
   EXP_2: '\\^2',
   EXP_3: '\\^3',
   EXP_4: '\\^4',
@@ -49,6 +50,8 @@ const Keys = {
   EXP_7: '\\^7',
   EXP_8: '\\^8',
   EXP_9: '\\^9',
+
+  SUB_1: '\\_1',
   SUB_2: '\\_2',
   SUB_3: '\\_3',
   SUB_4: '\\_4',
@@ -59,17 +62,19 @@ const Keys = {
   SUB_9: '\\_9',
 
   SQRT: '\\sqrt',
+  SQRT_3: '\\sqrt[3]{}',
+  SQRT_4: '\\sqrt[4]{}',
   CUBE_ROOT: 'CUBE_ROOT',
   RADICAL: 'RADICAL',
   LEFT_PAREN: 'LEFT_PAREN',
   RIGHT_PAREN: 'RIGHT_PAREN',
-  LN: 'LN',
+  LN: '\\ln',
   LOG: '\\log_{10}',
   LOG_N: 'LOG_N',
   LOG_2: '\\log_{2}',
   SIN: '\\sin',
   COS: '\\cos',
-  TAN: 'TAN',
+  TAN: '\\tan',
   // TODO(charlie): Add in additional Greek letters.
   
   // control key
@@ -79,6 +84,7 @@ const Keys = {
   LEFT: 'Left',
   BACKSPACE: 'Backspace',
   DISMISS: 'DISMISS',
+  DELETE: 'Delete',
 
   JUMP_OUT_PARENTHESES: 'JUMP_OUT_PARENTHESES',
   JUMP_OUT_EXPONENT: 'JUMP_OUT_EXPONENT',
@@ -97,11 +103,13 @@ const Actions = {
   COMMANDOPEN: 'COMMANDOPEN',
   KEYSTROKE: 'KEYSTROKE',
   LATEX: 'LATEX',
+  LATEXLEFT: 'LATEXLEFT',
   TYPE: 'TYPE',
   HIDE: 'HIDE',
   CLEAR: 'CLEAR',
   ALPHABET: 'ALPHABET',
   NUMBER: 'NUMBER',
+  DELETE: 'DELETE',
 }
 
 const KeyAction = (key) => {
@@ -117,8 +125,11 @@ const KeyAction = (key) => {
             key === Keys.PLUSMINUS || key === Keys.ALPHA || key === Keys.BETA || key === Keys.MU || key === Keys.EPSILON || key === Keys.ZETA ||
             key === Keys.NOTEQUAL || key === Keys.SUB_2 || key === Keys.SUB_3 || key === Keys.SUB_4 || key === Keys.SUB_5 || key === Keys.SUB_6 ||
             key === Keys.SUB_7 || key === Keys.SUB_8 || key === Keys.SUB_9 || key === Keys.EXP_4 || key === Keys.EXP_5 || key === Keys.EXP_6 ||
-            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9) {
+            key === Keys.EXP_7 || key === Keys.EXP_8 || key === Keys.EXP_9 || key === Keys.SIGMA || key === Keys.OMEGA || key === Keys.XI ||
+            key === Keys.LN || key === Keys.TIMES || key === Keys.THETA || key === Keys.ETA || key === Keys.PI || key === Keys.IOTA || key === Keys.LAMBDA) {
     return Actions.LATEX
+  } else if (key === Keys.SQRT_3 || key === Keys.SQRT_4) {
+    return Actions.LATEXLEFT
   } else if (key === Keys.DOWN) {
     return Actions.HIDE
   } else if (key === Keys.CLEAR) {
@@ -127,6 +138,8 @@ const KeyAction = (key) => {
     return Actions.ALPHABET
   } else if (key === Keys.NUMBER) {
     return Actions.NUMBER
+  } else if (key === Keys.DELETE) {
+    return Actions.DELETE
   }
 
   return Actions.TYPE

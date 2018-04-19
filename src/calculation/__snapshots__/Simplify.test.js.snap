@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`simplify \\frac{6}{9} 1`] = `"\\\\frac{2}{3}"`;
+
+exports[`simplify \\frac{6x}{9} 1`] = `"\\\\frac{ x\\\\cdot2}{3}"`;
+
+exports[`simplify 2 * 1 * x ^ (2 - 1) 1`] = `"2\\\\cdot x"`;
+
+exports[`simplify 10x+5x+77/3sin(5x/10) 1`] = `"15\\\\cdot x+\\\\frac{\\\\sin\\\\left(\\\\frac{ x}{2}\\\\right)\\\\cdot77}{3}"`;
+
+exports[`simplify 77*3sin(5x/10) 1`] = `"231\\\\cdot\\\\sin\\\\left(\\\\frac{ x}{2}\\\\right)"`;

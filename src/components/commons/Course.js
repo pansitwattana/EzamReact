@@ -16,7 +16,7 @@ const CourseComponent = ({ title, subtitle, itemCount }) => (
         </Card.Description>
       </Card.Content>
       <Card.Content extra>
-        {itemCount} Items
+        {itemCount} Solves
       </Card.Content>
     </Card>
   </Link>

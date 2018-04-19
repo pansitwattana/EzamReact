@@ -1,12 +1,18 @@
 import EquationChecker from './EquationChecker'
 import DiffentialChecker from './DifferentialChecker'
-import { debug } from 'util';
+import PhysicsChecker from './PhysicsChecker'
+import { status, ErrorChecker } from './ErrorChecker'
 
 class ErrorManager {
   constructor(problem) {
+    if (!problem) {
+      console.error('no problem input')
+      return
+    }
     this.problem = problem
     let isEquation = false
     let isDifferential = false
+    let isKinetic = false
     this.problem.tags.forEach(tag => {
       if (tag.name === "Equation") {
         isEquation = true
@@ -14,15 +20,30 @@ class ErrorManager {
       else if (tag.name === "Differential") {
         isDifferential = true
       }
+      else if (tag.subject === 'Physics' || tag.subject === 'Chemical') {
+        isKinetic = true
+      }
     })
-    if (isEquation) this.checker = new EquationChecker(problem.latex)
-    else if (isDifferential) this.checker = new DiffentialChecker(problem.latex)
+    if (isEquation) this.checker = new EquationChecker(problem.latex, problem.answer)
+    else if (isDifferential) this.checker = new DiffentialChecker(problem.latex, problem.answer)
+    else if (isKinetic) {
+      console.log('enable check physics')
+      console.log(problem)
+      this.checker = new PhysicsChecker(problem, problem.answer)
+    } else if (problem.answer) {
+      this.checker = new ErrorChecker(problem, problem.answer)
+    }
 
     if (this.checker) {
-      console.log(`error checker enabled ${this.checker.type}`)
+      if (this.checker.status === status.FAIL) {
+        console.log(`Error failed to check`)
+      }
+      else {
+        console.log(`Error checker enabled ${this.checker.type}`)
+      }
     }
     else {
-      console.log('error checker disabled')
+      console.log('Error checker does not support')
     }
   }
 
@@ -36,7 +57,7 @@ class ErrorManager {
   }
 
   hasChecker() {
-    if (this.checker) {
+    if (this.checker && this.checker.status !== status.FAIL) {
       return true
     }
     return false

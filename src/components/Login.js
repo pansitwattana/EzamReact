@@ -10,13 +10,17 @@ import { Input, Button } from 'semantic-ui-react'
 import { graphql, gql } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Header from './commons/Header'
-import Logo from './commons/Logo'
 
 const Form = styled.div`
   display: flex;
-  paddind: 10px 10px;
+  padding: 10px 10px;
   justify-content: center;
   flex-direction: column;
+`
+
+const LoginButton = styled(Button)`
+  margin: 30px !important;
+  padding: 20px;
 `
 
 class Login extends Component {
@@ -24,11 +28,6 @@ class Login extends Component {
     createUser: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
   };
-
-  state = {
-    username: '',
-    password: '',
-  }
 
   lock = new Auth0Lock(
     'XbROZxuwYdEHTQaGNN5irLFDpR5JB6b3',
@@ -49,7 +48,11 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.data.user) {
+    const { error, user } = this.props.data
+    if (this.props.data.error) {
+      console.log(error)
+    }
+    if (user) {
       // console.log(this.props.data)
       this.props.history.replace('/');
     }
@@ -61,10 +64,11 @@ class Login extends Component {
       window.localStorage.setItem('auth0IdToken', authResult.idToken);
       console.log('authen done', authResult)
       console.log(this.props)
+      const email = authResult.idTokenPayload.email
       const variables = {
         idToken: authResult.idToken,
-        email: authResult.idTokenPayload.email,
-        name: 'NewUser',
+        email,
+        name: email,
       }
       // const queryVar = {
       //   auth0UserId: authResult.idTokenPayload.sub,
@@ -103,18 +107,9 @@ class Login extends Component {
     }
     return (
       <div>
-        <Logo onMouseDown={() => this.props.history.replace('/')}/>
-        <Header text="Login" />
         <Form>
-          <Input icon="user" iconPosition="left" placeholder="Username" onChange={(e, username) => this.setState({ username: username.value })} />
-          <Input
-            icon="lock"
-            type="password"
-            iconPosition="left"
-            placeholder="Password"
-            onChange={(e, password) => this.setState({ password: password.value })}
-          />
-          <Button positive onClick={this.login}>Login</Button>
+          <LoginButton positive onClick={this.login}>Login</LoginButton>
+          <LoginButton onClick={this.login}>Register</LoginButton>
           {/* <Button onClick={() => this.props.changePage(null, 'register')}>Sign Up</Button> */}
 
         </Form>
@@ -129,6 +124,8 @@ mutation($idToken: String!, $email: String!, $name: String!) {
     authProvider: { auth0: { idToken: $idToken } }
     email: $email
     name: $name
+    credit: 100
+    experience: 0
   ) {
     id
   }

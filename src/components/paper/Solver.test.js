@@ -65,6 +65,9 @@ test('Solver should return False when empty string', () => {
   expect(solver('')).toBeFalsy()
 })
 
+test('Physics Formular v^2 + 190223328567811170/7006492321624085=0', () => {
+  expect(solver('v^2 + 190223328567811170/7006492321624085=0', 'v')).toMatchSnapshot()
+})
 // test('Solver for \\left(x-1\\right)^2=\\left(4\\sqrt{x-4}\\right)^2', () => {
 //   expect(solver('\\left(x-1\\right)^2=\\left(4\\sqrt{x-4}\\right)^2')).toBe('3')
 // })

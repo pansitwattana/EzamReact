@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import LaTexContainer from './LaTexContainer'
+import Label from '../commons/CornerLabel'
 
 const Author = styled.div`
   font-size: 10px;
@@ -15,25 +16,31 @@ const Status = styled.span`
   color: green;
 `
 
+const SolveCount = styled.div`
+  padding: 10px;
+  border: solid #DADADB;
+  border-width: 1px 1px;
+  border-radius: 5px;
+`
+
+const Solve = styled.span`
+  font-size: 16px;
+  font-weight: bold;
+`
+
 class PostContainer extends Component {
   onClick(index, status) {
     // console.log(this.state.problems[index])
-    const post = this.props.posts[index]
-    // this.props.changePage(this.state.problems[index], 'Paper')
+    const { id } = this.props.posts[index]
     if (status === 'Done') {
-      this.props.history.push('/answer', {
-        id: post.id,
-      })
+      this.props.history.push('/answer', { id })
     }
     else {
-      this.props.history.push('/paper', {
-        post,
-        done: status === 'Done',
-      })
+      this.props.history.push(`/paper/${id}`)
     }
   }
 
-  getUserStatus(problem, user) {
+  getUserStatus(solutions, user) {
     if (!user) {
       return false
     }
@@ -44,7 +51,7 @@ class PostContainer extends Component {
     //   return 'Edit'
     // }
 
-    problem.solutions.forEach((solution) => {
+    solutions.forEach((solution) => {
       if (solution.author.id === user.id) {
         done = 'Done'
       }
@@ -55,16 +62,21 @@ class PostContainer extends Component {
 
   render() {
     const { posts, user } = this.props
-    return posts.map((problem, index) => {
-      const status = this.getUserStatus(problem, user)
-      const answerSpan = status ? <Status>{status}</Status> : <div />
+    return posts.map((post, index) => {
+      const { solutions, author, latex, id, difficulty, title } = post
+      const solveCount = solutions.length
+      const hasOwnerSolution = solutions.filter(solution => solution.author.id === author.id).length > 0
+      const status = this.getUserStatus(solutions, user)
+      const done = status === 'Done'
+      const opacity = done ? 0.5 : 1
       return (
         <Card
-          key={problem.id}
-          style={{ width: '95%' }}
+          key={id}
+          style={{ width: '95%', opacity }}
           onClick={() => this.onClick(index, status)}
         >
           <Card.Content>
+          <Label text='Done' show={done} />
             <Card.Header
               style={{
                 display: 'flex',
@@ -72,7 +84,7 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <span>{problem.title}</span>
+              <span>{title}</span>
             </Card.Header>
             <Card.Meta
               style={{
@@ -81,8 +93,12 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <span>{problem.difficulty}</span>
-              <Author>Posted by {problem.author.name}</Author>
+              <span>{difficulty}</span>
+              <div>
+                <SolveCount><Solve>{solveCount}</Solve> SOLVES</SolveCount>
+                {hasOwnerSolution ? <Status>Answered</Status> : undefined}
+                <Author>Posted by {author.name}</Author>
+              </div>
             </Card.Meta>
             <Card.Description
               style={{
@@ -91,8 +107,7 @@ class PostContainer extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <LaTexContainer text={problem.latex} id={problem.id} />
-              {answerSpan}
+              <LaTexContainer text={latex || ''} id={id} />
             </Card.Description>
           </Card.Content>
         </Card>
