@@ -30,6 +30,7 @@ const Wrapper = styled.div`
 const Paper = styled.div`
   overflow: auto;
   height: 100%;
+  background-color: #EAEAEA;
 `
 
 const List = styled.div`
@@ -627,7 +628,7 @@ class PaperComponent extends Component {
       let imageUrl = null
       if (image) { imageUrl = image.url }
       return (
-        <div style={{ height: 'calc(100% - 50px)' }}>
+        <div style={{ height: 'calc(100% - 50px)', backgroundColor: '#EAEAEA' }}>
           <Wrapper innerRef={(paper) => this.paper = paper}>
             <Paper>
               {/* {<Screen displayText={'\\frac{5x+4}{5}=3x'} onSubmit={() => this.submitAnswer('x=0.4')} />} */}

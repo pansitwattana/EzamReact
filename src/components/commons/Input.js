@@ -15,7 +15,7 @@ const Input = styled.span`
 
 const InputComponent = ({ id, focus, error, canSimplify, simplify }) => {
   // const size = focus ? '40px' : '20px'
-  const simplifyButton = canSimplify ? <Icon name='idea' onClick={simplify} fitted color='yellow' style={{ padding: '0px 5px', float: 'right' }} /> : undefined
+  const simplifyButton = canSimplify ? <Icon name='lightning' onClick={simplify} fitted color='yellow' style={{ padding: '1px 5px', float: 'right' }} /> : undefined
   const errorBox = error ? <Icon name="remove" color="red" /> : undefined
   return (
     <div> 

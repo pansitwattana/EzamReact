@@ -5,18 +5,29 @@ import { Button, Icon, Input, Image, Dimmer, Loader } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 // import { Math } from './data/Keyboards'
-import { KeyAction, Actions } from './data/MathJaxKeys'
+import { KeyAction, Actions, Keys } from './data/Keys'
 import TeX from './commons/TeX'
 import Keyboard from './commons/Keyboard'
+import MathInput from './commons/Input'
 // import MathInput from './commons/Input'
 import Options from './commons/Options'
 import TitleSelect from './problem/TitleSelect'
+import math from './paper/MathQuill'
 
 const TextArea = styled.textarea`
   margin: 10px;
   height: ${prop => prop.height || '70px'};
   background: #FFF;
   border-radius: 2px;
+`
+
+const List = styled.div`
+  margin: 10px;
+  min-height: 50px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 3px 1px -2px rgba(0, 0, 0, 0.1),
+    0 1px 5px 0 rgba(0, 0, 0, 0.06);
 `
 
 const LaTeXShow = styled.div`
@@ -73,6 +84,8 @@ class Problem extends Component {
   }
 
   componentDidMount() {
+    // document.addEventListener("keypress", this.handleKeyPress, false);
+    // document.addEventListener("keydown", this.handleKeydown, false)
     this.titleInput.focus()
     const { tag } = this.props.match.params
     if (tag) {
@@ -169,12 +182,14 @@ class Problem extends Component {
   submit = () => {
     // const latex = math.getLaTeX(this.state.problemId)
     this.setState({ submiting: true })
-    const { latex } = this.state
-    
+    // const { latex } = this.state
+    const latex = math.getLaTeX('problem_input_id')
+
     if (!latex || latex === '') {
       alert('Please Input Problem')
       return;
     }
+
     const { user } = this.props.data
     if (!user) {
       alert('user not login')
@@ -235,69 +250,80 @@ class Problem extends Component {
 
   }
 
-  handleKeyboard(key) {
-    // math.typed(key, this.state.problemId)
-    let cursorPosition = this.textInput.selectionStart
-    const action = KeyAction(key)
-    if (action === Actions.DELETE) {
-      // const prevLatex = this.latexs.pop() || ''
-      this.latexs.pop()
-      const { textCursor } = this.state
-      if (cursorPosition === 0) {
-        cursorPosition = textCursor
-        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
-      }
-      let oldLatex = this.state.latex
+  // handleKeyboard(key) {
+  //   // math.typed(key, this.state.problemId)
+  //   let cursorPosition = this.textInput.selectionStart
+  //   const action = KeyAction(key)
+  //   if (action === Actions.DELETE) {
+  //     // const prevLatex = this.latexs.pop() || ''
+  //     this.latexs.pop()
+  //     const { textCursor } = this.state
+  //     if (cursorPosition === 0) {
+  //       cursorPosition = textCursor
+  //       this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+  //     }
+  //     let oldLatex = this.state.latex
 
-      let diff = 1
+  //     let diff = 1
 
-      // if (oldLatex.charAt(cursorPosition) === '$') {
-      //   diff = 2
-      // } 
+  //     // if (oldLatex.charAt(cursorPosition) === '$') {
+  //     //   diff = 2
+  //     // } 
 
-      let newLatex = oldLatex.substr(0, cursorPosition - diff)
-      const afterLatex = oldLatex.substr(cursorPosition, oldLatex.length)
+  //     let newLatex = oldLatex.substr(0, cursorPosition - diff)
+  //     const afterLatex = oldLatex.substr(cursorPosition, oldLatex.length)
       
-      newLatex += afterLatex
-      const newCursorPosition = cursorPosition - diff >= 0 ? cursorPosition - 1 : 0
-      if (newLatex === '$') {
-        newLatex = ''
-      }
-      this.setState({ latex: newLatex, textCursor: newCursorPosition })
-    }
-    else {
-      const { latex, showKeyboard, textCursor } = this.state
-      if (cursorPosition === 0) {
-        cursorPosition = textCursor
-        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
-      }
-      const prev = latex.substr(0, cursorPosition)
-      const after = latex.substr(cursorPosition, latex.length)
-      let newWord = key
-      // if (showKeyboard && !latex.includes('$')) {
-      //   newWord = `$${newWord}$`
-      // }
-      let diff = 0
-      if (showKeyboard) {
-        const hasLeftDollar = prev.includes('$')
-        const hasRightDollar = after.includes('$')
-        if (!hasLeftDollar || !hasRightDollar) {
-          newWord = `$${newWord}$`
-          diff = 1
-        }
-        else {
-          diff = 0
-        }
-      }
-      cursorPosition += newWord.length - diff
-      // console.table({prev, after, cursorPosition})
-      let result = prev + newWord + after
-      this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
-        this.textInput.setSelectionRange(cursorPosition, cursorPosition)
-        console.log(this.textInput.selectionStart, cursorPosition)
-      })
-      
-      this.latexs.push(result)
+  //     newLatex += afterLatex
+  //     const newCursorPosition = cursorPosition - diff >= 0 ? cursorPosition - 1 : 0
+  //     if (newLatex === '$') {
+  //       newLatex = ''
+  //     }
+  //     this.setState({ latex: newLatex, textCursor: newCursorPosition })
+  //   }
+  //   else {
+  //     const { latex, showKeyboard, textCursor } = this.state
+  //     if (cursorPosition === 0) {
+  //       cursorPosition = textCursor
+  //       this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+  //     }
+  //     const prev = latex.substr(0, cursorPosition)
+  //     const after = latex.substr(cursorPosition, latex.length)
+  //     let newWord = key
+  //     // if (showKeyboard && !latex.includes('$')) {
+  //     //   newWord = `$${newWord}$`
+  //     // }
+  //     let diff = 0
+  //     if (showKeyboard) {
+  //       const hasLeftDollar = prev.includes('$')
+  //       const hasRightDollar = after.includes('$')
+  //       if (!hasLeftDollar || !hasRightDollar) {
+  //         newWord = `$${newWord}$`
+  //         diff = 1
+  //       }
+  //       else {
+  //         diff = 0
+  //       }
+  //     }
+  //     cursorPosition += newWord.length - diff
+  //     // console.table({prev, after, cursorPosition})
+  //     let result = prev + newWord + after
+  //     this.setState({ latex: result, cursorDiff: diff, textCursor: cursorPosition }, () => {
+  //       this.textInput.setSelectionRange(cursorPosition, cursorPosition)
+  //       console.log(this.textInput.selectionStart, cursorPosition)
+  //     })
+  //     math.typed(key, 'problem_input_id')
+  //     this.latexs.push(result)
+  //   }
+  // }
+  handleKeyboard(value) {
+    const action = KeyAction(value)
+    math.typed(value, 'problem_input_id')
+    if (action === Actions.NEWLINE) {
+
+    } else if (action === Actions.DELETE) {
+    
+    } else {
+      // this.setState({ latex: result })
     }
   }
 
@@ -338,6 +364,42 @@ class Problem extends Component {
     this.setState({ showKeyboard: false })
   }
 
+  handleKeydown = (event) => {
+    if (event.target.id !== 'nofocus') {
+      return;
+    }
+
+    const { key } = event
+    if (key === 'Backspace') {
+      this.handleKeyboard(Keys.BACKSPACE)
+    } else if (key === 'ArrowRight') {
+      this.handleKeyboard(Keys.RIGHT)
+    } else if (key === 'ArrowLeft') {
+      this.handleKeyboard(Keys.LEFT)
+    } else if (key === 'Tab') {
+      // const { filterKeywords } = this.state
+      // if (filterKeywords.length > 0) {
+      //   this.handleSuggestion(filterKeywords[0].value)
+      // }
+    }
+  }
+
+  handleKeyPress = (event) => {
+    if (event.target.id !== 'nofocus') {
+      return;
+    }
+
+    if (event.key === '/') {
+      event.preventDefault()
+    }
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+      // console.log('type ' + event.key)
+      this.handleKeyboard(event.key)
+        // .then(res => console.log(res))
+        // .catch(error => console.error(error))
+    }
+  }
+
   render() {
     const { tag } = this.props.match.params
     if (tag) {
@@ -356,14 +418,14 @@ class Problem extends Component {
       tags = [{ key: '0', text: tag, value: tag }]
     }
     return (
-      <div>
+      <div style={{ overflow: 'auto', height: '100%' }}>
         {submiting ? (
             <Dimmer active>
               <Loader content="Loading" />
             </Dimmer>
           ) : (
           <div>
-            <div onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div id='nofocus' onKeyDown={this.handleKeydown} onKeyPress={this.handleKeyPress} tabIndex="0" style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
               <TitleSelect />
               <Input
                 style={{ margin: '10px' }}
@@ -373,18 +435,25 @@ class Problem extends Component {
                 ref={(input) => { this.titleInput = input; }}
               />
 
-              <TextArea
+              {/* <TextArea
                 placeholder='Type Math Question'
                 readOnly={showKeyboard}
                 onFocus={this.onTextFocus}
                 onChange={this.onTextChange}
                 value={this.state.latex}
                 innerRef={(input) => { this.textInput = input; }}
-              />
-
-              <LaTeXShow>
-                <TeX value={this.state.latex} />
-              </LaTeXShow>
+              /> */}
+              <div>พิมพ์โจทย์ข้างล่าง</div>
+              <List
+                onClick={(event) => console.log(event)}
+              >
+                <MathInput
+                  id='problem_input_id'
+                />
+              </List>
+              {/* <LaTeXShow>
+                <TeX value={this.state.latex && `$${this.state.latex}$`} />
+              </LaTeXShow> */}
 
               <TextArea
                 placeholder='Type Answer'
@@ -443,7 +512,7 @@ class Problem extends Component {
                   Submit
                 </Button>
               </Form>
-              <Keyboard isMathJax show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
+              <Keyboard show={showKeyboard} onPress={key => this.handleKeyboard(key)} />
             </div>
             <Footer showKeyboard={showKeyboard}>
               <Button style={{ boxShadow: '2px 2px 2px black' }} size='big' circular color='facebook' onClick={() => this.setState({ showKeyboard: !this.state.showKeyboard })} icon='keyboard' />

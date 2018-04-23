@@ -24,8 +24,8 @@ const Key = styled.div`
     transform: scale(0.9);
   `}
   ${props => props.operator === 'true' && `
-    width: 25%;
     color: white;
+    background-color: #4C4F55;
   `}
   ${props => props.number && `
     border: 1px solid #e8e8e8;
@@ -42,18 +42,15 @@ const Operation = styled.div`
   padding-left: ${props => props.padding};
   padding-right: ${props => props.padding};
   background-color: ${props => props.backgroundColor};
-  border-radius: ${props => props.borderRadius};
+  /* border-radius: ${props => props.borderRadius}; */
   border: ${props => props.border};
   color: ${props => props.color};
   ${props => props.operator === 'true' && `
-    font-size: 8px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    font-size: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     display: inline;
-    box-shadow:
-      0 2px 2px 0 rgba(0,0,0,.14),
-      0 3px 1px -2px rgba(0,0,0,.2),
-      0 1px 5px 0 rgba(0,0,0,.12);
+    background-color: #4C4F55;
   `}
 `
 
@@ -79,7 +76,7 @@ class KeyComponent extends Component {
 
   onTouchStart = (event) => {
     // console.log('start event')
-    this.buttonPressTimer = setTimeout(() => this.onLongPress(), 1200);
+    this.buttonPressTimer = setTimeout(() => this.onLongPress(), 500);
     const { touches } = event
     if (touches.length > 0) {
       const touch = touches[0]
@@ -158,36 +155,36 @@ class KeyComponent extends Component {
     let number = false
     let action = false
     let padding = '0px'
-    let backgroundColor = 'white'
-    let keyColor = 'white'
+    let backgroundColor = '#efefef'
+    let keyColor = '#efefef'
     let borderRadius = '0px'
     let border = ''
     let color = '#555555'
     if (keyType === 'number') {
       number = true
       if (/^\d+$/.test(keyValue)) {
-        keyColor = '#efefef'
-        backgroundColor = keyColor
+        keyColor = 'white'
+        backgroundColor = 'white'
       }
     } else if (keyType === 'operator') {
       operator = true
       borderRadius = '20px'
       if (keyValue === Keys.PLUS) {
-        padding = '6px'
+        padding = '9px'
         backgroundColor = '#cb7dc9'
       } else if (keyValue === Keys.RIGHT || keyValue === Keys.LEFT) {
         backgroundColor = '#00ffff'
-        color = '#000000'
-        padding = '7px'
+        color = '#ffffff'
+        padding = '10px'
       } else if (keyValue === Keys.ALPHABET || keyValue === Keys.NUMBER) {
         backgroundColor = '#323156'
         color = '#ffffff'
-        padding = '6px'
+        padding = '10px'
         borderRadius = '2px'
       } else if (keyValue === Keys.ENTER) {
-        backgroundColor = '#ec1b5b'
+        backgroundColor = 'lightblue'
         color = '#ffffff'
-        padding = '8px'
+        padding = '12px'
         borderRadius = '7px'
       }
     } else if (keyType === 'action') {

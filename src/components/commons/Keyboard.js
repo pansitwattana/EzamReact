@@ -28,11 +28,12 @@ const KeyboardRow = styled.div`
 `
 
 const Suggestion = styled.div`
-  height: 15%;
+  height: ${props => props.height}%;
   width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
+  display: flex;
 `
 
 let containerHeight = 0
@@ -109,7 +110,7 @@ class KeyboardComponent extends Component {
   
   renderKeywords(keywords) {
     return keywords.map(keyword => (
-      <Button style={{ height: '100%', padding: '9px', margin: '2px' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
+      <Button style={{ backgroundColor: 'burlywood', color: 'white', height: '100%', padding: '0px 5px', margin: '0px 4px' }} key={keyword.id} onClick={() => this.onKeywordPress(keyword.value)}>
         <LaTeX text={keyword.value} id={keyword.value} />
       </Button>))
   }
@@ -131,11 +132,11 @@ class KeyboardComponent extends Component {
     const { keywords } = this.props
     let suggestionComponent = <div />
     let keyHeight = 75
-    let keyActionHeight = 10
+    let keyActionHeight = 15
     if (keywords && keywords.length > 0) {
       keyHeight = 75
-      keyActionHeight = 10
-      suggestionComponent = (<Suggestion>{this.renderKeywords(keywords)}</Suggestion>)
+      keyActionHeight = 15
+      suggestionComponent = (<Suggestion height='12'>{this.renderKeywords(keywords)}</Suggestion>)
     } else {
       keyHeight = 85
       keyActionHeight = 15
@@ -189,10 +190,12 @@ class KeyboardComponent extends Component {
         {suggestionComponent}
         {keyboardRows}
         <KeyboardRow height={keyActionHeight}>
-          <Key keyType="operator" keyValue={action} keySymbol={action} onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={action} />
-          <Key keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.LEFT} />
-          <Key keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.RIGHT} />
-          <Key keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.ENTER} />
+          <Key colCount="6" keyType="operator" keyValue={action} keySymbol={action} onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={action} />
+          <Key colCount="6" keyType="operator" keyValue='' keySymbol="" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} />
+          <Key colCount="6" keyType="operator" keyValue={Keys.LEFT} keySymbol="←" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.LEFT} />
+          <Key colCount="6" keyType="operator" keyValue={Keys.RIGHT} keySymbol="→" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.RIGHT} />
+          <Key colCount="6" keyType="operator" keyValue='' keySymbol="" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} />
+          <Key colCount="6" keyType="operator" keyValue={Keys.ENTER} keySymbol="↵" onPress={this.handleKeyPress} onClick={this.handleClick} onSwipe={this.handleSwipe} swipeDown={Keys.ENTER} />
         </KeyboardRow>
         {showLabel && <Label x={x} y={y} value={swipeValue} status={swipeStatus} />}
       </Keyboard>
