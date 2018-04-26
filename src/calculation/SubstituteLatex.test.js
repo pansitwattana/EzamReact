@@ -2,7 +2,7 @@ import SubstituteLatex from './SubstituteLatex'
 
 test('first case', () => {
   const latex = '4x^2+\\frac{4}{3}=0'
-  expect(SubstituteLatex(latex)).toBe('4x^2+1.3333=0')
+  expect(SubstituteLatex(latex)).toBe('4x^2+1.3=0')
 })
 
 test('second case', () => {

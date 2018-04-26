@@ -4,6 +4,10 @@ const regex = /\\frac({?[0-9]*})({?[0-9]*})/g
 const replaceRegex = /(}|{)/g
 
 export default (latex) => {
+  if (latex === NaN) {
+    return latex
+  }
+
   let m;
   let matches = []
   while ((m = regex.exec(latex)) !== null) {
@@ -30,7 +34,7 @@ export default (latex) => {
   // const result = latex.replace(regex, value)
   let result = latex
   matches.forEach(({ value, replaceString }) => {
-    result = result.replace(replaceString, math.format(value, { precision: 5 }))
+    result = result.replace(replaceString, value.toFixed(1))
   })
 
   return result

@@ -3,6 +3,7 @@ import math from 'mathjs'
 import SplitEquation from '../../../calculation/SplitEquation';
 import GetVariables from '../../../calculation/GetVariables';
 import Simplify from '../../../calculation/Simplify';
+import SubstituteLatex from '../../../calculation/SubstituteLatex';
 import SubstitutionCheck from '../SubstitutionCheck';
 
 function isNumeric(num){
@@ -76,11 +77,17 @@ export default {
       result.type === Type.Variables && finalResult.type === Type.Variables
     ) {
       const results1 = result.values.map(val => {
-        const parse = parseFloat(val)
+        let parse = parseFloat(val)
+        if (isNaN(parse)) {
+          parse = SubstituteLatex(val)
+        }
         return parse !== NaN ? math.format(parse, options) : val
       }).sort()
       const results2 = finalResult.values.map(val => {
-        const parse = parseFloat(val)
+        let parse = parseFloat(val)
+        if (isNaN(parse)) {
+          parse = SubstituteLatex(val)
+        }
         return parse !== NaN ? math.format(parse, options) : val
       }).sort()
       if (results1.length !== results2.length) {

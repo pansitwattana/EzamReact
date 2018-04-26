@@ -28,3 +28,11 @@ body ::-webkit-scrollbar {
   width: 0px;
   height: 1px;
 }
+
+.mq-math-mode var {
+  font-family: 'Kanit', sans-serif !important;
+}
+
+.mq-math-mode {
+  font-family: 'Kanit', sans-serif !important;
+}

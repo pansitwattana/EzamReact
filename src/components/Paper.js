@@ -599,7 +599,8 @@ class PaperComponent extends Component {
             console.log(simplified)
             math.setLatex(newMethod.id, simplified)
             const newKeywords = getSolutionKeywords(simplified, keywords)
-            this.setState({ keywords: newKeywords })
+            this.handleKeyboard(Keys.ENTER)
+              .then(() => this.setState({ keywords: newKeywords }))
           }
         })
     }

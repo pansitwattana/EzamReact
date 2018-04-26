@@ -39,16 +39,14 @@ const Key = styled.div`
 
 const Operation = styled.div`
   text-shadow: 0 1px 2px rgba(0,0,0,0.20);
-  padding-left: ${props => props.padding};
-  padding-right: ${props => props.padding};
-  background-color: ${props => props.backgroundColor};
+  /* padding-left: ${props => props.padding};
+  padding-right: ${props => props.padding}; */
+  /* background-color: ${props => props.backgroundColor}; */
   /* border-radius: ${props => props.borderRadius}; */
   border: ${props => props.border};
   color: ${props => props.color};
   ${props => props.operator === 'true' && `
     font-size: 16px;
-    padding-top: 10px;
-    padding-bottom: 10px;
     display: inline;
     background-color: #4C4F55;
   `}

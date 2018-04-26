@@ -4,6 +4,7 @@ import solver from './Solver'
 import substitute from '../../calculation/Substitution'
 import split from '../../calculation/SplitEquation'
 import getVariables from '../../calculation/GetVariables'
+import { isNumber } from 'util';
 
 class PhysicsChecker extends ErrorChecker {
   constructor(problem, answer) {
@@ -103,10 +104,33 @@ class PhysicsChecker extends ErrorChecker {
         if (result === null) {
           return null
         }
-        const options = { notation: 'fixed', precision: 4 }
-
-        return math.format(answer, options) === math.format(result, options)
+        const options = { notation: 'fixed', precision: 1 }
+        const roundAnswer = math.format(answer, options)
+        const roundResult = math.format(result, options)
+        const answerNumber = this.parseToFloat(answer)
+        const resultNumber = this.parseToFloat(result)
+        if (answerNumber && resultNumber) {
+          return answerNumber.toFixed(1) === resultNumber.toFixed(1)
+        }
+        return roundAnswer === roundResult
       }
+    }
+  }
+
+  parseToFloat(frac) {
+    if (isNumber(frac)) {
+      return Number(frac)
+    } else {
+      const numbers = frac.split('/')
+      if (numbers.length == 2) {
+        const firstNo = parseFloat(numbers[0])
+        const secNo = parseFloat(numbers[1])
+        if (isNumber(firstNo) && isNumber(secNo)) {
+          const result = firstNo / secNo
+          return result
+        }
+      }
+      return null
     }
   }
 
